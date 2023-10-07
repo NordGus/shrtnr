@@ -1,40 +1,40 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+	"github.com/NordGus/rom-stack/server/redirect"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"html/template"
 	"log"
 	"net/http"
-	"os"
 )
 
+var (
+	environment  *string
+	redirectHost *string
+	port         *int
+)
+
+func init() {
+	environment = flag.String("env", "development", "defines application environment")
+	redirectHost = flag.String("redirect-host", "l.hst:4269", "defines the short redirect host")
+	port = flag.Int("port", 4269, "port where the app will listened")
+
+	flag.Parse()
+}
+
 func main() {
-	templateFS := os.DirFS("./templates")
-	tmpls, err := template.ParseFS(templateFS, "layout.gohtml", "app.gohtml")
-	if err != nil {
-		log.Fatalf("something went wrong parsing templates: %v\n", err)
-	}
+	fmt.Println("App environment:", *environment)
 
 	router := chi.NewRouter()
-	router.Use(middleware.Logger)
-	router.Use(devCORSMiddleware)
+	router.Use(middleware.Logger, redirect.Middleware(*redirectHost))
 
-	router.Get("/", func(writer http.ResponseWriter, _ *http.Request) {
-		err := tmpls.ExecuteTemplate(writer, "layout.gohtml", nil)
-		if err != nil {
-			http.Error(writer, err.Error(), http.StatusInternalServerError)
-		}
-	})
+	if *environment == "development" {
+		router.Use(devCORSMiddleware)
+	}
 
-	router.Get("/app", func(writer http.ResponseWriter, _ *http.Request) {
-		err := tmpls.ExecuteTemplate(writer, "app.gohtml", nil)
-		if err != nil {
-			http.Error(writer, err.Error(), http.StatusInternalServerError)
-		}
-	})
-
-	err = http.ListenAndServe(":4269", router)
+	err := http.ListenAndServe(fmt.Sprintf(":%v", *port), router)
 	if err != nil {
 		log.Fatalf("something went wrong initalizing http server: %v\n", err)
 	}
