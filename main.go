@@ -17,12 +17,14 @@ var (
 	environment  *string
 	redirectHost *string
 	port         *int
+	urlLimit     *uint
 )
 
 func init() {
 	environment = flag.String("env", "development", "defines application environment")
 	redirectHost = flag.String("redirect-host", "l.hst:4269", "defines the short redirect host")
 	port = flag.Int("port", 4269, "port where the app will listened")
+	urlLimit = flag.Uint("capacity", 2500, "limit of URLs that the service can contain")
 
 	flag.Parse()
 }
@@ -33,7 +35,7 @@ func main() {
 
 	storage.Start(*environment)
 	redirect.Start(*redirectHost)
-	ingest.Start(ctx, 2500)
+	ingest.Start(ctx, *urlLimit)
 
 	router.Use(middleware.Logger, redirect.Middleware)
 
