@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/NordGus/rom-stack/server/ingest"
+	"github.com/NordGus/rom-stack/server/messagebus"
 	"github.com/NordGus/rom-stack/server/redirect"
 	"github.com/NordGus/rom-stack/server/storage"
 	"github.com/go-chi/chi/v5"
@@ -33,6 +34,7 @@ func main() {
 	ctx := context.Background()
 	router := chi.NewRouter()
 
+	messagebus.Start(ctx)
 	storage.Start(*environment)
 	redirect.Start(*redirectHost)
 	ingest.Start(ctx, *urlLimit)
