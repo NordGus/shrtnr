@@ -4,14 +4,16 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/NordGus/rom-stack/server/ingest"
-	"github.com/NordGus/rom-stack/server/messagebus"
-	"github.com/NordGus/rom-stack/server/redirect"
-	"github.com/NordGus/rom-stack/server/storage"
+	"github.com/NordGus/shrtnr/server/ingest"
+	"github.com/NordGus/shrtnr/server/messagebus"
+	"github.com/NordGus/shrtnr/server/redirect"
+	"github.com/NordGus/shrtnr/server/storage"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"log"
 	"net/http"
+
+	api "github.com/NordGus/shrtnr/server/http"
 )
 
 var (
@@ -38,12 +40,15 @@ func main() {
 	storage.Start(*environment)
 	redirect.Start(*redirectHost)
 	ingest.Start(ctx, *urlLimit)
+	api.Start(*environment)
 
 	router.Use(middleware.Logger, redirect.Middleware)
 
 	if *environment == "development" {
 		router.Use(devCORSMiddleware)
 	}
+
+	api.Routes(router)
 
 	err := http.ListenAndServe(fmt.Sprintf(":%v", *port), router)
 	if err != nil {

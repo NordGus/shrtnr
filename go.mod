@@ -1,4 +1,4 @@
-module github.com/NordGus/rom-stack
+module github.com/NordGus/shrtnr
 
 go 1.21.0
 

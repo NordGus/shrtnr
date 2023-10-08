@@ -2,8 +2,8 @@ package messagebus
 
 import (
 	"context"
-	"github.com/NordGus/rom-stack/server/messagebus/url/created"
-	"github.com/NordGus/rom-stack/server/messagebus/url/deleted"
+	"github.com/NordGus/shrtnr/server/messagebus/url/created"
+	"github.com/NordGus/shrtnr/server/messagebus/url/deleted"
 )
 
 func Start(ctx context.Context) {

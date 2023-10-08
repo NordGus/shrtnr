@@ -2,9 +2,9 @@ package ingest
 
 import (
 	"errors"
-	"github.com/NordGus/rom-stack/server/messagebus/url/created"
-	"github.com/NordGus/rom-stack/server/messagebus/url/deleted"
-	"github.com/NordGus/rom-stack/server/shared/response"
+	"github.com/NordGus/shrtnr/server/messagebus/url/created"
+	"github.com/NordGus/shrtnr/server/messagebus/url/deleted"
+	"github.com/NordGus/shrtnr/server/shared/response"
 )
 
 type signal struct {

@@ -2,8 +2,8 @@ package ingest
 
 import (
 	"context"
-	"github.com/NordGus/rom-stack/server/shared/queue"
-	"github.com/NordGus/rom-stack/server/storage"
+	"github.com/NordGus/shrtnr/server/shared/queue"
+	"github.com/NordGus/shrtnr/server/storage"
 	"sync"
 )
 

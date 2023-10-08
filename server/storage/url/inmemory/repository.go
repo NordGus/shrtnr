@@ -2,7 +2,7 @@ package inmemory
 
 import (
 	"errors"
-	"github.com/NordGus/rom-stack/server/storage/url"
+	"github.com/NordGus/shrtnr/server/storage/url"
 	"sync"
 	"time"
 )

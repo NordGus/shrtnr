@@ -1,8 +1,8 @@
 package url
 
 import (
-	"github.com/NordGus/rom-stack/server/storage"
-	"github.com/NordGus/rom-stack/server/storage/url/inmemory"
+	"github.com/NordGus/shrtnr/server/storage"
+	"github.com/NordGus/shrtnr/server/storage/url/inmemory"
 )
 
 func NewRepository(env string) storage.URLRepository {

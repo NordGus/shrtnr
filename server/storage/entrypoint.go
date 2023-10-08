@@ -1,6 +1,6 @@
 package storage
 
-import "github.com/NordGus/rom-stack/server/storage/url"
+import "github.com/NordGus/shrtnr/server/storage/url"
 
 var (
 	urlRepository URLRepository

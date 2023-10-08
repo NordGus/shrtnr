@@ -1,6 +1,6 @@
 package ingest
 
-import "github.com/NordGus/rom-stack/server/storage/url"
+import "github.com/NordGus/shrtnr/server/storage/url"
 
 type Repository interface {
 	GetByShort(short string) (url.URL, error)
