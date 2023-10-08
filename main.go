@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"github.com/NordGus/rom-stack/server/ingest"
 	"github.com/NordGus/rom-stack/server/redirect"
+	"github.com/NordGus/rom-stack/server/storage"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"log"
@@ -25,10 +28,14 @@ func init() {
 }
 
 func main() {
-	fmt.Println("App environment:", *environment)
-
+	ctx := context.Background()
 	router := chi.NewRouter()
-	router.Use(middleware.Logger, redirect.Middleware(*redirectHost))
+
+	storage.Start(*environment)
+	redirect.Start(*redirectHost)
+	ingest.Start(ctx, 2500)
+
+	router.Use(middleware.Logger, redirect.Middleware)
 
 	if *environment == "development" {
 		router.Use(devCORSMiddleware)

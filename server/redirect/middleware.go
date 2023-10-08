@@ -5,22 +5,18 @@ import (
 	"net/http"
 )
 
-func Middleware(redirectHost string) func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		var host = redirectHost
+func Middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Host == host {
+			// TODO: implement redirect logic
 
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Host == host {
-				// TODO: implement redirect logic
+			err := fmt.Errorf("redirect: failed to redirect from %s: to be implemented", r.URL.RawPath)
 
-				err := fmt.Errorf("redirect: failed to redirect from %s: to be implemented", r.URL.RawPath)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-				return
-			}
-
-			next.ServeHTTP(w, r)
-		})
-	}
+		next.ServeHTTP(w, r)
+	})
 }

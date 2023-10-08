@@ -1,14 +1,10 @@
 package ingest
 
-type Record interface {
-	ID() string
-	Short() string
-	Full() string
-}
+import "github.com/NordGus/rom-stack/server/storage/url"
 
 type Repository interface {
-	GetByShort(short string) (Record, error)
-	GetByFull(full string) (Record, error)
-	CreateURL(short string, full string) (Record, error)
-	DeleteURL(short string) (Record, error)
+	GetByShort(short string) (url.URL, error)
+	GetByFull(full string) (url.URL, error)
+	CreateURL(short string, full string) (url.URL, error)
+	DeleteURL(short string) (url.URL, error)
 }

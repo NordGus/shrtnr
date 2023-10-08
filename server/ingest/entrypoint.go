@@ -3,6 +3,7 @@ package ingest
 import (
 	"context"
 	"github.com/NordGus/rom-stack/server/shared/queue"
+	"github.com/NordGus/rom-stack/server/storage"
 	"sync"
 )
 
@@ -17,4 +18,5 @@ var (
 func Start(otherCtx context.Context, maxUrl uint) {
 	ctx = otherCtx
 	urls = queue.NewQueue[URL](maxUrl)
+	repository = storage.GetURLRepository()
 }
