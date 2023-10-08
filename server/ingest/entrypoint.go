@@ -6,22 +6,15 @@ import (
 	"sync"
 )
 
-type Url struct {
-	short string
-	full  string
-}
-
 var (
-	limit uint
-
-	ctx  context.Context
-	urls queue.Queue[Url]
+	ctx        context.Context
+	urls       queue.Queue[URL]
+	repository Repository
 
 	lock sync.Mutex
 )
 
 func Start(otherCtx context.Context, maxUrl uint) {
-	limit = maxUrl
 	ctx = otherCtx
-	urls = queue.NewQueue[Url](maxUrl)
+	urls = queue.NewQueue[URL](maxUrl)
 }
