@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/NordGus/shrtnr/server/messagebus/url/created"
 	"github.com/NordGus/shrtnr/server/messagebus/url/deleted"
+	"github.com/NordGus/shrtnr/server/shared/queue"
 	"github.com/NordGus/shrtnr/server/shared/response"
 )
 
@@ -26,9 +27,10 @@ func AddURL(short string, full string) error {
 		defer lock.Unlock()
 
 		resp := response.AndThen(buildUrl(short, full), validateUrl)
-		resp = response.AndThen(resp, addUrlToQueue)
+		resp = response.AndThen(resp, canBeAdded)
 		resp = response.OnFailure(resp, deleteOldestUrl)
 		resp = response.AndThen(resp, persistNewURl)
+		resp = response.AndThen(resp, addUrlToQueue)
 
 		return resp.err
 	}
@@ -48,11 +50,10 @@ func validateUrl(sig signal) signal {
 	return sig
 }
 
-func addUrlToQueue(sig signal) signal {
-	err := urls.Push(sig.new)
-	if err != nil {
-		sig.err = err
-		sig.old, _ = urls.Pop()
+func canBeAdded(sig signal) signal {
+	if urls.IsFull() {
+		sig.old, _ = urls.Peek()
+		sig.err = queue.IsFullErr
 	}
 
 	return sig
@@ -92,4 +93,14 @@ func persistNewURl(sig signal) signal {
 	}
 
 	return sig
+}
+
+func addUrlToQueue(sig signal) signal {
+	if urls.IsFull() {
+		sig.old, _ = urls.Pop()
+	}
+
+	_ = urls.Push(sig.new)
+
+	return signal{new: sig.new, old: sig.old}
 }
