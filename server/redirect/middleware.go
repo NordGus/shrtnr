@@ -1,22 +1,43 @@
 package redirect
 
 import (
-	"fmt"
+	"errors"
+	"html/template"
 	"net/http"
 )
 
 func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Host == host {
-			// TODO: implement redirect logic
+		// TODO: check possible problems with this implementation
+		if r.Host == host {
+			target, err := GetTarget(r)
+			if err != nil {
+				renderErr := renderErrorView(w, err)
+				if renderErr != nil {
+					http.Error(w, renderErr.Error(), http.StatusInternalServerError)
+					return
+				}
 
-			err := fmt.Errorf("redirect: failed to redirect from %s: to be implemented", r.URL.RawPath)
+				return
+			}
 
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-
-			return
+			http.RedirectHandler(target, http.StatusMovedPermanently).ServeHTTP(w, r)
+		} else {
+			next.ServeHTTP(w, r)
 		}
-
-		next.ServeHTTP(w, r)
 	})
+}
+
+func renderErrorView(w http.ResponseWriter, redirectErr error) error {
+	tmpl, err := template.New("error").Funcs(helpers).ParseFS(templates, "templates/error.gohtml")
+	if err != nil {
+		return errors.Join(redirectErr, err)
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		return errors.Join(redirectErr, err)
+	}
+
+	return nil
 }

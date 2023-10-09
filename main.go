@@ -38,7 +38,7 @@ func main() {
 
 	messagebus.Start(ctx)
 	storage.Start(*environment)
-	redirect.Start(*redirectHost)
+	redirect.Start(*environment, *redirectHost)
 	ingest.Start(ctx, *urlLimit)
 	api.Start(*environment)
 
