@@ -49,7 +49,7 @@ func main() {
 	// Domain initialization
 	redirect.Start(ctx, *environment, *redirectHost)
 	create.Start(ctx, *urlLimit)
-	search.Start(ctx, *urlLimit, *maxSearchConcurrency, *searchTermLimits)
+	search.Start(ctx, *maxSearchConcurrency, *searchTermLimits)
 
 	// Api initialization
 	api.Start(*environment)

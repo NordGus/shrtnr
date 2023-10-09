@@ -10,8 +10,6 @@ import (
 var (
 	// EntryNotPresentErr indicates that the Trie doesn't contain the given entry
 	EntryNotPresentErr = errors.New("trie: entry not present")
-	// IsFullErr indicates that the Trie can't store more text entries
-	IsFullErr = errors.New("trie: is full")
 	// IsEmptyErr indicates that the Trie has no entries
 	IsEmptyErr = errors.New("trie: is empty")
 )
@@ -19,16 +17,14 @@ var (
 // Trie is a data structure that store text entries for quick search
 type Trie struct {
 	root  *node
-	size  uint
 	count uint
 	sem   chan bool
 }
 
 // NewTrie returns a Trie struct
-func NewTrie(size uint, semSize uint) Trie {
+func NewTrie(semSize uint) Trie {
 	return Trie{
 		root:  newNode(""),
-		size:  size,
 		count: 0,
 		sem:   make(chan bool, semSize),
 	}
@@ -36,10 +32,6 @@ func NewTrie(size uint, semSize uint) Trie {
 
 // AddEntry adds an entry to the Trie
 func (t *Trie) AddEntry(entry string) error {
-	if t.size == t.count {
-		return IsFullErr
-	}
-
 	current := t.root
 
 	for _, ch := range entry {
