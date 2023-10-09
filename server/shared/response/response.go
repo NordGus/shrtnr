@@ -1,3 +1,5 @@
+// Package response is inspired in the concept of [Railway Oriented Design](https://blog.logrocket.com/what-is-railway-oriented-programming/)
+// thing I've learned in my short stint at Job&Talent
 package response
 
 type Response interface {
