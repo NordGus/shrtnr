@@ -53,7 +53,6 @@ func main() {
 	api.Start(*environment)
 
 	router := chi.NewRouter()
-
 	router.Use(middleware.Logger, redirect.Middleware)
 
 	if *environment == "development" {
