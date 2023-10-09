@@ -9,7 +9,7 @@ import (
 
 var (
 	ctx        context.Context
-	urls       queue.Queue[URL]
+	cache      queue.Queue[URL]
 	repository Repository
 
 	lock sync.Mutex
@@ -17,6 +17,6 @@ var (
 
 func Start(otherCtx context.Context, maxUrl uint) {
 	ctx = otherCtx
-	urls = queue.NewQueue[URL](maxUrl)
+	cache = queue.NewQueue[URL](maxUrl)
 	repository = storage.GetURLRepository()
 }
