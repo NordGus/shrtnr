@@ -5,6 +5,7 @@ type Repository interface {
 	GetByFull(full string) (URL, error)
 	CreateURL(short string, full string) (URL, error)
 	DeleteURL(short string) (URL, error)
+	GetLikeLongs(likeLongs ...string) ([]URL, error)
 }
 
 func NewRepository(env string) Repository {
