@@ -7,6 +7,7 @@ import (
 	"github.com/NordGus/shrtnr/server/create"
 	"github.com/NordGus/shrtnr/server/messagebus"
 	"github.com/NordGus/shrtnr/server/redirect"
+	"github.com/NordGus/shrtnr/server/search"
 	"github.com/NordGus/shrtnr/server/storage"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -17,10 +18,11 @@ import (
 )
 
 var (
-	environment  *string
-	redirectHost *string
-	port         *int
-	urlLimit     *uint
+	environment          *string
+	redirectHost         *string
+	port                 *int
+	urlLimit             *uint
+	maxSearchConcurrency *uint
 )
 
 func init() {
@@ -28,6 +30,7 @@ func init() {
 	redirectHost = flag.String("redirect-host", "l.hst:4269", "defines the short redirect host")
 	port = flag.Int("port", 4269, "port where the app will listened")
 	urlLimit = flag.Uint("capacity", 2500, "limit of URLs that the service can contain")
+	maxSearchConcurrency = flag.Uint("search-concurrency", 30, "limits the amount of concurrent processes when checking trie cache for searching functionality")
 
 	flag.Parse()
 }
@@ -40,6 +43,7 @@ func main() {
 	storage.Start(*environment)
 	redirect.Start(ctx, *environment, *redirectHost)
 	create.Start(ctx, *urlLimit)
+	search.Start(ctx, *urlLimit, *maxSearchConcurrency)
 	api.Start(*environment)
 
 	router.Use(middleware.Logger, redirect.Middleware)

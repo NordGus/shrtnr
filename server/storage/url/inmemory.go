@@ -2,6 +2,7 @@ package url
 
 import (
 	"errors"
+	"strings"
 	"sync"
 	"time"
 )
@@ -89,4 +90,23 @@ func (s *InMemoryStorage) DeleteURL(short string) (URL, error) {
 	}
 
 	return record, nil
+}
+
+func (s *InMemoryStorage) GetLikeLongs(linkLongs ...string) ([]URL, error) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	var records = make([]URL, 0, len(s.records))
+
+	// super inefficient search
+	for _, record := range s.records {
+		for _, long := range linkLongs {
+			if strings.Contains(record.FullURL, long) {
+				records = append(records, record)
+				break
+			}
+		}
+	}
+
+	return records, nil
 }

@@ -9,4 +9,6 @@ type URLRepository interface {
 	GetByFull(full string) (url.URL, error)
 	CreateURL(short string, full string) (url.URL, error)
 	DeleteURL(short string) (url.URL, error)
+
+	GetLikeLongs(linkLongs ...string) ([]url.URL, error)
 }
