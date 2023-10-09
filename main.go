@@ -4,17 +4,19 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/NordGus/shrtnr/server/create"
 	"github.com/NordGus/shrtnr/server/messagebus"
 	"github.com/NordGus/shrtnr/server/redirect"
 	"github.com/NordGus/shrtnr/server/search"
 	"github.com/NordGus/shrtnr/server/storage"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"log"
-	"net/http"
 
 	api "github.com/NordGus/shrtnr/server/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 var (
