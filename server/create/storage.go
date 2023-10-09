@@ -1,4 +1,4 @@
-package ingest
+package create
 
 import "github.com/NordGus/shrtnr/server/storage/url"
 

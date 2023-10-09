@@ -22,10 +22,15 @@ func (s signal) Error() error {
 }
 
 func GetTarget(r *http.Request) (string, error) {
-	resp := extractShortFromPath(r)
-	resp = response.AndThen(resp, searchFullURL)
+	select {
+	case <-ctx.Done():
+		return "", ctx.Err()
+	default:
+		resp := extractShortFromPath(r)
+		resp = response.AndThen(resp, searchFullURL)
 
-	return resp.full, resp.err
+		return resp.full, resp.err
+	}
 }
 
 func extractShortFromPath(r *http.Request) signal {

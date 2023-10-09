@@ -1,4 +1,4 @@
-package ingest
+package create
 
 import (
 	"errors"
@@ -9,8 +9,8 @@ const (
 )
 
 var (
-	ShortURLInvalidLengthErr = ObjectValueValueError{pattern: "ingest: URL short value length invalid got [%v] wanted [%v]"}
-	ShortURLDuplicatedErr    = ObjectValueUniquenessError{pattern: "ingest: URL short value [%v] is not unique"}
+	ShortURLInvalidLengthErr = ObjectValueValueError{pattern: "create: URL short value length invalid got [%v] wanted [%v]"}
+	ShortURLDuplicatedErr    = ObjectValueUniquenessError{pattern: "create: URL short value [%v] is not unique"}
 )
 
 type shortURL string

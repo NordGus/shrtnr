@@ -1,4 +1,4 @@
-package ingest
+package create
 
 type URL struct {
 	short shortURL

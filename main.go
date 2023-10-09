@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/NordGus/shrtnr/server/ingest"
+	"github.com/NordGus/shrtnr/server/create"
 	"github.com/NordGus/shrtnr/server/messagebus"
 	"github.com/NordGus/shrtnr/server/redirect"
 	"github.com/NordGus/shrtnr/server/storage"
@@ -38,8 +38,8 @@ func main() {
 
 	messagebus.Start(ctx)
 	storage.Start(*environment)
-	redirect.Start(*environment, *redirectHost)
-	ingest.Start(ctx, *urlLimit)
+	redirect.Start(ctx, *environment, *redirectHost)
+	create.Start(ctx, *urlLimit)
 	api.Start(*environment)
 
 	router.Use(middleware.Logger, redirect.Middleware)

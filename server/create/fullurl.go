@@ -1,11 +1,11 @@
-package ingest
+package create
 
 import (
 	"errors"
 )
 
 var (
-	FullURLDuplicatedErr = ObjectValueUniquenessError{pattern: "ingest: URL full value [%v] is not unique"}
+	FullURLDuplicatedErr = ObjectValueUniquenessError{pattern: "create: URL full value [%v] is not unique"}
 )
 
 type fullURL string
