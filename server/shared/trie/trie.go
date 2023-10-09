@@ -10,26 +10,36 @@ import (
 var (
 	// EntryNotPresentErr indicates that the Trie doesn't contain the given entry
 	EntryNotPresentErr = errors.New("trie: entry not present")
+	// IsFullErr indicates that the Trie can't store more text entries
+	IsFullErr = errors.New("trie: is full")
+	// IsEmptyErr indicates that the Trie has no entries
+	IsEmptyErr = errors.New("trie: is empty")
 )
 
 // Trie is a data structure that store text entries for quick search
 type Trie struct {
-	root      *node
-	wordCount uint64
-	sem       chan bool
+	root  *node
+	size  uint
+	count uint
+	sem   chan bool
 }
 
 // NewTrie returns a Trie struct
-func NewTrie(semSize uint) Trie {
+func NewTrie(size uint, semSize uint) Trie {
 	return Trie{
-		root:      newNode(""),
-		wordCount: 0,
-		sem:       make(chan bool, semSize),
+		root:  newNode(""),
+		size:  size,
+		count: 0,
+		sem:   make(chan bool, semSize),
 	}
 }
 
 // AddEntry adds an entry to the Trie
-func (t *Trie) AddEntry(entry string) {
+func (t *Trie) AddEntry(entry string) error {
+	if t.size == t.count {
+		return IsFullErr
+	}
+
 	current := t.root
 
 	for _, ch := range entry {
@@ -44,14 +54,20 @@ func (t *Trie) AddEntry(entry string) {
 
 	if current != t.root {
 		current.end = true
-		t.wordCount++
+		t.count++
 	}
+
+	return nil
 }
 
 // RemoveEntry removes the given entry from the Trie.
 //
 // If the Trie doesn't contain the given entry returns an error
 func (t *Trie) RemoveEntry(entry string) error {
+	if t.count == 0 {
+		return IsEmptyErr
+	}
+
 	return t.removeEntry(t.root, entry, 0)
 }
 
@@ -59,7 +75,7 @@ func (t *Trie) RemoveEntry(entry string) error {
 func (t *Trie) removeEntry(root *node, entry string, i uint) error {
 	if i == uint(len(entry)) {
 		root.end = false
-		t.wordCount--
+		t.count--
 
 		return nil
 	}
@@ -90,6 +106,10 @@ func (t *Trie) removeEntry(root *node, entry string, i uint) error {
 //
 // If the Trie doesn't contain entries matching returns an error
 func (t *Trie) FindEntries(prefix string, limit int) ([]string, error) {
+	if t.count == 0 {
+		return []string{}, IsEmptyErr
+	}
+
 	prefixNode, err := t.findEndNodeOf(prefix)
 	if err != nil {
 		return []string{}, err
