@@ -1,8 +1,7 @@
-package inmemory
+package url
 
 import (
 	"errors"
-	"github.com/NordGus/shrtnr/server/storage/url"
 	"sync"
 	"time"
 )
@@ -11,20 +10,20 @@ var (
 	RecordNotFoundErr = errors.New("url: in memory: record not found")
 )
 
-type Storage struct {
-	records   []url.URL
+type InMemoryStorage struct {
+	records   []URL
 	currentID uint
 	lock      sync.RWMutex
 }
 
-func NewInMemoryStorage() *Storage {
-	return &Storage{
-		records:   make([]url.URL, 0, 100),
+func NewInMemoryStorage() *InMemoryStorage {
+	return &InMemoryStorage{
+		records:   make([]URL, 0, 100),
 		currentID: 1,
 	}
 }
 
-func (s *Storage) GetByShort(short string) (url.URL, error) {
+func (s *InMemoryStorage) GetByShort(short string) (URL, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 
@@ -34,10 +33,10 @@ func (s *Storage) GetByShort(short string) (url.URL, error) {
 		}
 	}
 
-	return url.URL{}, RecordNotFoundErr
+	return URL{}, RecordNotFoundErr
 }
 
-func (s *Storage) GetByFull(full string) (url.URL, error) {
+func (s *InMemoryStorage) GetByFull(full string) (URL, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 
@@ -47,14 +46,14 @@ func (s *Storage) GetByFull(full string) (url.URL, error) {
 		}
 	}
 
-	return url.URL{}, RecordNotFoundErr
+	return URL{}, RecordNotFoundErr
 }
 
-func (s *Storage) CreateURL(short string, full string) (url.URL, error) {
+func (s *InMemoryStorage) CreateURL(short string, full string) (URL, error) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	record := url.URL{
+	record := URL{
 		Id:        s.currentID,
 		UUID:      short,
 		FullURL:   full,
@@ -68,21 +67,25 @@ func (s *Storage) CreateURL(short string, full string) (url.URL, error) {
 	return record, nil
 }
 
-func (s *Storage) DeleteURL(short string) (url.URL, error) {
+func (s *InMemoryStorage) DeleteURL(short string) (URL, error) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	record, err := s.GetByShort(short)
-	if err != nil {
-		return record, err
-	}
-
-	newRecords := make([]url.URL, 0, len(s.records))
+	var (
+		record     URL
+		newRecords = make([]URL, 0, len(s.records))
+	)
 
 	for _, u := range s.records {
-		if u.Id != record.Id {
+		if u.UUID != short {
 			newRecords = append(newRecords, u)
+		} else {
+			record = u
 		}
+	}
+
+	if record.Id == 0 {
+		return record, RecordNotFoundErr
 	}
 
 	return record, nil

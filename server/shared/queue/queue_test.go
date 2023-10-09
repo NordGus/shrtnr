@@ -95,3 +95,65 @@ func TestQueue_Push(t *testing.T) {
 		})
 	}
 }
+
+func TestQueue_Peek(t *testing.T) {
+	type testCase[T any] struct {
+		name    string
+		q       Queue[T]
+		want    T
+		wantErr bool
+	}
+	tests := []testCase[int]{
+		{
+			name:    "has elements",
+			q:       Queue[int]{items: []int{420, 69}, count: 2, size: 2},
+			want:    420,
+			wantErr: false,
+		},
+		{
+			name:    "is empty",
+			q:       Queue[int]{items: []int{}, count: 0, size: 2},
+			want:    0,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.q.Peek()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Peek() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Peek() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestQueue_IsFull(t *testing.T) {
+	type testCase[T any] struct {
+		name string
+		q    Queue[T]
+		want bool
+	}
+	tests := []testCase[int]{
+		{
+			name: "is full",
+			q:    Queue[int]{items: []int{420, 69}, count: 2, size: 2},
+			want: true,
+		},
+		{
+			name: "has space",
+			q:    Queue[int]{items: []int{69}, count: 1, size: 2},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.q.IsFull(); got != tt.want {
+				t.Errorf("IsFull() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

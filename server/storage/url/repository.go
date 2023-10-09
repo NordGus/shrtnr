@@ -1,17 +1,19 @@
 package url
 
-import (
-	"github.com/NordGus/shrtnr/server/storage"
-	"github.com/NordGus/shrtnr/server/storage/url/inmemory"
-)
+type Repository interface {
+	GetByShort(short string) (URL, error)
+	GetByFull(full string) (URL, error)
+	CreateURL(short string, full string) (URL, error)
+	DeleteURL(short string) (URL, error)
+}
 
-func NewRepository(env string) storage.URLRepository {
+func NewRepository(env string) Repository {
 	switch env {
 	case "production":
-		return inmemory.NewInMemoryStorage() // TODO: change for a Database storage when implemented
+		return NewInMemoryStorage() // TODO: change for a Database storage when implemented
 	case "test":
-		return inmemory.NewInMemoryStorage()
+		return NewInMemoryStorage()
 	default:
-		return inmemory.NewInMemoryStorage()
+		return NewInMemoryStorage()
 	}
 }

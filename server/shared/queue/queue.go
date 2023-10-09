@@ -3,8 +3,8 @@ package queue
 import "errors"
 
 var (
-	ErrQueueIsFull  = errors.New("queue: is full")
-	ErrQueueIsEmpty = errors.New("queue: is empty")
+	IsFullErr  = errors.New("queue: is full")
+	IsEmptyErr = errors.New("queue: is empty")
 )
 
 type Queue[T any] struct {
@@ -23,7 +23,7 @@ func NewQueue[T any](size uint) Queue[T] {
 
 func (q *Queue[T]) Push(item T) error {
 	if q.count == q.size {
-		return ErrQueueIsFull
+		return IsFullErr
 	}
 
 	q.items = append(q.items, item)
@@ -36,7 +36,7 @@ func (q *Queue[T]) Pop() (T, error) {
 	var out T
 
 	if q.count == 0 {
-		return out, ErrQueueIsEmpty
+		return out, IsEmptyErr
 	}
 
 	out = q.items[0]
@@ -44,4 +44,18 @@ func (q *Queue[T]) Pop() (T, error) {
 	q.count--
 
 	return out, nil
+}
+
+func (q *Queue[T]) Peek() (T, error) {
+	var peek T
+
+	if q.count == 0 {
+		return peek, IsEmptyErr
+	}
+
+	return q.items[0], nil
+}
+
+func (q *Queue[T]) IsFull() bool {
+	return q.count == q.size
 }

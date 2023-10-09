@@ -9,3 +9,15 @@ type URL struct {
 	CreatedAt time.Time
 	DeletedAt time.Time
 }
+
+func (u URL) ID() uint {
+	return u.Id
+}
+
+func (u URL) Short() string {
+	return u.UUID
+}
+
+func (u URL) Full() string {
+	return u.FullURL
+}
