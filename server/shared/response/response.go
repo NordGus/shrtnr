@@ -1,4 +1,4 @@
-// Package response is inspired in the concept of [Railway Oriented Design](https://blog.logrocket.com/what-is-railway-oriented-programming/)
+// Package response is inspired in the concept of Railway Oriented Programming (https://blog.logrocket.com/what-is-railway-oriented-programming/)
 // thing I learned in my short stint at Job&Talent
 package response
 
