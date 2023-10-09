@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"embed"
 	"flag"
 	"fmt"
+	"github.com/NordGus/shrtnr/server/fileserver"
+	"github.com/NordGus/shrtnr/server/shared/middleware"
 	"log"
 	"net/http"
 
@@ -16,7 +19,7 @@ import (
 	api "github.com/NordGus/shrtnr/server/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chimiddleware "github.com/go-chi/chi/v5/middleware"
 )
 
 var (
@@ -26,6 +29,9 @@ var (
 	urlLimit             *uint
 	searchTermLimits     *int
 	maxSearchConcurrency *uint
+
+	//go:embed dist private
+	content embed.FS
 )
 
 func init() {
@@ -45,6 +51,7 @@ func main() {
 	// Infrastructure initialization
 	messagebus.Start(ctx)
 	storage.Start(*environment)
+	fileserver.Start(content)
 
 	// Domain initialization
 	redirect.Start(ctx, *environment, *redirectHost)
@@ -55,24 +62,17 @@ func main() {
 	api.Start(*environment)
 
 	router := chi.NewRouter()
-	router.Use(middleware.Logger, redirect.Middleware)
+	router.Use(chimiddleware.Logger, redirect.Middleware)
 
 	if *environment == "development" {
-		router.Use(devCORSMiddleware)
+		router.Use(middleware.CORS)
 	}
 
 	api.Routes(router)
+	fileserver.Routes(router)
 
 	err := http.ListenAndServe(fmt.Sprintf(":%v", *port), router)
 	if err != nil {
 		log.Fatalf("something went wrong initalizing http server: %v\n", err)
 	}
-}
-
-func devCORSMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-
-		next.ServeHTTP(writer, request)
-	})
 }
