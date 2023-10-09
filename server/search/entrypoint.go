@@ -32,12 +32,16 @@ func onUrlCreated(record url.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 
+	// TODO: implement onUrlCreated
+
 	return errors.New("search: implement onUrlCreated")
 }
 
 func onUrlDeleted(record url.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
+
+	// TODO: implement onUrlDeleted
 
 	return errors.New("search: implement onUrlDeleted")
 }
