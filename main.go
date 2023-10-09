@@ -24,6 +24,7 @@ var (
 	redirectHost         *string
 	port                 *int
 	urlLimit             *uint
+	searchTermLimits     *int
 	maxSearchConcurrency *uint
 )
 
@@ -32,6 +33,7 @@ func init() {
 	redirectHost = flag.String("redirect-host", "l.hst:4269", "defines the short redirect host")
 	port = flag.Int("port", 4269, "port where the app will listened")
 	urlLimit = flag.Uint("capacity", 2500, "limit of URLs that the service can contain")
+	searchTermLimits = flag.Int("search-term-limit", 10, "the limit of terms that the search cache returns when called")
 	maxSearchConcurrency = flag.Uint("search-concurrency", 30, "limits the amount of concurrent processes when checking trie cache for searching functionality")
 
 	flag.Parse()
@@ -47,7 +49,7 @@ func main() {
 	// Domain initialization
 	redirect.Start(ctx, *environment, *redirectHost)
 	create.Start(ctx, *urlLimit)
-	search.Start(ctx, *urlLimit, *maxSearchConcurrency)
+	search.Start(ctx, *urlLimit, *maxSearchConcurrency, *searchTermLimits)
 
 	// Api initialization
 	api.Start(*environment)

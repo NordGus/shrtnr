@@ -12,16 +12,18 @@ import (
 )
 
 var (
-	urls trie.Trie
-	lock sync.RWMutex
-	ctx  context.Context
+	cache      trie.Trie
+	longsLimit int
+	lock       sync.RWMutex
+	ctx        context.Context
 
 	repository Repository
 )
 
-func Start(parentCtx context.Context, maxUrl uint, maxConcurrency uint) {
+func Start(parentCtx context.Context, maxUrl uint, maxConcurrency uint, searchLimit int) {
 	ctx = parentCtx
-	urls = trie.NewTrie(maxUrl, maxConcurrency)
+	cache = trie.NewTrie(maxUrl, maxConcurrency)
+	longsLimit = searchLimit
 	repository = storage.GetURLRepository()
 
 	created.Subscribe(onUrlCreated)
