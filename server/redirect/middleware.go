@@ -9,21 +9,20 @@ import (
 func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// TODO: check possible problems with this implementation
-		if r.Host == host {
-			target, err := GetTarget(r)
-			if err != nil {
-				renderErr := renderErrorView(w, err)
-				if renderErr != nil {
-					http.Error(w, renderErr.Error(), http.StatusInternalServerError)
-					return
-				}
-
-				return
-			}
-
-			http.RedirectHandler(target, http.StatusMovedPermanently).ServeHTTP(w, r)
-		} else {
+		if r.Host != host {
 			next.ServeHTTP(w, r)
+			return
+		}
+
+		target, err := GetTarget(r)
+		if err == nil {
+			http.RedirectHandler(target, http.StatusMovedPermanently).ServeHTTP(w, r)
+			return
+		}
+
+		renderErr := renderErrorView(w, err)
+		if renderErr != nil {
+			http.Error(w, renderErr.Error(), http.StatusInternalServerError)
 		}
 	})
 }
