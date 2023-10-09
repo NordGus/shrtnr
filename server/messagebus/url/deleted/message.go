@@ -1,8 +1,11 @@
 package deleted
 
-import "context"
+import (
+	"context"
+	"github.com/NordGus/shrtnr/server/storage/url"
+)
 
-type Subscriber func(short string) error
+type Subscriber func(record url.URL) error
 
 var (
 	ctx         context.Context
@@ -27,7 +30,7 @@ func Subscribe(sub Subscriber) {
 // Raise sends the event to every subscriber of the event.
 //
 // Note: This is completely overengineered but is fun
-func Raise(short string) error {
+func Raise(record url.URL) error {
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
@@ -40,14 +43,14 @@ func Raise(short string) error {
 		}(ch, cancel)
 
 		for _, subscriber := range subscribers {
-			go func(ctx context.Context, out chan<- error, sub Subscriber, short string) {
-				if err := sub(short); err != nil {
+			go func(ctx context.Context, out chan<- error, sub Subscriber, record url.URL) {
+				if err := sub(record); err != nil {
 					select {
 					case <-ctx.Done():
 					case out <- err:
 					}
 				}
-			}(innerCtx, ch, subscriber, short)
+			}(innerCtx, ch, subscriber, record)
 		}
 
 		for err := range ch {

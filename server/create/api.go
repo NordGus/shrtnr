@@ -67,7 +67,7 @@ func deleteOldestUrl(sig signal) signal {
 		return sig
 	}
 
-	err = deleted.Raise(record.Short())
+	err = deleted.Raise(record)
 	if err != nil {
 		sig.err = errors.Join(sig.err, err)
 
@@ -85,7 +85,7 @@ func persistNewURl(sig signal) signal {
 		return sig
 	}
 
-	err = created.Raise(record.Short())
+	err = created.Raise(record)
 	if err != nil {
 		sig.err = errors.Join(sig.err, err)
 
