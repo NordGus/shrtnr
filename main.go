@@ -37,14 +37,20 @@ func init() {
 
 func main() {
 	ctx := context.Background()
-	router := chi.NewRouter()
 
+	// Infrastructure initialization
 	messagebus.Start(ctx)
 	storage.Start(*environment)
+
+	// Domain initialization
 	redirect.Start(ctx, *environment, *redirectHost)
 	create.Start(ctx, *urlLimit)
 	search.Start(ctx, *urlLimit, *maxSearchConcurrency)
+
+	// Api initialization
 	api.Start(*environment)
+
+	router := chi.NewRouter()
 
 	router.Use(middleware.Logger, redirect.Middleware)
 
