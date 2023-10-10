@@ -21,9 +21,10 @@
         <body class="m-0 flex place-items-center min-w-[320px] min-h-[100vh] bg-neutral-200 dark:bg-stone-800 text-neutral-900 dark:text-neutral-100">
             <div
                     id="app"
-                    class="my-0 mx-auto p-[2rem] text-center max-w-[1280px]"
+                    class="mx-auto p-[2rem] text-center max-w-[400px] rounded-3xl bg-amber-400 dark:bg-red-900 drop-shadow-lg"
             >
-                <h1 class="text-3xl">Sorry, it seems we no longer hold this URL in our system</h1>
+                <h1 class="text-6xl mb-10">Sorry</h1>
+                <p class="text-xl"><span class="font-bold">{{ . }}</span> is no longer connected to another link</p>
             </div>
 
             {{ if eq environment "production" }}

@@ -1,8 +1,7 @@
 package redirect
 
 import (
-	"errors"
-	"html/template"
+	"fmt"
 	"net/http"
 )
 
@@ -20,23 +19,9 @@ func Middleware(next http.Handler) http.Handler {
 			return
 		}
 
-		renderErr := renderErrorView(w, err)
-		if renderErr != nil {
-			http.Error(w, renderErr.Error(), http.StatusInternalServerError)
+		err = view.Execute(w, fmt.Sprintf("http://%s%s", r.Host, r.URL.Path))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
-}
-
-func renderErrorView(w http.ResponseWriter, redirectErr error) error {
-	tmpl, err := template.New("error").Funcs(helpers).ParseFS(templates, "templates/error.gohtml")
-	if err != nil {
-		return errors.Join(redirectErr, err)
-	}
-
-	err = tmpl.Execute(w, nil)
-	if err != nil {
-		return errors.Join(redirectErr, err)
-	}
-
-	return nil
 }

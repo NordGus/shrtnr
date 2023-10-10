@@ -13,6 +13,7 @@ var (
 
 	//go:embed templates
 	templates embed.FS
+	view      *template.Template
 
 	helpers = template.FuncMap{
 		"environment": func() string { return environment },
@@ -22,9 +23,18 @@ var (
 	repository Repository
 )
 
-func Start(parentCtx context.Context, env string, redirectHost string) {
+func Start(parentCtx context.Context, env string, redirectHost string) error {
 	ctx = parentCtx
 	environment = env
 	host = redirectHost
 	repository = storage.GetURLRepository()
+
+	tmplt, err := template.New("error").Funcs(helpers).ParseFS(templates, "templates/error.gohtml")
+	if err != nil {
+		return err
+	}
+
+	view = tmplt
+
+	return nil
 }

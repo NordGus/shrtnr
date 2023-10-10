@@ -54,7 +54,9 @@ func main() {
 	fileserver.Start(content)
 
 	// Domain initialization
-	redirect.Start(ctx, *environment, *redirectHost)
+	if err := redirect.Start(ctx, *environment, *redirectHost); err != nil {
+		log.Fatalln(err)
+	}
 	create.Start(ctx, *urlLimit)
 	search.Start(ctx, *maxSearchConcurrency, *searchTermLimits)
 
