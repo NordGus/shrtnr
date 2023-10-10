@@ -1,15 +1,18 @@
 package search
 
 import (
-	"errors"
 	"github.com/NordGus/shrtnr/server/storage/url"
+	"strings"
 )
 
 func onUrlCreatedSubscriber(record url.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 
-	// TODO: implement onUrlCreatedSubscriber
+	entry := strings.TrimPrefix("https://", record.FullURL)
+	entry = strings.TrimPrefix("http://", entry)
 
-	return errors.New("search: implement onUrlCreatedSubscriber")
+	cache.AddEntry(entry)
+
+	return nil
 }

@@ -1,15 +1,16 @@
 package search
 
 import (
-	"errors"
 	"github.com/NordGus/shrtnr/server/storage/url"
+	"strings"
 )
 
 func onUrlDeletedSubscriber(record url.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 
-	// TODO: implement onUrlDeletedSubscriber
+	entry := strings.TrimPrefix("https://", record.FullURL)
+	entry = strings.TrimPrefix("http://", entry)
 
-	return errors.New("search: implement onUrlDeletedSubscriber")
+	return cache.RemoveEntry(entry)
 }

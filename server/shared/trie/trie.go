@@ -31,7 +31,7 @@ func NewTrie(semSize uint) Trie {
 }
 
 // AddEntry adds an entry to the Trie
-func (t *Trie) AddEntry(entry string) error {
+func (t *Trie) AddEntry(entry string) {
 	current := t.root
 
 	for _, ch := range entry {
@@ -48,8 +48,6 @@ func (t *Trie) AddEntry(entry string) error {
 		current.end = true
 		t.count++
 	}
-
-	return nil
 }
 
 // RemoveEntry removes the given entry from the Trie.
