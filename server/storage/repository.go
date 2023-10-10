@@ -1,8 +1,6 @@
 package storage
 
-import (
-	"github.com/NordGus/shrtnr/server/storage/url"
-)
+import "github.com/NordGus/shrtnr/server/storage/url"
 
 type URLRepository interface {
 	GetByShort(short string) (url.URL, error)

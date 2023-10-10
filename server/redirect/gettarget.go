@@ -36,7 +36,7 @@ func searchFullURL(sig signal) signal {
 		return sig
 	}
 
-	sig.full = record.Full()
+	sig.full = record.FullURL()
 
 	return sig
 }

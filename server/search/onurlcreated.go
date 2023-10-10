@@ -9,7 +9,7 @@ func onUrlCreatedSubscriber(record url.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 
-	entry := strings.TrimPrefix("https://", record.FullURL)
+	entry := strings.TrimPrefix("https://", record.FullUrl)
 	entry = strings.TrimPrefix("http://", entry)
 
 	cache.AddEntry(entry)

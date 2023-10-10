@@ -1,20 +1,35 @@
 package url
 
+import (
+	"github.com/NordGus/shrtnr/server/storage/inmemory"
+	"time"
+)
+
 type Repository interface {
 	GetByShort(short string) (URL, error)
 	GetByFull(full string) (URL, error)
 	CreateURL(short string, full string) (URL, error)
 	DeleteURL(short string) (URL, error)
+
 	GetLikeLongs(likeLongs ...string) ([]URL, error)
 }
 
 func NewRepository(env string) Repository {
 	switch env {
 	case "production":
-		return NewInMemoryStorage() // TODO: change for a Database storage when implemented
+		return inmemory.NewInMemoryStorage[URL](newURL, setURLDeletedAt) // TODO: change for a Database storage when implemented
 	case "test":
-		return NewInMemoryStorage()
+		return inmemory.NewInMemoryStorage[URL](newURL, setURLDeletedAt)
 	default:
-		return NewInMemoryStorage()
+		return inmemory.NewInMemoryStorage[URL](newURL, setURLDeletedAt)
+	}
+}
+
+func newURL(id uint, uuid string, fullURL string, createdAt time.Time) URL {
+	return URL{
+		Id:           id,
+		Uuid:         uuid,
+		FullUrl:      fullURL,
+		CreationTime: createdAt,
 	}
 }
