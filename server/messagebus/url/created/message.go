@@ -2,24 +2,30 @@ package created
 
 import (
 	"context"
+	"errors"
 	"github.com/NordGus/shrtnr/server/storage/url"
-)
+	"sync"
 
-type Subscriber func(record url.URL) error
+	urlmsg "github.com/NordGus/shrtnr/server/messagebus/url"
+)
 
 var (
 	ctx         context.Context
-	subscribers []Subscriber
+	subscribers []urlmsg.Subscriber
+	lock        sync.Mutex
 )
 
 // Start initializes the created message
 func Start(parentCtx context.Context) {
 	ctx = parentCtx
-	subscribers = make([]Subscriber, 0, 10)
+	subscribers = make([]urlmsg.Subscriber, 0, 10)
 }
 
 // Subscribe adds a new subscriber to the event
-func Subscribe(sub Subscriber) {
+func Subscribe(sub urlmsg.Subscriber) {
+	lock.Lock()
+	defer lock.Unlock()
+
 	select {
 	case <-ctx.Done():
 	default:
@@ -31,32 +37,35 @@ func Subscribe(sub Subscriber) {
 //
 // Note: This is completely overengineered but is fun
 func Raise(record url.URL) error {
+	lock.Lock()
+	defer lock.Unlock()
+
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
 	default:
-		ch := make(chan error)
-		innerCtx, cancel := context.WithCancel(ctx)
-		defer func(ch chan error, cancel context.CancelFunc) {
-			cancel()
-			close(ch)
-		}(ch, cancel)
+		var (
+			out error
+			ch  = make(chan error, len(subscribers))
+			wg  = new(sync.WaitGroup)
+		)
+
+		wg.Add(len(subscribers))
 
 		for _, subscriber := range subscribers {
-			go func(ctx context.Context, out chan<- error, sub Subscriber, record url.URL) {
-				if err := sub(record); err != nil {
-					select {
-					case <-ctx.Done():
-					case out <- err:
-					}
-				}
-			}(innerCtx, ch, subscriber, record)
+			go func(wg *sync.WaitGroup, out chan<- error, sub urlmsg.Subscriber, record url.URL) {
+				out <- sub(record)
+				wg.Done()
+			}(wg, ch, subscriber, record)
 		}
+
+		wg.Wait()
+		close(ch)
 
 		for err := range ch {
-			return err
+			out = errors.Join(out, err)
 		}
 
-		return nil
+		return out
 	}
 }
