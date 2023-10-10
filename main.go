@@ -5,15 +5,15 @@ import (
 	"embed"
 	"flag"
 	"fmt"
-	"github.com/NordGus/shrtnr/server/fileserver"
-	"github.com/NordGus/shrtnr/server/shared/middleware"
 	"log"
 	"net/http"
 
 	"github.com/NordGus/shrtnr/server/create"
+	"github.com/NordGus/shrtnr/server/fileserver"
 	"github.com/NordGus/shrtnr/server/messagebus"
 	"github.com/NordGus/shrtnr/server/redirect"
 	"github.com/NordGus/shrtnr/server/search"
+	"github.com/NordGus/shrtnr/server/shared/middleware"
 	"github.com/NordGus/shrtnr/server/storage"
 
 	api "github.com/NordGus/shrtnr/server/http"
