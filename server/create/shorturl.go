@@ -9,31 +9,28 @@ const (
 )
 
 var (
-	ShortURLInvalidLengthErr = ObjectValueValueError{pattern: "create: URL short value length invalid got [%v] wanted [%v]"}
-	ShortURLDuplicatedErr    = ObjectValueUniquenessError{pattern: "create: URL short value [%v] is not unique"}
+	ShortURLInvalidLengthErr = errors.New("create: shortURL invalid length")
+	ShortURLDuplicatedErr    = errors.New("create: shortURL is not unique")
 )
 
 type shortURL string
 
-func (s shortURL) validateLength(err error) error {
+func (s shortURL) validateLength() error {
 	if len(s) != shortURLLength {
-		return errors.Join(err, ShortURLInvalidLengthErr.From(len(s), shortURLLength))
+		return ShortURLInvalidLengthErr
 	}
 
-	return err
+	return nil
 }
 
-func (s shortURL) validateUniqueness(err error) error {
-	if _, errR := repository.GetByShort(string(s)); errR == nil {
-		return errors.Join(err, ShortURLDuplicatedErr.From(s))
+func (s shortURL) validateUniqueness() error {
+	if _, err := repository.GetByShort(string(s)); err == nil {
+		return ShortURLDuplicatedErr
 	}
 
-	return err
+	return nil
 }
 
-func (s shortURL) Validate(err error) error {
-	err = s.validateLength(err)
-	err = s.validateUniqueness(err)
-
-	return err
+func (s shortURL) Validate() error {
+	return errors.Join(s.validateLength(), s.validateUniqueness())
 }
