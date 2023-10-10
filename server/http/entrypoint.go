@@ -5,6 +5,8 @@ import (
 	"errors"
 	"github.com/NordGus/shrtnr/server/http/helpers"
 	"html/template"
+
+	mnfst "github.com/NordGus/shrtnr/server/shared/manifest"
 )
 
 var (
@@ -15,7 +17,8 @@ var (
 	//go:embed templates
 	templates embed.FS
 
-	views *template.Template
+	views    *template.Template
+	manifest mnfst.Manifest
 )
 
 func Start(env string) error {
@@ -36,6 +39,8 @@ func Start(env string) error {
 	if err != nil {
 		return errors.Join(InitializationErr, err)
 	}
+
+	manifest = mnfst.NewManifest(env)
 
 	return err
 }
