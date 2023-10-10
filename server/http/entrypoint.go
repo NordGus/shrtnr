@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	InitializationErr = errors.New("http: failed to initialized")
+	InitializationErr = errors.New("http: failed to initialize")
 
 	environment string
 
