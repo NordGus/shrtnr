@@ -5,18 +5,17 @@ import (
 	"embed"
 	"flag"
 	"fmt"
+	http2 "github.com/NordGus/shrtnr/http"
 	"log"
 	"net/http"
 
-	"github.com/NordGus/shrtnr/server/create"
-	"github.com/NordGus/shrtnr/server/fileserver"
-	"github.com/NordGus/shrtnr/server/messagebus"
-	"github.com/NordGus/shrtnr/server/redirect"
-	"github.com/NordGus/shrtnr/server/search"
-	"github.com/NordGus/shrtnr/server/shared/middleware"
-	"github.com/NordGus/shrtnr/server/storage"
-
-	api "github.com/NordGus/shrtnr/server/http"
+	"github.com/NordGus/shrtnr/domain/create"
+	"github.com/NordGus/shrtnr/domain/fileserver"
+	"github.com/NordGus/shrtnr/domain/messagebus"
+	"github.com/NordGus/shrtnr/domain/redirect"
+	"github.com/NordGus/shrtnr/domain/search"
+	"github.com/NordGus/shrtnr/domain/shared/middleware"
+	"github.com/NordGus/shrtnr/domain/storage"
 
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
@@ -50,7 +49,9 @@ func main() {
 
 	// Infrastructure initialization
 	messagebus.Start(ctx)
-	storage.Start(*environment)
+	if err := storage.Start(*environment); err != nil {
+		log.Fatalln(err)
+	}
 	fileserver.Start(content)
 
 	// Domain initialization
@@ -61,7 +62,7 @@ func main() {
 	search.Start(ctx, *maxSearchConcurrency, *searchTermLimits)
 
 	// Api initialization
-	if err := api.Start(*environment); err != nil {
+	if err := http2.Start(*environment); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -72,7 +73,7 @@ func main() {
 		router.Use(middleware.CORS)
 	}
 
-	api.Routes(router)
+	http2.Routes(router)
 	fileserver.Routes(router)
 
 	err := http.ListenAndServe(fmt.Sprintf(":%v", *port), router)
