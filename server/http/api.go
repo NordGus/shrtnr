@@ -2,7 +2,6 @@ package http
 
 import (
 	"github.com/go-chi/chi/v5"
-	"html/template"
 	"log"
 	"net/http"
 )
@@ -15,13 +14,7 @@ func Routes(r chi.Router) {
 }
 
 func baseHandler(w http.ResponseWriter, _ *http.Request) {
-	tmpl, err := template.New("layout").ParseFS(templates, "templates/layout.gohtml")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, nil)
+	err := views.ExecuteTemplate(w, "layout", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -29,13 +22,7 @@ func baseHandler(w http.ResponseWriter, _ *http.Request) {
 }
 
 func appHandler(w http.ResponseWriter, _ *http.Request) {
-	tmpl, err := template.New("app").ParseFS(templates, "templates/app.gohtml")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, nil)
+	err := views.ExecuteTemplate(w, "app", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

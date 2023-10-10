@@ -61,7 +61,9 @@ func main() {
 	search.Start(ctx, *maxSearchConcurrency, *searchTermLimits)
 
 	// Api initialization
-	api.Start(*environment)
+	if err := api.Start(*environment); err != nil {
+		log.Fatalln(err)
+	}
 
 	router := chi.NewRouter()
 	router.Use(chimiddleware.Logger, redirect.Middleware)
