@@ -1,28 +1,15 @@
 package created
 
 import (
-	"context"
 	"errors"
-	"github.com/NordGus/shrtnr/domain/storage/url"
 	"sync"
 
-	urlmsg "github.com/NordGus/shrtnr/domain/messagebus/url"
+	"github.com/NordGus/shrtnr/domain/url/messagebus"
+	"github.com/NordGus/shrtnr/domain/url/storage/url"
 )
-
-var (
-	ctx         context.Context
-	subscribers []urlmsg.Subscriber
-	lock        sync.Mutex
-)
-
-// Start initializes the created message
-func Start(parentCtx context.Context) {
-	ctx = parentCtx
-	subscribers = make([]urlmsg.Subscriber, 0, 10)
-}
 
 // Subscribe adds a new subscriber to the event
-func Subscribe(sub urlmsg.Subscriber) {
+func Subscribe(sub messagebus.Subscriber) {
 	lock.Lock()
 	defer lock.Unlock()
 
@@ -53,7 +40,7 @@ func Raise(record url.URL) error {
 		wg.Add(len(subscribers))
 
 		for _, subscriber := range subscribers {
-			go func(wg *sync.WaitGroup, out chan<- error, sub urlmsg.Subscriber, record url.URL) {
+			go func(wg *sync.WaitGroup, out chan<- error, sub messagebus.Subscriber, record url.URL) {
 				out <- sub(record)
 				wg.Done()
 			}(wg, ch, subscriber, record)
