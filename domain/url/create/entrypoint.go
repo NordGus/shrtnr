@@ -2,10 +2,11 @@ package create
 
 import (
 	"context"
-	"github.com/NordGus/shrtnr/domain/shared/queue"
-	"github.com/NordGus/shrtnr/domain/storage"
-	"github.com/NordGus/shrtnr/domain/storage/url"
 	"sync"
+
+	"github.com/NordGus/shrtnr/domain/shared/queue"
+	"github.com/NordGus/shrtnr/domain/url/storage"
+	"github.com/NordGus/shrtnr/domain/url/storage/url"
 )
 
 var (

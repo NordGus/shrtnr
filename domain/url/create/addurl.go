@@ -2,10 +2,11 @@ package create
 
 import (
 	"errors"
-	"github.com/NordGus/shrtnr/domain/messagebus/url/created"
-	"github.com/NordGus/shrtnr/domain/messagebus/url/deleted"
+
 	"github.com/NordGus/shrtnr/domain/shared/queue"
-	"github.com/NordGus/shrtnr/domain/storage/url"
+	"github.com/NordGus/shrtnr/domain/url/messagebus/created"
+	"github.com/NordGus/shrtnr/domain/url/messagebus/deleted"
+	"github.com/NordGus/shrtnr/domain/url/storage/url"
 )
 
 type signal struct {

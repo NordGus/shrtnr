@@ -2,7 +2,7 @@ package create
 
 import (
 	"github.com/NordGus/shrtnr/domain/shared/response"
-	"github.com/NordGus/shrtnr/domain/storage/url"
+	"github.com/NordGus/shrtnr/domain/url/storage/url"
 )
 
 func AddURL(short string, full string) (url.URL, error) {
