@@ -5,17 +5,13 @@ import (
 	"embed"
 	"flag"
 	"fmt"
-	"github.com/NordGus/shrtnr/domain/find"
 	"log"
 	"net/http"
 
-	"github.com/NordGus/shrtnr/domain/create"
+	"github.com/NordGus/shrtnr/domain"
 	"github.com/NordGus/shrtnr/domain/fileserver"
-	"github.com/NordGus/shrtnr/domain/messagebus"
-	"github.com/NordGus/shrtnr/domain/redirect"
-	"github.com/NordGus/shrtnr/domain/search"
 	"github.com/NordGus/shrtnr/domain/shared/middleware"
-	"github.com/NordGus/shrtnr/domain/storage"
+	"github.com/NordGus/shrtnr/domain/url/redirect"
 	hypermedia "github.com/NordGus/shrtnr/http"
 
 	"github.com/go-chi/chi/v5"
@@ -48,25 +44,15 @@ func init() {
 func main() {
 	ctx := context.Background()
 
-	// Infrastructure initialization
-	messagebus.Start(ctx)
-	if err := storage.Start(*environment); err != nil {
-		log.Fatalln(err)
-	}
 	fileserver.Start(content)
 
-	// Domain initialization
-	if err := redirect.Start(ctx, *environment, *redirectHost); err != nil {
+	err := domain.Start(ctx, *environment, *urlLimit, *maxSearchConcurrency, *searchTermLimits, *redirectHost)
+	if err != nil {
 		log.Fatalln(err)
 	}
-	if err := find.Start(ctx); err != nil {
-		log.Fatalln(err)
-	}
-	create.Start(ctx, *urlLimit)
-	search.Start(ctx, *maxSearchConcurrency, *searchTermLimits)
 
-	// Api initialization
-	if err := hypermedia.Start(*environment); err != nil {
+	err = hypermedia.Start(*environment)
+	if err != nil {
 		log.Fatalln(err)
 	}
 
@@ -80,7 +66,7 @@ func main() {
 	hypermedia.Routes(router)
 	fileserver.Routes(router)
 
-	err := http.ListenAndServe(fmt.Sprintf(":%v", *port), router)
+	err = http.ListenAndServe(fmt.Sprintf(":%v", *port), router)
 	if err != nil {
 		log.Fatalf("something went wrong initalizing http server: %v\n", err)
 	}
