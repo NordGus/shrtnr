@@ -1,8 +1,9 @@
 package redirect
 
 import (
-	"github.com/NordGus/shrtnr/domain/shared/response"
 	"net/http"
+
+	"github.com/NordGus/shrtnr/domain/shared/response"
 )
 
 func GetTarget(r *http.Request) (string, error) {

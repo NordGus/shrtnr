@@ -4,9 +4,10 @@ import (
 	"context"
 	"embed"
 	"errors"
-	"github.com/NordGus/shrtnr/domain/redirect/helpers"
-	"github.com/NordGus/shrtnr/domain/storage"
 	"html/template"
+
+	hlprs "github.com/NordGus/shrtnr/domain/url/redirect/helpers"
+	"github.com/NordGus/shrtnr/domain/url/storage"
 )
 
 var (
@@ -31,9 +32,9 @@ func Start(parentCtx context.Context, env string, redirectHost string) error {
 	host = redirectHost
 	repository = storage.GetURLRepository()
 
-	helpers.Start(environment)
+	hlprs.Start(environment)
 
-	view, err = template.New("error").Funcs(helpers.Base).ParseFS(templates, "templates/error.gohtml")
+	view, err = template.New("error").Funcs(hlprs.Base).ParseFS(templates, "templates/error.gohtml")
 	if err != nil {
 		return errors.Join(InitializationErr, err)
 	}
