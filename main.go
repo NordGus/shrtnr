@@ -5,7 +5,6 @@ import (
 	"embed"
 	"flag"
 	"fmt"
-	http2 "github.com/NordGus/shrtnr/http"
 	"log"
 	"net/http"
 
@@ -16,6 +15,7 @@ import (
 	"github.com/NordGus/shrtnr/domain/search"
 	"github.com/NordGus/shrtnr/domain/shared/middleware"
 	"github.com/NordGus/shrtnr/domain/storage"
+	hypermedia "github.com/NordGus/shrtnr/http"
 
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
@@ -62,7 +62,7 @@ func main() {
 	search.Start(ctx, *maxSearchConcurrency, *searchTermLimits)
 
 	// Api initialization
-	if err := http2.Start(*environment); err != nil {
+	if err := hypermedia.Start(*environment); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -73,7 +73,7 @@ func main() {
 		router.Use(middleware.CORS)
 	}
 
-	http2.Routes(router)
+	hypermedia.Routes(router)
 	fileserver.Routes(router)
 
 	err := http.ListenAndServe(fmt.Sprintf(":%v", *port), router)
