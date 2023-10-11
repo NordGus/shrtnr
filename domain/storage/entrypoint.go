@@ -9,10 +9,6 @@ var (
 )
 
 func Start(env string) error {
-	if err := initialize(env); err != nil {
-		return err
-	}
-
 	urlRepository = url.NewRepository(env)
 
 	return nil

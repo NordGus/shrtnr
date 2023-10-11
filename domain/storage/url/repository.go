@@ -12,16 +12,19 @@ type Repository interface {
 	DeleteURL(id uint) (URL, error)
 
 	GetLikeLongs(likeLongs ...string) ([]URL, error)
+
+	GetByID(id uint) (URL, error)
+	GetAllInPage(page uint, perPage uint) ([]URL, error)
 }
 
 func NewRepository(env string) Repository {
 	switch env {
 	case "production":
-		return inmemory.NewInMemoryStorage[URL]("urls", newURL, setURLDeletedAt) // TODO: change for a Database storage when implemented
+		return inmemory.NewInMemoryStorage[URL](newURL, setURLDeletedAt) // TODO: change for a Database storage when implemented
 	case "test":
-		return inmemory.NewInMemoryStorage[URL]("urls", newURL, setURLDeletedAt)
+		return inmemory.NewInMemoryStorage[URL](newURL, setURLDeletedAt)
 	default:
-		return inmemory.NewInMemoryStorage[URL]("urls", newURL, setURLDeletedAt)
+		return inmemory.NewInMemoryStorage[URL](newURL, setURLDeletedAt)
 	}
 }
 

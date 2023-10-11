@@ -9,4 +9,7 @@ type URLRepository interface {
 	DeleteURL(id uint) (url.URL, error)
 
 	GetLikeLongs(linkLongs ...string) ([]url.URL, error)
+
+	GetByID(id uint) (url.URL, error)
+	GetAllInPage(page uint, perPage uint) ([]url.URL, error)
 }

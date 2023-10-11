@@ -5,6 +5,7 @@ import (
 	"embed"
 	"flag"
 	"fmt"
+	"github.com/NordGus/shrtnr/domain/find"
 	"log"
 	"net/http"
 
@@ -56,6 +57,9 @@ func main() {
 
 	// Domain initialization
 	if err := redirect.Start(ctx, *environment, *redirectHost); err != nil {
+		log.Fatalln(err)
+	}
+	if err := find.Start(ctx); err != nil {
 		log.Fatalln(err)
 	}
 	create.Start(ctx, *urlLimit)

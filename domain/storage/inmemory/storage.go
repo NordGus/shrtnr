@@ -3,6 +3,7 @@ package inmemory
 import (
 	"errors"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -17,34 +18,29 @@ type DeletedAtFunc[T Record] func(record T, at time.Time) T
 type Storage[T Record] struct {
 	initFunc         InitFunc[T]
 	setDeletedAtFunc DeletedAtFunc[T]
-	store            string
+	records          []T
+	lock             sync.RWMutex
+	currentID        uint
 }
 
-func NewInMemoryStorage[T Record](table string, initFunc InitFunc[T], setDeletedAtFunc DeletedAtFunc[T]) *Storage[T] {
-	_, ok := store[table]
-	if !ok {
-		store[table] = Table{
-			records:   make([]Record, 0, 10),
-			currentID: 1,
-		}
-	}
-
+func NewInMemoryStorage[T Record](initFunc InitFunc[T], setDeletedAtFunc DeletedAtFunc[T]) *Storage[T] {
 	return &Storage[T]{
 		initFunc:         initFunc,
 		setDeletedAtFunc: setDeletedAtFunc,
-		store:            table,
+		records:          make([]T, 0, 100),
+		currentID:        1,
 	}
 }
 
 func (s *Storage[T]) GetByShort(short string) (T, error) {
 	var record T
 
-	lock.RLock()
-	defer lock.RUnlock()
+	s.lock.RLock()
+	defer s.lock.RUnlock()
 
-	for _, r := range store[s.store].records {
+	for _, r := range s.records {
 		if r.UUID() == short {
-			return r.(T), nil
+			return r, nil
 		}
 	}
 
@@ -52,14 +48,14 @@ func (s *Storage[T]) GetByShort(short string) (T, error) {
 }
 
 func (s *Storage[T]) GetByFull(full string) (T, error) {
-	lock.RLock()
-	defer lock.RUnlock()
+	s.lock.RLock()
+	defer s.lock.RUnlock()
 
 	var record T
 
-	for _, r := range store[s.store].records {
+	for _, r := range s.records {
 		if r.FullURL() == full {
-			return r.(T), nil
+			return r, nil
 		}
 	}
 
@@ -67,36 +63,31 @@ func (s *Storage[T]) GetByFull(full string) (T, error) {
 }
 
 func (s *Storage[T]) CreateURL(short string, full string) (T, error) {
-	lock.Lock()
-	defer lock.Unlock()
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
-	var (
-		record = s.initFunc(store[s.store].currentID, short, full, time.Now())
-		table  = store[s.store]
-	)
+	var record = s.initFunc(s.currentID, short, full, time.Now())
 
-	table.records = append(table.records, record)
-	table.currentID++
-	store[s.store] = table
+	s.records = append(s.records, record)
+	s.currentID++
 
 	return record, nil
 }
 
 func (s *Storage[T]) DeleteURL(id uint) (T, error) {
-	lock.Lock()
-	defer lock.Unlock()
+	s.lock.Lock()
+	defer s.lock.Unlock()
 
 	var (
 		record     T
-		newRecords = make([]Record, 0, len(store[s.store].records))
-		table      = store[s.store]
+		newRecords = make([]T, 0, len(s.records))
 	)
 
-	for _, u := range table.records {
+	for _, u := range s.records {
 		if u.ID() != id {
 			newRecords = append(newRecords, u)
 		} else {
-			record = u.(T)
+			record = u
 		}
 	}
 
@@ -106,26 +97,66 @@ func (s *Storage[T]) DeleteURL(id uint) (T, error) {
 		return record, RecordNotFoundErr
 	}
 
-	table.records = newRecords
-	store[s.store] = table
+	s.records = newRecords
 
 	return record, nil
 }
 
 func (s *Storage[T]) GetLikeLongs(linkLongs ...string) ([]T, error) {
-	lock.Lock()
-	defer lock.Unlock()
+	s.lock.RLock()
+	defer s.lock.RUnlock()
 
-	var records = make([]T, 0, len(store[s.store].records))
+	var records = make([]T, 0, len(s.records))
 
 	// super inefficient search
-	for _, record := range store[s.store].records {
+	for _, record := range s.records {
 		for _, long := range linkLongs {
 			if strings.Contains(record.FullURL(), long) {
-				records = append(records, record.(T))
+				records = append(records, record)
 				break
 			}
 		}
+	}
+
+	return records, nil
+}
+
+func (s *Storage[T]) GetByID(id uint) (T, error) {
+	s.lock.RLock()
+	defer s.lock.RUnlock()
+
+	var record T
+
+	for _, r := range s.records {
+		if r.ID() == id {
+			return r, nil
+		}
+	}
+
+	return record, RecordNotFoundErr
+}
+
+func (s *Storage[T]) GetAllInPage(page uint, perPage uint) ([]T, error) {
+	s.lock.RLock()
+	defer s.lock.RUnlock()
+
+	var (
+		records = make([]T, 0, perPage)
+		offset  = (page - 1) * perPage
+		limit   = offset + perPage - 1
+		total   = uint(len(s.records))
+	)
+
+	if offset >= total {
+		return records, nil
+	}
+
+	if limit >= total {
+		limit = total - 1
+	}
+
+	for i := offset; i < limit; i++ {
+		records = append(records, s.records[i])
 	}
 
 	return records, nil
