@@ -1,6 +1,8 @@
 package find
 
-import "github.com/NordGus/shrtnr/domain/storage/url"
+import (
+	"github.com/NordGus/shrtnr/domain/url/storage/url"
+)
 
 type paginationSignal struct {
 	records []url.URL

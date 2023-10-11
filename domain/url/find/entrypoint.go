@@ -2,7 +2,8 @@ package find
 
 import (
 	"context"
-	"github.com/NordGus/shrtnr/domain/storage"
+
+	"github.com/NordGus/shrtnr/domain/url/storage"
 )
 
 var (
