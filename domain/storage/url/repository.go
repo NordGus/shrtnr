@@ -9,7 +9,7 @@ type Repository interface {
 	GetByShort(short string) (URL, error)
 	GetByFull(full string) (URL, error)
 	CreateURL(short string, full string) (URL, error)
-	DeleteURL(short string) (URL, error)
+	DeleteURL(id uint) (URL, error)
 
 	GetLikeLongs(likeLongs ...string) ([]URL, error)
 }

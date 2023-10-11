@@ -82,7 +82,7 @@ func (s *Storage[T]) CreateURL(short string, full string) (T, error) {
 	return record, nil
 }
 
-func (s *Storage[T]) DeleteURL(short string) (T, error) {
+func (s *Storage[T]) DeleteURL(id uint) (T, error) {
 	lock.Lock()
 	defer lock.Unlock()
 
@@ -93,7 +93,7 @@ func (s *Storage[T]) DeleteURL(short string) (T, error) {
 	)
 
 	for _, u := range table.records {
-		if u.UUID() != short {
+		if u.ID() != id {
 			newRecords = append(newRecords, u)
 		} else {
 			record = u.(T)

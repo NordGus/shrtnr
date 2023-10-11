@@ -9,10 +9,10 @@ import (
 )
 
 type signal struct {
-	new    URL
-	old    URL
-	record url.URL
-	err    error
+	new       URL
+	oldRecord url.URL
+	record    url.URL
+	err       error
 }
 
 func (s signal) Error() error {
@@ -31,7 +31,7 @@ func validateUrl(sig signal) signal {
 
 func canBeAdded(sig signal) signal {
 	if cache.IsFull() {
-		sig.old, _ = cache.Peek()
+		sig.oldRecord, _ = cache.Peek()
 		sig.err = queue.IsFullErr
 	}
 
@@ -39,7 +39,7 @@ func canBeAdded(sig signal) signal {
 }
 
 func deleteOldestUrl(sig signal) signal {
-	record, err := repository.DeleteURL(string(sig.old.short))
+	record, err := repository.DeleteURL(sig.oldRecord.ID())
 	if err != nil {
 		sig.err = errors.Join(sig.err, err)
 
@@ -53,7 +53,7 @@ func deleteOldestUrl(sig signal) signal {
 		return sig
 	}
 
-	return signal{new: sig.new, old: sig.old}
+	return signal{new: sig.new, oldRecord: sig.oldRecord}
 }
 
 func persistNewURl(sig signal) signal {
@@ -72,10 +72,10 @@ func persistNewURl(sig signal) signal {
 
 func addUrlToQueue(sig signal) signal {
 	if cache.IsFull() {
-		sig.old, sig.err = cache.Pop()
+		_, sig.err = cache.Pop() // ignores the popped record because the signal already contains it from the deletion parte
 	}
 
-	sig.err = cache.Push(sig.new)
+	sig.err = cache.Push(sig.record)
 
 	return sig
 }
