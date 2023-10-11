@@ -9,14 +9,14 @@ const (
 )
 
 var (
-	ShortURLInvalidLengthErr = errors.New("create: shortURL invalid length")
+	ShortURLInvalidLengthErr = errors.New("create: shortURL is too long")
 	ShortURLDuplicatedErr    = errors.New("create: shortURL is not unique")
 )
 
 type shortURL string
 
 func (s shortURL) validateLength() error {
-	if len(s) != shortURLLength {
+	if len(s) > shortURLLength {
 		return ShortURLInvalidLengthErr
 	}
 

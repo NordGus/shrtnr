@@ -3,15 +3,11 @@ package inmemory
 import (
 	"errors"
 	"strings"
-	"sync"
 	"time"
 )
 
 var (
 	RecordNotFoundErr = errors.New("inmemory: record not found")
-
-	store map[string][]Record
-	lock  sync.RWMutex
 )
 
 type InitFunc[T Record] func(id uint, uuid string, fullURL string, createdAt time.Time) T
@@ -22,26 +18,21 @@ type Storage[T Record] struct {
 	initFunc         InitFunc[T]
 	setDeletedAtFunc DeletedAtFunc[T]
 	store            string
-	currentID        uint
-}
-
-func Start() error {
-	store = make(map[string][]Record, 10)
-
-	return nil
 }
 
 func NewInMemoryStorage[T Record](table string, initFunc InitFunc[T], setDeletedAtFunc DeletedAtFunc[T]) *Storage[T] {
 	_, ok := store[table]
 	if !ok {
-		store[table] = make([]Record, 0, 10)
+		store[table] = Table{
+			records:   make([]Record, 0, 10),
+			currentID: 1,
+		}
 	}
 
 	return &Storage[T]{
 		initFunc:         initFunc,
 		setDeletedAtFunc: setDeletedAtFunc,
 		store:            table,
-		currentID:        1,
 	}
 }
 
@@ -51,7 +42,7 @@ func (s *Storage[T]) GetByShort(short string) (T, error) {
 	lock.RLock()
 	defer lock.RUnlock()
 
-	for _, r := range store[s.store] {
+	for _, r := range store[s.store].records {
 		if r.UUID() == short {
 			return r.(T), nil
 		}
@@ -61,12 +52,12 @@ func (s *Storage[T]) GetByShort(short string) (T, error) {
 }
 
 func (s *Storage[T]) GetByFull(full string) (T, error) {
-	var record T
-
 	lock.RLock()
 	defer lock.RUnlock()
 
-	for _, r := range store[s.store] {
+	var record T
+
+	for _, r := range store[s.store].records {
 		if r.FullURL() == full {
 			return r.(T), nil
 		}
@@ -79,10 +70,14 @@ func (s *Storage[T]) CreateURL(short string, full string) (T, error) {
 	lock.Lock()
 	defer lock.Unlock()
 
-	record := s.initFunc(s.currentID, short, full, time.Now())
+	var (
+		record = s.initFunc(store[s.store].currentID, short, full, time.Now())
+		table  = store[s.store]
+	)
 
-	store[s.store] = append(store[s.store], record)
-	s.currentID++
+	table.records = append(table.records, record)
+	table.currentID++
+	store[s.store] = table
 
 	return record, nil
 }
@@ -93,10 +88,11 @@ func (s *Storage[T]) DeleteURL(short string) (T, error) {
 
 	var (
 		record     T
-		newRecords = make([]Record, 0, len(store[s.store]))
+		newRecords = make([]Record, 0, len(store[s.store].records))
+		table      = store[s.store]
 	)
 
-	for _, u := range store[s.store] {
+	for _, u := range table.records {
 		if u.UUID() != short {
 			newRecords = append(newRecords, u)
 		} else {
@@ -110,6 +106,9 @@ func (s *Storage[T]) DeleteURL(short string) (T, error) {
 		return record, RecordNotFoundErr
 	}
 
+	table.records = newRecords
+	store[s.store] = table
+
 	return record, nil
 }
 
@@ -117,10 +116,10 @@ func (s *Storage[T]) GetLikeLongs(linkLongs ...string) ([]T, error) {
 	lock.Lock()
 	defer lock.Unlock()
 
-	var records = make([]T, 0, len(store[s.store]))
+	var records = make([]T, 0, len(store[s.store].records))
 
 	// super inefficient search
-	for _, record := range store[s.store] {
+	for _, record := range store[s.store].records {
 		for _, long := range linkLongs {
 			if strings.Contains(record.FullURL(), long) {
 				records = append(records, record.(T))

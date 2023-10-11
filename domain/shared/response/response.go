@@ -16,5 +16,9 @@ func AndThen[T Response](r T, next func(in T) T) T {
 }
 
 func OnFailure[T Response](r T, next func(in T) T) T {
+	if r.Error() == nil {
+		return r
+	}
+
 	return next(r)
 }
