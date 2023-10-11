@@ -1,8 +1,9 @@
 package url
 
 import (
-	"github.com/NordGus/shrtnr/domain/storage/inmemory"
 	"time"
+
+	"github.com/NordGus/shrtnr/domain/url/storage/inmemory"
 )
 
 type Repository interface {
