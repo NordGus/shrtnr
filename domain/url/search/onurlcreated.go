@@ -1,16 +1,19 @@
 package search
 
 import (
-	"github.com/NordGus/shrtnr/domain/storage/url"
 	"strings"
+
+	"github.com/NordGus/shrtnr/domain/url/storage/url"
 )
 
-func onUrlDeletedSubscriber(record url.URL) error {
+func onUrlCreatedSubscriber(record url.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 
 	entry := strings.TrimPrefix("https://", record.FullUrl)
 	entry = strings.TrimPrefix("http://", entry)
 
-	return cache.RemoveEntry(entry)
+	cache.AddEntry(entry)
+
+	return nil
 }

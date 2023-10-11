@@ -2,11 +2,12 @@ package search
 
 import (
 	"context"
-	"github.com/NordGus/shrtnr/domain/messagebus/url/created"
-	"github.com/NordGus/shrtnr/domain/messagebus/url/deleted"
-	"github.com/NordGus/shrtnr/domain/shared/trie"
-	"github.com/NordGus/shrtnr/domain/storage"
 	"sync"
+
+	"github.com/NordGus/shrtnr/domain/shared/trie"
+	"github.com/NordGus/shrtnr/domain/url/messagebus/created"
+	"github.com/NordGus/shrtnr/domain/url/messagebus/deleted"
+	"github.com/NordGus/shrtnr/domain/url/storage"
 )
 
 var (
