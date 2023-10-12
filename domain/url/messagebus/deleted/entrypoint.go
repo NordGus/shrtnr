@@ -4,17 +4,20 @@ import (
 	"context"
 	"sync"
 
-	"github.com/NordGus/shrtnr/domain/url/messagebus"
+	"github.com/NordGus/shrtnr/domain/url/storage/url"
 )
+
+// Subscriber is an alias for the function signature of the message subscribers
+type Subscriber func(record url.URL) error
 
 var (
 	ctx         context.Context
-	subscribers []messagebus.Subscriber
+	subscribers []Subscriber
 	lock        sync.Mutex
 )
 
 // Start initializes the deleted message
 func Start(parentCtx context.Context) {
 	ctx = parentCtx
-	subscribers = make([]messagebus.Subscriber, 0, 10)
+	subscribers = make([]Subscriber, 0, 10)
 }

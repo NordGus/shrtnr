@@ -7,9 +7,6 @@ import (
 	"github.com/NordGus/shrtnr/domain/url/storage/url"
 )
 
-// Subscriber is an alias for the function signature of the message subscribers
-type Subscriber func(record url.URL) error
-
 // Subscribe adds a new subscriber to the event
 func Subscribe(sub Subscriber) {
 	lock.Lock()
