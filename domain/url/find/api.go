@@ -2,7 +2,7 @@ package find
 
 import (
 	"github.com/NordGus/shrtnr/domain/shared/railway"
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
 func PaginateURLs(page uint, perPage uint) ([]url.URL, error) {
@@ -17,7 +17,7 @@ func PaginateURLs(page uint, perPage uint) ([]url.URL, error) {
 	}
 }
 
-func GetURL(id uint) (url.URL, error) {
+func GetURL(id url.ID) (url.URL, error) {
 	select {
 	case <-ctx.Done():
 		return url.URL{}, ctx.Err()

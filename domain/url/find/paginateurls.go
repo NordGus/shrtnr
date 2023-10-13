@@ -1,25 +1,25 @@
 package find
 
 import (
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
-type paginationSignal struct {
+type paginateURLsResponse struct {
 	records []url.URL
 	page    uint
 	perPage uint
 	err     error
 }
 
-func (s paginationSignal) Error() error {
-	return s.err
+func (s paginateURLsResponse) Success() bool {
+	return s.err == nil
 }
 
-func buildPaginationSignal(page uint, perPage uint) paginationSignal {
-	return paginationSignal{page: page, perPage: perPage}
+func buildPaginationSignal(page uint, perPage uint) paginateURLsResponse {
+	return paginateURLsResponse{page: page, perPage: perPage}
 }
 
-func getURLs(sig paginationSignal) paginationSignal {
+func getURLs(sig paginateURLsResponse) paginateURLsResponse {
 	sig.records, sig.err = repository.GetAllInPage(sig.page, sig.perPage)
 
 	return sig

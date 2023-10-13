@@ -1,25 +1,25 @@
 package find
 
 import (
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
-type getSignal struct {
+type getURLResponse struct {
 	record url.URL
-	id     uint
+	id     url.ID
 	err    error
 }
 
-func (s getSignal) Error() error {
-	return s.err
+func (s getURLResponse) Success() bool {
+	return s.err == nil
 }
 
-func buildGetSignal(id uint) getSignal {
-	return getSignal{id: id}
+func buildGetSignal(id url.ID) getURLResponse {
+	return getURLResponse{id: id}
 }
 
-func getURL(sig getSignal) getSignal {
-	sig.record, sig.err = repository.GetByID(sig.id)
+func getURL(sig getURLResponse) getURLResponse {
+	sig.record, sig.err = repository.GetByID(sig.id.String())
 
 	return sig
 }

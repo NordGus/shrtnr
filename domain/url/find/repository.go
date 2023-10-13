@@ -1,10 +1,10 @@
 package find
 
 import (
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
 type Repository interface {
-	GetByID(id uint) (url.URL, error)
+	GetByID(id string) (url.URL, error)
 	GetAllInPage(page uint, perPage uint) ([]url.URL, error)
 }
