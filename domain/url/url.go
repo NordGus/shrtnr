@@ -45,17 +45,18 @@ func newURL(id string, uuid string, target string, createdAt time.Time, deletedA
 	return sig.record, sig.err
 }
 
-type ID string
+// ID represents the URL entity's storage uuid.UUID
+type ID uuid.UUID
 
 // newID validates the given id and translates it to the domain specific ID
 func newID(sig newURLResponse) newURLResponse {
-	_, err := uuid.Parse(sig.id)
+	validUUID, err := uuid.Parse(sig.id)
 	if err != nil {
 		sig.err = errors.Join(sig.err, err)
 	}
 
 	if sig.err == nil {
-		sig.record.ID = ID(sig.id)
+		sig.record.ID = ID(validUUID)
 	}
 
 	return sig
