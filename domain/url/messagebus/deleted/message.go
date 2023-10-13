@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
 // Subscribe adds a new subscriber to the event

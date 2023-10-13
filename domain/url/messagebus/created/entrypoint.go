@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
 // Subscriber is an alias for the function signature of the message subscribers
