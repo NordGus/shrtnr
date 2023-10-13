@@ -13,7 +13,7 @@ var (
 
 type getTargetResponse struct {
 	uuid   url.UUID
-	target url.Target
+	record url.URL
 	err    error
 }
 
@@ -35,14 +35,14 @@ func extractShortFromPath(r *http.Request) getTargetResponse {
 	return getTargetResponse{uuid: uuid}
 }
 
-func searchTarget(response getTargetResponse) getTargetResponse {
+func getTargetRecord(response getTargetResponse) getTargetResponse {
 	record, err := repository.GetByUUID(response.uuid)
 	if err != nil {
 		response.err = errors.Join(response.err, err)
 		return response
 	}
 
-	response.target = record.Target
+	response.record = record
 
 	return response
 }

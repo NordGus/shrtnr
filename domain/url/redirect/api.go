@@ -7,14 +7,14 @@ import (
 	"github.com/NordGus/shrtnr/domain/url"
 )
 
-func GetTarget(r *http.Request) (url.Target, error) {
+func GetTarget(r *http.Request) (url.URL, error) {
 	select {
 	case <-ctx.Done():
-		return "", ctx.Err()
+		return url.URL{}, ctx.Err()
 	default:
 		response := extractShortFromPath(r)
-		response = railway.AndThen(response, searchTarget)
+		response = railway.AndThen(response, getTargetRecord)
 
-		return response.target, response.err
+		return response.record, response.err
 	}
 }

@@ -15,7 +15,7 @@ func Middleware(next http.Handler) http.Handler {
 
 		target, err := GetTarget(r)
 		if err == nil {
-			http.RedirectHandler(target.String(), http.StatusMovedPermanently).ServeHTTP(w, r)
+			http.RedirectHandler(target.Target.String(), http.StatusMovedPermanently).ServeHTTP(w, r)
 			return
 		}
 
