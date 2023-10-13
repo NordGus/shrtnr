@@ -2,7 +2,7 @@ package url
 
 import (
 	"errors"
-	"github.com/NordGus/shrtnr/domain/shared/response"
+	"github.com/NordGus/shrtnr/domain/shared/railway"
 	"github.com/google/uuid"
 	"time"
 )
@@ -36,11 +36,11 @@ func (s newURLResponse) Success() bool {
 func newURL(id string, uuid string, target string, createdAt time.Time, deletedAt time.Time) (URL, error) {
 	var sig = newURLResponse{id: id, uuid: uuid, target: target, createdAt: createdAt, deletedAt: deletedAt}
 
-	resp := response.OrThen(sig, newID)
-	resp = response.OrThen(resp, newUUID)
-	resp = response.OrThen(resp, newTarget)
-	resp = response.OrThen(resp, newCreatedAt)
-	resp = response.OrThen(resp, newDeletedAt)
+	resp := railway.OrThen(sig, newID)
+	resp = railway.OrThen(resp, newUUID)
+	resp = railway.OrThen(resp, newTarget)
+	resp = railway.OrThen(resp, newCreatedAt)
+	resp = railway.OrThen(resp, newDeletedAt)
 
 	return sig.record, sig.err
 }

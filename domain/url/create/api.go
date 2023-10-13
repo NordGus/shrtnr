@@ -1,11 +1,11 @@
 package create
 
 import (
-	"github.com/NordGus/shrtnr/domain/shared/response"
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
+	"github.com/NordGus/shrtnr/domain/shared/railway"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
-func AddURL(short string, full string) (url.URL, error) {
+func AddURL(entity url.URL) (url.URL, error) {
 	select {
 	case <-ctx.Done():
 		return url.URL{}, ctx.Err()
@@ -13,11 +13,10 @@ func AddURL(short string, full string) (url.URL, error) {
 		lock.Lock()
 		defer lock.Unlock()
 
-		resp := response.AndThen(buildUrl(short, full), validateUrl)
-		resp = response.AndThen(resp, canBeAdded)
-		resp = response.OnFailure(resp, deleteOldestUrl)
-		resp = response.AndThen(resp, persistNewURl)
-		resp = response.AndThen(resp, addUrlToQueue)
+		resp := railway.AndThen(newAddURLResponse(entity), canBeAdded)
+		resp = railway.OnFailure(resp, deleteOldestUrl)
+		resp = railway.AndThen(resp, persistNewURl)
+		resp = railway.AndThen(resp, addUrlToQueue)
 
 		return resp.record, resp.err
 	}

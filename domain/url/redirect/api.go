@@ -3,7 +3,7 @@ package redirect
 import (
 	"net/http"
 
-	"github.com/NordGus/shrtnr/domain/shared/response"
+	"github.com/NordGus/shrtnr/domain/shared/railway"
 )
 
 func GetTarget(r *http.Request) (string, error) {
@@ -12,7 +12,7 @@ func GetTarget(r *http.Request) (string, error) {
 		return "", ctx.Err()
 	default:
 		resp := extractShortFromPath(r)
-		resp = response.AndThen(resp, searchFullURL)
+		resp = railway.AndThen(resp, searchFullURL)
 
 		return resp.full, resp.err
 	}
