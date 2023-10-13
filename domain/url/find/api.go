@@ -2,13 +2,13 @@ package find
 
 import (
 	"github.com/NordGus/shrtnr/domain/shared/railway"
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
-func PaginateURLs(page uint, perPage uint) ([]url.URL, error) {
+func PaginateURLs(page uint, perPage uint) ([]entities.URL, error) {
 	select {
 	case <-ctx.Done():
-		return []url.URL{}, ctx.Err()
+		return []entities.URL{}, ctx.Err()
 	default:
 		response := buildPaginateURLsResponse(page, perPage)
 		response = railway.AndThen(response, getURLs)
@@ -17,10 +17,10 @@ func PaginateURLs(page uint, perPage uint) ([]url.URL, error) {
 	}
 }
 
-func GetURL(id url.ID) (url.URL, error) {
+func GetURL(id entities.ID) (entities.URL, error) {
 	select {
 	case <-ctx.Done():
-		return url.URL{}, ctx.Err()
+		return entities.URL{}, ctx.Err()
 	default:
 		response := buildGetURLResponse(id)
 		response = railway.AndThen(response, getURL)

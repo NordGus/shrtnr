@@ -2,13 +2,13 @@ package search
 
 import (
 	"errors"
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
 type searchURLsResponse struct {
 	term     string
 	matchers []string
-	records  []url.URL
+	records  []entities.URL
 	err      error
 }
 

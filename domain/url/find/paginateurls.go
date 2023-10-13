@@ -1,11 +1,11 @@
 package find
 
 import (
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
 type paginateURLsResponse struct {
-	records []url.URL
+	records []entities.URL
 	page    uint
 	perPage uint
 	err     error

@@ -2,13 +2,13 @@ package search
 
 import (
 	"github.com/NordGus/shrtnr/domain/shared/railway"
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
-func SearchURLs(term string) ([]url.URL, error) {
+func SearchURLs(term string) ([]entities.URL, error) {
 	select {
 	case <-ctx.Done():
-		return []url.URL{}, ctx.Err()
+		return []entities.URL{}, ctx.Err()
 	default:
 		lock.RLock()
 		defer lock.RUnlock()

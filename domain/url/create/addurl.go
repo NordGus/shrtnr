@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/NordGus/shrtnr/domain/shared/queue"
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 	"github.com/NordGus/shrtnr/domain/url/messagebus/created"
 	"github.com/NordGus/shrtnr/domain/url/messagebus/deleted"
 )
@@ -15,9 +15,9 @@ var (
 )
 
 type addURLResponse struct {
-	new       url.URL
-	oldRecord url.URL
-	record    url.URL
+	new       entities.URL
+	oldRecord entities.URL
+	record    entities.URL
 	err       error
 }
 
@@ -25,7 +25,7 @@ func (s addURLResponse) Success() bool {
 	return s.err == nil
 }
 
-func newAddURLResponse(entity url.URL) addURLResponse {
+func newAddURLResponse(entity entities.URL) addURLResponse {
 	return addURLResponse{new: entity}
 }
 

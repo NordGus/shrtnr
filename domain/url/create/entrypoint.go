@@ -5,13 +5,12 @@ import (
 	"sync"
 
 	"github.com/NordGus/shrtnr/domain/shared/queue"
-	"github.com/NordGus/shrtnr/domain/url"
 	"github.com/NordGus/shrtnr/domain/url/storage"
 )
 
 var (
 	ctx        context.Context
-	cache      queue.Queue[url.URL]
+	cache      queue.Queue[entities.URL]
 	repository Repository
 
 	lock sync.Mutex
@@ -19,6 +18,6 @@ var (
 
 func Start(otherCtx context.Context, maxUrl uint) {
 	ctx = otherCtx
-	cache = queue.NewQueue[url.URL](maxUrl)
+	cache = queue.NewQueue[entities.URL](maxUrl)
 	repository = storage.GetURLRepository()
 }

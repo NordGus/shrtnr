@@ -3,10 +3,10 @@ package search
 import (
 	"strings"
 
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
-func onUrlDeletedSubscriber(record url.URL) error {
+func onUrlDeletedSubscriber(record entities.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 

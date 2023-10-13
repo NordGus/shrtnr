@@ -2,13 +2,13 @@ package create
 
 import (
 	"github.com/NordGus/shrtnr/domain/shared/railway"
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
-func AddURL(entity url.URL) (url.URL, error) {
+func AddURL(entity entities.URL) (entities.URL, error) {
 	select {
 	case <-ctx.Done():
-		return url.URL{}, ctx.Err()
+		return entities.URL{}, ctx.Err()
 	default:
 		lock.Lock()
 		defer lock.Unlock()

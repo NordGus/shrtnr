@@ -3,10 +3,10 @@ package search
 import (
 	"strings"
 
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
-func onUrlCreatedSubscriber(record url.URL) error {
+func onUrlCreatedSubscriber(record entities.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 

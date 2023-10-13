@@ -4,11 +4,11 @@ import (
 	"context"
 	"sync"
 
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
 // Subscriber is an alias for the function signature of the message subscribers
-type Subscriber func(record url.URL) error
+type Subscriber func(record entities.URL) error
 
 var (
 	ctx         context.Context

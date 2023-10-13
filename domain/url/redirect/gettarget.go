@@ -2,7 +2,7 @@ package redirect
 
 import (
 	"errors"
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 	"net/http"
 	"strings"
 )
@@ -12,8 +12,8 @@ var (
 )
 
 type getTargetResponse struct {
-	uuid   url.UUID
-	record url.URL
+	uuid   entities.UUID
+	record entities.URL
 	err    error
 }
 
@@ -27,7 +27,7 @@ func extractShortFromPath(r *http.Request) getTargetResponse {
 		return getTargetResponse{err: InvalidPathErr}
 	}
 
-	uuid, err := url.NewUUID(path[1])
+	uuid, err := entities.NewUUID(path[1])
 	if err != nil {
 		return getTargetResponse{err: errors.Join(InvalidPathErr, err)}
 	}

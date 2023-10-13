@@ -1,4 +1,4 @@
-package url
+package entities
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// URL is the domain representation of an url record in the application
+// URL is the domain representation of an url entity in the application
 type URL struct {
 	ID        ID
 	UUID      UUID

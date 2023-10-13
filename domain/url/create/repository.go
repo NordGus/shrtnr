@@ -1,12 +1,12 @@
 package create
 
 import (
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
 type Repository interface {
-	GetByUUID(uuid url.UUID) (url.URL, error)
-	GetByTarget(target url.Target) (url.URL, error)
-	CreateURL(entity url.URL) (url.URL, error)
-	DeleteURL(id url.ID) (url.URL, error)
+	GetByUUID(uuid entities.UUID) (entities.URL, error)
+	GetByTarget(target entities.Target) (entities.URL, error)
+	CreateURL(entity entities.URL) (entities.URL, error)
+	DeleteURL(id entities.ID) (entities.URL, error)
 }

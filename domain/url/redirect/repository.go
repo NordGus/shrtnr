@@ -1,9 +1,9 @@
 package redirect
 
 import (
-	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
 type Repository interface {
-	GetByUUID(uuid url.UUID) (url.URL, error)
+	GetByUUID(uuid entities.UUID) (entities.URL, error)
 }
