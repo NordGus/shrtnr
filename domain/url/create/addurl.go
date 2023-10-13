@@ -9,6 +9,11 @@ import (
 	"github.com/NordGus/shrtnr/domain/url/messagebus/deleted"
 )
 
+var (
+	NonUniqueUUIDErr   = errors.New("create: duplicated UUID")
+	NonUniqueTargetErr = errors.New("create: duplicated Target")
+)
+
 type addURLResponse struct {
 	new       url.URL
 	oldRecord url.URL
@@ -24,6 +29,24 @@ func newAddURLResponse(entity url.URL) addURLResponse {
 	return addURLResponse{new: entity}
 }
 
+func validateUUIDUniqueness(response addURLResponse) addURLResponse {
+	_, err := repository.GetByUUID(response.new.UUID)
+	if err == nil {
+		response.err = errors.Join(response.err, NonUniqueUUIDErr)
+	}
+
+	return response
+}
+
+func validateTargetUniqueness(response addURLResponse) addURLResponse {
+	_, err := repository.GetByTarget(response.new.Target)
+	if err == nil {
+		response.err = errors.Join(response.err, NonUniqueTargetErr)
+	}
+
+	return response
+}
+
 func canBeAdded(response addURLResponse) addURLResponse {
 	if cache.IsFull() {
 		response.oldRecord, _ = cache.Peek()
@@ -34,6 +57,10 @@ func canBeAdded(response addURLResponse) addURLResponse {
 }
 
 func deleteOldestUrl(response addURLResponse) addURLResponse {
+	if !errors.Is(response.err, queue.IsFullErr) {
+		return response
+	}
+
 	record, err := repository.DeleteURL(response.oldRecord.ID)
 	if err != nil {
 		response.err = errors.Join(response.err, err)

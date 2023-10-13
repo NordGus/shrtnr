@@ -14,6 +14,8 @@ func AddURL(entity url.URL) (url.URL, error) {
 		defer lock.Unlock()
 
 		response := newAddURLResponse(entity)
+		response = railway.OrThen(response, validateUUIDUniqueness)
+		response = railway.OrThen(response, validateTargetUniqueness)
 		response = railway.AndThen(response, canBeAdded)
 		response = railway.OnFailure(response, deleteOldestUrl)
 		response = railway.AndThen(response, persistNewURl)
