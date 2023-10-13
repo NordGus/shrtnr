@@ -34,7 +34,7 @@ func canBeAdded(sig addURLResponse) addURLResponse {
 }
 
 func deleteOldestUrl(sig addURLResponse) addURLResponse {
-	record, err := repository.DeleteURL(sig.oldRecord.ID())
+	record, err := repository.DeleteURL(sig.oldRecord.ID)
 	if err != nil {
 		sig.err = errors.Join(sig.err, err)
 
@@ -48,19 +48,25 @@ func deleteOldestUrl(sig addURLResponse) addURLResponse {
 		return sig
 	}
 
-	return addURLResponse{new: sig.new, oldRecord: sig.oldRecord}
+	return addURLResponse{new: sig.new, oldRecord: record}
 }
 
 func persistNewURl(sig addURLResponse) addURLResponse {
-	sig.record, sig.err = repository.CreateURL(string(sig.new.short), string(sig.new.full))
-	if sig.err != nil {
+	record, err := repository.CreateURL(sig.new)
+	if err != nil {
+		sig.err = errors.Join(sig.err, err)
+
 		return sig
 	}
 
-	sig.err = created.Raise(sig.record)
+	sig.err = created.Raise(record)
 	if sig.err != nil {
+		sig.err = errors.Join(sig.err, err)
+
 		return sig
 	}
+
+	sig.record = record
 
 	return sig
 }
