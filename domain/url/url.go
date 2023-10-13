@@ -49,75 +49,93 @@ func newURL(id string, uuid string, target string, createdAt time.Time, deletedA
 type ID uuid.UUID
 
 // newID validates the given id and translates it to the domain specific ID
-func newID(sig newURLResponse) newURLResponse {
-	validUUID, err := uuid.Parse(sig.id)
+func newID(response newURLResponse) newURLResponse {
+	validUUID, err := uuid.Parse(response.id)
 	if err != nil {
-		sig.err = errors.Join(sig.err, err)
+		response.err = errors.Join(response.err, err)
 	}
 
-	if sig.err == nil {
-		sig.record.ID = ID(validUUID)
+	if response.err == nil {
+		response.record.ID = ID(validUUID)
 	}
 
-	return sig
+	return response
 }
 
 type UUID string
 
+// NewUUID validates the given uuid and translates it to the domain specific UUID
+func NewUUID(uuid string) (UUID, error) {
+	var out UUID
+
+	if len(uuid) != 8 {
+		return out, errors.New("url: uuid too long")
+	}
+
+	out = UUID(uuid)
+
+	return out, nil
+}
+
 // newUUID validates the given uuid and translates it to the domain specific UUID
-func newUUID(sig newURLResponse) newURLResponse {
-	if len(sig.uuid) != 8 {
-		sig.err = errors.Join(sig.err, errors.New("url: uuid too long"))
+func newUUID(response newURLResponse) newURLResponse {
+	u, err := NewUUID(response.uuid)
+	if err != nil {
+		response.err = errors.Join(response.err, err)
 	}
 
-	if sig.err == nil {
-		sig.record.UUID = UUID(sig.uuid)
+	if response.err == nil {
+		response.record.UUID = u
 	}
 
-	return sig
+	return response
 }
 
 type Target string
 
 // newTarget validates the given target and translates it to the domain specific Target
-func newTarget(sig newURLResponse) newURLResponse {
+func newTarget(response newURLResponse) newURLResponse {
 	// TODO: check if the link is reachable
 
-	if sig.err == nil {
-		sig.record.Target = Target(sig.target)
+	if response.err == nil {
+		response.record.Target = Target(response.target)
 	}
 
-	return sig
+	return response
+}
+
+func (t Target) String() string {
+	return string(t)
 }
 
 type CreatedAt time.Time
 
 // newCreatedAt validates the given createdAt and translates it to the domain specific CreatedAt
-func newCreatedAt(sig newURLResponse) newURLResponse {
-	if sig.createdAt.After(time.Now()) {
-		sig.err = errors.Join(sig.err, errors.New("url: can't be created in the future"))
+func newCreatedAt(response newURLResponse) newURLResponse {
+	if response.createdAt.After(time.Now()) {
+		response.err = errors.Join(response.err, errors.New("url: can't be created in the future"))
 	}
 
-	if sig.err == nil {
-		sig.record.CreatedAt = CreatedAt(sig.createdAt)
+	if response.err == nil {
+		response.record.CreatedAt = CreatedAt(response.createdAt)
 	}
 
-	return sig
+	return response
 }
 
 type DeletedAt time.Time
 
 // newDeletedAt validates the given deletedAt and translates it to the domain specific DeletedAt
-func newDeletedAt(sig newURLResponse) newURLResponse {
+func newDeletedAt(response newURLResponse) newURLResponse {
 	var comp time.Time
 
-	if sig.deletedAt.Before(sig.createdAt) && !sig.deletedAt.Equal(comp) {
-		sig.err = errors.Join(sig.err, errors.New("url: can't be deleted before being created"))
+	if response.deletedAt.Before(response.createdAt) && !response.deletedAt.Equal(comp) {
+		response.err = errors.Join(response.err, errors.New("url: can't be deleted before being created"))
 	}
 
-	if sig.err == nil {
-		sig.record.DeletedAt = DeletedAt(sig.deletedAt)
+	if response.err == nil {
+		response.record.DeletedAt = DeletedAt(response.deletedAt)
 	}
 
-	return sig
+	return response
 }

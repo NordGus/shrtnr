@@ -4,16 +4,17 @@ import (
 	"net/http"
 
 	"github.com/NordGus/shrtnr/domain/shared/railway"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
-func GetTarget(r *http.Request) (string, error) {
+func GetTarget(r *http.Request) (url.Target, error) {
 	select {
 	case <-ctx.Done():
 		return "", ctx.Err()
 	default:
-		resp := extractShortFromPath(r)
-		resp = railway.AndThen(resp, searchFullURL)
+		response := extractShortFromPath(r)
+		response = railway.AndThen(response, searchTarget)
 
-		return resp.full, resp.err
+		return response.target, response.err
 	}
 }

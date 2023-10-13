@@ -2,6 +2,7 @@ package redirect
 
 import (
 	"errors"
+	"github.com/NordGus/shrtnr/domain/url"
 	"net/http"
 	"strings"
 )
@@ -10,33 +11,38 @@ var (
 	InvalidPathErr = errors.New("redirect: invalid path format")
 )
 
-type signal struct {
-	short string
-	full  string
-	err   error
+type getTargetResponse struct {
+	uuid   url.UUID
+	target url.Target
+	err    error
 }
 
-func (s signal) Error() error {
-	return s.err
+func (s getTargetResponse) Success() bool {
+	return s.err == nil
 }
 
-func extractShortFromPath(r *http.Request) signal {
+func extractShortFromPath(r *http.Request) getTargetResponse {
 	path := strings.Split(r.URL.Path, "/")
 	if len(path) < 2 {
-		return signal{err: InvalidPathErr}
+		return getTargetResponse{err: InvalidPathErr}
 	}
 
-	return signal{short: path[1]}
+	uuid, err := url.NewUUID(path[1])
+	if err != nil {
+		return getTargetResponse{err: errors.Join(InvalidPathErr, err)}
+	}
+
+	return getTargetResponse{uuid: uuid}
 }
 
-func searchFullURL(sig signal) signal {
-	record, err := repository.GetByShort(sig.short)
+func searchTarget(response getTargetResponse) getTargetResponse {
+	record, err := repository.GetByUUID(response.uuid)
 	if err != nil {
-		sig.err = errors.Join(sig.err, err)
-		return sig
+		response.err = errors.Join(response.err, err)
+		return response
 	}
 
-	sig.full = record.FullURL()
+	response.target = record.Target
 
-	return sig
+	return response
 }
