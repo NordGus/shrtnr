@@ -19,7 +19,7 @@ func buildGetSignal(id url.ID) getURLResponse {
 }
 
 func getURL(sig getURLResponse) getURLResponse {
-	sig.record, sig.err = repository.GetByID(sig.id.String())
+	sig.record, sig.err = repository.GetByID(sig.id)
 
 	return sig
 }

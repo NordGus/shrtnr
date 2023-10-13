@@ -5,6 +5,6 @@ import (
 )
 
 type Repository interface {
-	GetByID(id string) (url.URL, error)
+	GetByID(id url.ID) (url.URL, error)
 	GetAllInPage(page uint, perPage uint) ([]url.URL, error)
 }
