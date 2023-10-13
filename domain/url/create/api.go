@@ -13,12 +13,12 @@ func AddURL(entity url.URL) (url.URL, error) {
 		lock.Lock()
 		defer lock.Unlock()
 
-		resp := newAddURLResponse(entity)
-		resp = railway.AndThen(resp, canBeAdded)
-		resp = railway.OnFailure(resp, deleteOldestUrl)
-		resp = railway.AndThen(resp, persistNewURl)
-		resp = railway.AndThen(resp, addUrlToQueue)
+		response := newAddURLResponse(entity)
+		response = railway.AndThen(response, canBeAdded)
+		response = railway.OnFailure(response, deleteOldestUrl)
+		response = railway.AndThen(response, persistNewURl)
+		response = railway.AndThen(response, addUrlToQueue)
 
-		return resp.record, resp.err
+		return response.record, response.err
 	}
 }

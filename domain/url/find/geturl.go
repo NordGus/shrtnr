@@ -14,12 +14,12 @@ func (s getURLResponse) Success() bool {
 	return s.err == nil
 }
 
-func buildGetSignal(id url.ID) getURLResponse {
+func buildGetURLResponse(id url.ID) getURLResponse {
 	return getURLResponse{id: id}
 }
 
-func getURL(sig getURLResponse) getURLResponse {
-	sig.record, sig.err = repository.GetByID(sig.id)
+func getURL(response getURLResponse) getURLResponse {
+	response.record, response.err = repository.GetByID(response.id)
 
-	return sig
+	return response
 }

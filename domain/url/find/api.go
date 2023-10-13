@@ -10,10 +10,10 @@ func PaginateURLs(page uint, perPage uint) ([]url.URL, error) {
 	case <-ctx.Done():
 		return []url.URL{}, ctx.Err()
 	default:
-		resp := buildPaginationSignal(page, perPage)
-		resp = railway.AndThen(resp, getURLs)
+		response := buildPaginateURLsResponse(page, perPage)
+		response = railway.AndThen(response, getURLs)
 
-		return resp.records, resp.err
+		return response.records, response.err
 	}
 }
 
@@ -22,9 +22,9 @@ func GetURL(id url.ID) (url.URL, error) {
 	case <-ctx.Done():
 		return url.URL{}, ctx.Err()
 	default:
-		resp := buildGetSignal(id)
-		resp = railway.AndThen(resp, getURL)
+		response := buildGetURLResponse(id)
+		response = railway.AndThen(response, getURL)
 
-		return resp.record, resp.err
+		return response.record, response.err
 	}
 }

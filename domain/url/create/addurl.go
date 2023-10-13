@@ -24,59 +24,59 @@ func newAddURLResponse(entity url.URL) addURLResponse {
 	return addURLResponse{new: entity}
 }
 
-func canBeAdded(sig addURLResponse) addURLResponse {
+func canBeAdded(response addURLResponse) addURLResponse {
 	if cache.IsFull() {
-		sig.oldRecord, _ = cache.Peek()
-		sig.err = queue.IsFullErr
+		response.oldRecord, _ = cache.Peek()
+		response.err = queue.IsFullErr
 	}
 
-	return sig
+	return response
 }
 
-func deleteOldestUrl(sig addURLResponse) addURLResponse {
-	record, err := repository.DeleteURL(sig.oldRecord.ID)
+func deleteOldestUrl(response addURLResponse) addURLResponse {
+	record, err := repository.DeleteURL(response.oldRecord.ID)
 	if err != nil {
-		sig.err = errors.Join(sig.err, err)
+		response.err = errors.Join(response.err, err)
 
-		return sig
+		return response
 	}
 
 	err = deleted.Raise(record)
 	if err != nil {
-		sig.err = errors.Join(sig.err, err)
+		response.err = errors.Join(response.err, err)
 
-		return sig
+		return response
 	}
 
-	return addURLResponse{new: sig.new, oldRecord: record}
+	return addURLResponse{new: response.new, oldRecord: record}
 }
 
-func persistNewURl(sig addURLResponse) addURLResponse {
-	record, err := repository.CreateURL(sig.new)
+func persistNewURl(response addURLResponse) addURLResponse {
+	record, err := repository.CreateURL(response.new)
 	if err != nil {
-		sig.err = errors.Join(sig.err, err)
+		response.err = errors.Join(response.err, err)
 
-		return sig
+		return response
 	}
 
-	sig.err = created.Raise(record)
-	if sig.err != nil {
-		sig.err = errors.Join(sig.err, err)
+	response.err = created.Raise(record)
+	if response.err != nil {
+		response.err = errors.Join(response.err, err)
 
-		return sig
+		return response
 	}
 
-	sig.record = record
+	response.record = record
 
-	return sig
+	return response
 }
 
-func addUrlToQueue(sig addURLResponse) addURLResponse {
+func addUrlToQueue(response addURLResponse) addURLResponse {
 	if cache.IsFull() {
-		_, sig.err = cache.Pop() // ignores the popped record because the addURLResponse already contains it from the deletion parte
+		_, response.err = cache.Pop() // ignores the popped record because the addURLResponse already contains it from the deletion parte
 	}
 
-	sig.err = cache.Push(sig.record)
+	response.err = cache.Push(response.record)
 
-	return sig
+	return response
 }

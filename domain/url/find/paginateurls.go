@@ -15,12 +15,12 @@ func (s paginateURLsResponse) Success() bool {
 	return s.err == nil
 }
 
-func buildPaginationSignal(page uint, perPage uint) paginateURLsResponse {
+func buildPaginateURLsResponse(page uint, perPage uint) paginateURLsResponse {
 	return paginateURLsResponse{page: page, perPage: perPage}
 }
 
-func getURLs(sig paginateURLsResponse) paginateURLsResponse {
-	sig.records, sig.err = repository.GetAllInPage(sig.page, sig.perPage)
+func getURLs(response paginateURLsResponse) paginateURLsResponse {
+	response.records, response.err = repository.GetAllInPage(response.page, response.perPage)
 
-	return sig
+	return response
 }
