@@ -1,32 +1,43 @@
 package search
 
 import (
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
+	"errors"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
-type signal struct {
-	term  string
-	longs []string
-	urls  []url.URL
-	err   error
+type searchURLsResponse struct {
+	term     string
+	matchers []string
+	records  []url.URL
+	err      error
 }
 
-func (s signal) Error() error {
-	return s.err
+func (s searchURLsResponse) Success() bool {
+	return s.err == nil
 }
 
-func buildSignal(term string) signal {
-	return signal{term: term}
+func buildSearchURLsResponse(term string) searchURLsResponse {
+	return searchURLsResponse{term: term}
 }
 
-func getLongsFromCache(sig signal) signal {
-	sig.longs, sig.err = cache.FindEntries(sig.term, longsLimit)
+func getMatchersFromCache(response searchURLsResponse) searchURLsResponse {
+	matchers, err := cache.FindEntries(response.term, longsLimit)
+	if err != nil {
+		response.err = errors.Join(response.err, err)
+	}
 
-	return sig
+	response.matchers = matchers
+
+	return response
 }
 
-func getRecordsFromRepository(sig signal) signal {
-	sig.urls, sig.err = repository.GetLikeLongs(sig.longs...)
+func getRecordsFromRepository(response searchURLsResponse) searchURLsResponse {
+	records, err := repository.GetURLsThatMatchTargets(response.matchers...)
+	if err != nil {
+		response.err = errors.Join(response.err, err)
+	}
 
-	return sig
+	response.records = records
+
+	return response
 }

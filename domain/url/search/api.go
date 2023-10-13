@@ -2,7 +2,7 @@ package search
 
 import (
 	"github.com/NordGus/shrtnr/domain/shared/railway"
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
+	"github.com/NordGus/shrtnr/domain/url"
 )
 
 func SearchURLs(term string) ([]url.URL, error) {
@@ -13,10 +13,10 @@ func SearchURLs(term string) ([]url.URL, error) {
 		lock.RLock()
 		defer lock.RUnlock()
 
-		resp := buildSignal(term)
-		resp = railway.AndThen(resp, getLongsFromCache)
+		resp := buildSearchURLsResponse(term)
+		resp = railway.AndThen(resp, getMatchersFromCache)
 		resp = railway.AndThen(resp, getRecordsFromRepository)
 
-		return resp.urls, resp.err
+		return resp.records, resp.err
 	}
 }
