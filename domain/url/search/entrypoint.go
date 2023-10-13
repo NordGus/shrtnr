@@ -24,7 +24,7 @@ func Start(parentCtx context.Context, maxConcurrency uint, searchLimit int) {
 	longsLimit = searchLimit
 
 	cache = trie.NewTrie(maxConcurrency)
-	repository = storage.GetURLRepository()
+	repository = storage.GetRepository()
 
 	created.Subscribe(onUrlCreatedSubscriber)
 	deleted.Subscribe(onUrlDeletedSubscriber)

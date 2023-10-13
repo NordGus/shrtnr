@@ -13,7 +13,7 @@ var (
 
 func Start(parentCtx context.Context) error {
 	ctx = parentCtx
-	repository = storage.GetURLRepository()
+	repository = storage.GetRepository()
 
 	return nil
 }

@@ -16,7 +16,7 @@ type URL struct {
 	DeletedAt DeletedAt
 }
 
-// newURLResponse represents the inputs and outputs of the control flow of the newURL function
+// newURLResponse represents the inputs and outputs of the control flow of the NewURL function
 type newURLResponse struct {
 	id        string
 	uuid      string
@@ -32,8 +32,8 @@ func (s newURLResponse) Success() bool {
 	return s.err == nil
 }
 
-// newURL translate external data into the domain specific URL struct or returns an error
-func newURL(id string, uuid string, target string, createdAt time.Time, deletedAt time.Time) (URL, error) {
+// NewURL translate external data into the domain specific URL struct or returns an error
+func NewURL(id string, uuid string, target string, createdAt time.Time, deletedAt time.Time) (URL, error) {
 	var sig = newURLResponse{id: id, uuid: uuid, target: target, createdAt: createdAt, deletedAt: deletedAt}
 
 	resp := railway.OrThen(sig, newID)

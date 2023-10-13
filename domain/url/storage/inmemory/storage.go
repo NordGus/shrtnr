@@ -11,7 +11,7 @@ var (
 	RecordNotFoundErr = errors.New("inmemory: record not found")
 )
 
-type InitFunc[T Record] func(id uint, uuid string, fullURL string, createdAt time.Time) T
+type InitFunc[T Record] func(id uint, uuid string, fullURL string, createdAt time.Time, deletedAt time.Time) (T, error)
 
 type DeletedAtFunc[T Record] func(record T, at time.Time) T
 

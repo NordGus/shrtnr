@@ -30,7 +30,7 @@ func Start(parentCtx context.Context, env string, redirectHost string) error {
 	ctx = parentCtx
 	environment = env
 	host = redirectHost
-	repository = storage.GetURLRepository()
+	repository = storage.GetRepository()
 
 	hlprs.Start(environment)
 
