@@ -5,8 +5,8 @@ import (
 	"sync"
 
 	"github.com/NordGus/shrtnr/domain/shared/queue"
+	"github.com/NordGus/shrtnr/domain/url"
 	"github.com/NordGus/shrtnr/domain/url/storage"
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
 )
 
 var (

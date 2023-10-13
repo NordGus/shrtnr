@@ -4,33 +4,27 @@ import (
 	"errors"
 
 	"github.com/NordGus/shrtnr/domain/shared/queue"
+	"github.com/NordGus/shrtnr/domain/url"
 	"github.com/NordGus/shrtnr/domain/url/messagebus/created"
 	"github.com/NordGus/shrtnr/domain/url/messagebus/deleted"
-	"github.com/NordGus/shrtnr/domain/url/storage/url"
 )
 
-type signal struct {
-	new       URL
+type addURLResponse struct {
+	new       url.URL
 	oldRecord url.URL
 	record    url.URL
 	err       error
 }
 
-func (s signal) Error() error {
-	return s.err
+func (s addURLResponse) Success() bool {
+	return s.err == nil
 }
 
-func buildUrl(short string, full string) signal {
-	return signal{new: URL{short: shortURL(short), full: fullURL(full)}}
+func newAddURLResponse(entity url.URL) addURLResponse {
+	return addURLResponse{new: entity}
 }
 
-func validateUrl(sig signal) signal {
-	sig.err = sig.new.Validate()
-
-	return sig
-}
-
-func canBeAdded(sig signal) signal {
+func canBeAdded(sig addURLResponse) addURLResponse {
 	if cache.IsFull() {
 		sig.oldRecord, _ = cache.Peek()
 		sig.err = queue.IsFullErr
@@ -39,7 +33,7 @@ func canBeAdded(sig signal) signal {
 	return sig
 }
 
-func deleteOldestUrl(sig signal) signal {
+func deleteOldestUrl(sig addURLResponse) addURLResponse {
 	record, err := repository.DeleteURL(sig.oldRecord.ID())
 	if err != nil {
 		sig.err = errors.Join(sig.err, err)
@@ -54,10 +48,10 @@ func deleteOldestUrl(sig signal) signal {
 		return sig
 	}
 
-	return signal{new: sig.new, oldRecord: sig.oldRecord}
+	return addURLResponse{new: sig.new, oldRecord: sig.oldRecord}
 }
 
-func persistNewURl(sig signal) signal {
+func persistNewURl(sig addURLResponse) addURLResponse {
 	sig.record, sig.err = repository.CreateURL(string(sig.new.short), string(sig.new.full))
 	if sig.err != nil {
 		return sig
@@ -71,9 +65,9 @@ func persistNewURl(sig signal) signal {
 	return sig
 }
 
-func addUrlToQueue(sig signal) signal {
+func addUrlToQueue(sig addURLResponse) addURLResponse {
 	if cache.IsFull() {
-		_, sig.err = cache.Pop() // ignores the popped record because the signal already contains it from the deletion parte
+		_, sig.err = cache.Pop() // ignores the popped record because the addURLResponse already contains it from the deletion parte
 	}
 
 	sig.err = cache.Push(sig.record)
