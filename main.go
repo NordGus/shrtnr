@@ -2,16 +2,15 @@ package main
 
 import (
 	"context"
-	"embed"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/NordGus/shrtnr/domain"
-	"github.com/NordGus/shrtnr/domain/fileserver"
 	"github.com/NordGus/shrtnr/domain/shared/middleware"
 	"github.com/NordGus/shrtnr/domain/url/redirect"
+	"github.com/NordGus/shrtnr/fileserver"
 	hypermedia "github.com/NordGus/shrtnr/http"
 
 	"github.com/go-chi/chi/v5"
@@ -25,9 +24,6 @@ var (
 	urlLimit             *uint
 	searchTermLimits     *int
 	maxSearchConcurrency *uint
-
-	//go:embed dist private
-	content embed.FS
 )
 
 func init() {
@@ -43,8 +39,6 @@ func init() {
 
 func main() {
 	ctx := context.Background()
-
-	fileserver.Start(content)
 
 	err := domain.Start(ctx, *environment, *urlLimit, *maxSearchConcurrency, *searchTermLimits, *redirectHost)
 	if err != nil {

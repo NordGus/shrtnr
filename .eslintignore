@@ -1,4 +1,4 @@
-dist/*
+fileserver/dist/*
 build/*
 public/*
 docs/*

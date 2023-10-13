@@ -1,7 +1,7 @@
 *.go
 
 build
-dist
+fileserver/dist
 public
 server
 .yarn

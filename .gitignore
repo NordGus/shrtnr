@@ -113,7 +113,9 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist/*
+
+fileserver/dist/*
+fileserver/private/*
 
 # Gatsby files
 # Comment in the public line in if your project uses Gatsby and not Next.js
@@ -154,5 +156,5 @@ dist/*
 !.yarn/versions
 
 .idea
-!dist/.keep
-!dist/keep.txt
+!fileserver/dist/keep.txt
+!fileserver/private/keep.txt
