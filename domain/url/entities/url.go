@@ -66,15 +66,10 @@ type UUID string
 
 // NewUUID validates the given uuid and translates it to the domain specific UUID
 func NewUUID(uuid string) (UUID, error) {
-	var out UUID
+	resp := newURLResponse{uuid: uuid}
+	resp = railway.AndThen(resp, newUUID)
 
-	if len(uuid) != 8 {
-		return out, errors.New("url: uuid too long")
-	}
-
-	out = UUID(uuid)
-
-	return out, nil
+	return resp.record.UUID, resp.err
 }
 
 // newUUID validates the given uuid and translates it to the domain specific UUID
