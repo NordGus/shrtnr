@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"flag"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	"log"
 	"net/http"
 
@@ -39,7 +39,7 @@ func init() {
 }
 
 func main() {
-	var db *sql.DB
+	var db *sqlx.DB
 	ctx := context.Background()
 
 	err := domain.Start(ctx, *environment, db, *urlLimit, *maxSearchConcurrency, *searchTermLimits, *redirectHost)

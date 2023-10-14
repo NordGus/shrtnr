@@ -1,51 +1,52 @@
 package storage
 
 import (
-	"database/sql"
+	"github.com/jmoiron/sqlx"
+
 	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
 type Repository struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func newStorage(db *sql.DB) *Repository {
+func newStorage(db *sqlx.DB) *Repository {
 	return &Repository{
 		db: db,
 	}
 }
 
-func (db *Repository) GetByUUID(uuid entities.UUID) (entities.URL, error) {
+func (repo *Repository) GetByUUID(uuid entities.UUID) (entities.URL, error) {
 	// TODO: Implement
 	return entities.URL{}, nil
 }
 
-func (db *Repository) GetByTarget(target entities.Target) (entities.URL, error) {
+func (repo *Repository) GetByTarget(target entities.Target) (entities.URL, error) {
 	// TODO: Implement
 	return entities.URL{}, nil
 }
 
-func (db *Repository) CreateURL(entity entities.URL) (entities.URL, error) {
+func (repo *Repository) CreateURL(entity entities.URL) (entities.URL, error) {
 	// TODO: Implement
 	return entities.URL{}, nil
 }
 
-func (db *Repository) DeleteURL(id entities.ID) (entities.URL, error) {
+func (repo *Repository) DeleteURL(id entities.ID) (entities.URL, error) {
 	// TODO: Implement
 	return entities.URL{}, nil
 }
 
-func (db *Repository) GetURLsThatMatchTargets(matchTargets ...string) ([]entities.URL, error) {
+func (repo *Repository) GetURLsThatMatchTargets(matchTargets ...string) ([]entities.URL, error) {
 	// TODO: Implement
 	return []entities.URL{}, nil
 }
 
-func (db *Repository) GetByID(id entities.ID) (entities.URL, error) {
+func (repo *Repository) GetByID(id entities.ID) (entities.URL, error) {
 	// TODO: Implement
 	return entities.URL{}, nil
 }
 
-func (db *Repository) GetAllInPage(page uint, perPage uint) ([]entities.URL, error) {
+func (repo *Repository) GetAllInPage(page uint, perPage uint) ([]entities.URL, error) {
 	// TODO: Implement
 	return []entities.URL{}, nil
 }

@@ -1,12 +1,14 @@
 package storage
 
-import "database/sql"
+import (
+	"github.com/jmoiron/sqlx"
+)
 
 var (
 	repository *Repository
 )
 
-func Start(db *sql.DB) error {
+func Start(db *sqlx.DB) error {
 	repository = newStorage(db)
 
 	return nil

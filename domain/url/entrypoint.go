@@ -2,8 +2,8 @@ package url
 
 import (
 	"context"
-	"database/sql"
 	"errors"
+	"github.com/jmoiron/sqlx"
 
 	"github.com/NordGus/shrtnr/domain/url/create"
 	"github.com/NordGus/shrtnr/domain/url/find"
@@ -18,7 +18,7 @@ var (
 )
 
 // Start initializes all services in the domain
-func Start(ctx context.Context, env string, db *sql.DB, maxUrl uint, maxConcurrency uint, searchLimit int, redirectHost string) error {
+func Start(ctx context.Context, env string, db *sqlx.DB, maxUrl uint, maxConcurrency uint, searchLimit int, redirectHost string) error {
 	messagebus.Start(ctx)
 
 	err := storage.Start(db)
