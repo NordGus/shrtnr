@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"flag"
 	"fmt"
 	"log"
@@ -38,9 +39,10 @@ func init() {
 }
 
 func main() {
+	var db *sql.DB
 	ctx := context.Background()
 
-	err := domain.Start(ctx, *environment, *urlLimit, *maxSearchConcurrency, *searchTermLimits, *redirectHost)
+	err := domain.Start(ctx, *environment, db, *urlLimit, *maxSearchConcurrency, *searchTermLimits, *redirectHost)
 	if err != nil {
 		log.Fatalln(err)
 	}
