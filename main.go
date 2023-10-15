@@ -4,23 +4,21 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"log"
 	"net/http"
 
 	"github.com/NordGus/shrtnr/domain"
 	"github.com/NordGus/shrtnr/domain/shared/middleware"
-	"github.com/NordGus/shrtnr/domain/url/redirect"
 	"github.com/NordGus/shrtnr/fileserver"
 	hypermedia "github.com/NordGus/shrtnr/http"
 
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
 	environment          *string
-	redirectHost         *string
 	port                 *int
 	urlLimit             *uint
 	searchTermLimits     *int
@@ -29,7 +27,6 @@ var (
 
 func init() {
 	environment = flag.String("env", "development", "defines application environment")
-	redirectHost = flag.String("redirect-host", "l.hst:4269", "defines the short redirect host")
 	port = flag.Int("port", 4269, "port where the app will listened")
 	urlLimit = flag.Uint("capacity", 2500, "limit of URLs that the service can contain")
 	searchTermLimits = flag.Int("search-term-limit", 10, "the limit of terms that the search cache returns when called")
@@ -42,7 +39,7 @@ func main() {
 	var db *sqlx.DB
 	ctx := context.Background()
 
-	err := domain.Start(ctx, *environment, db, *urlLimit, *maxSearchConcurrency, *searchTermLimits, *redirectHost)
+	err := domain.Start(ctx, *environment, db, *urlLimit, *maxSearchConcurrency, *searchTermLimits)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -53,7 +50,7 @@ func main() {
 	}
 
 	router := chi.NewRouter()
-	router.Use(chimiddleware.Logger, redirect.Middleware)
+	router.Use(chimiddleware.RequestID, chimiddleware.Logger)
 
 	if *environment == "development" {
 		router.Use(middleware.CORS)
