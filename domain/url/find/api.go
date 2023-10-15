@@ -28,3 +28,15 @@ func GetURL(id entities.ID) (entities.URL, error) {
 		return response.record, response.err
 	}
 }
+
+func GetByUUID(uuid entities.UUID) (entities.URL, error) {
+	select {
+	case <-ctx.Done():
+		return entities.URL{}, ctx.Err()
+	default:
+		response := buildGetURLByUUIDResponse(uuid)
+		response = railway.AndThen(response, getURLByUUID)
+
+		return response.record, response.err
+	}
+}

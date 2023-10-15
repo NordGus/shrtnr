@@ -62,6 +62,10 @@ func newID(response newURLResponse) newURLResponse {
 	return response
 }
 
+func (i ID) String() string {
+	return uuid.UUID(i).String()
+}
+
 type UUID string
 
 // NewUUID validates the given uuid and translates it to the domain specific UUID
@@ -84,6 +88,10 @@ func newUUID(response newURLResponse) newURLResponse {
 	}
 
 	return response
+}
+
+func (u UUID) String() string {
+	return string(u)
 }
 
 type Target string
@@ -118,6 +126,10 @@ func newCreatedAt(response newURLResponse) newURLResponse {
 	return response
 }
 
+func (c CreatedAt) Time() time.Time {
+	return time.Time(c)
+}
+
 type DeletedAt time.Time
 
 // newDeletedAt validates the given deletedAt and translates it to the domain specific DeletedAt
@@ -133,4 +145,8 @@ func newDeletedAt(response newURLResponse) newURLResponse {
 	}
 
 	return response
+}
+
+func (d DeletedAt) Time() time.Time {
+	return time.Time(d)
 }
