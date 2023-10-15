@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+var (
+	InvalidUUIDErr = errors.New("entities: URL uuid invalid")
+)
+
 // URL is the domain representation of an url entity in the application
 type URL struct {
 	ID        ID
@@ -78,13 +82,8 @@ func NewUUID(uuid string) (UUID, error) {
 
 // newUUID validates the given uuid and translates it to the domain specific UUID
 func newUUID(response newURLResponse) newURLResponse {
-	u, err := NewUUID(response.uuid)
-	if err != nil {
-		response.err = errors.Join(response.err, err)
-	}
-
-	if response.err == nil {
-		response.record.UUID = u
+	if len(response.uuid) != 8 {
+		response.err = InvalidUUIDErr
 	}
 
 	return response
