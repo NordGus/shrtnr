@@ -14,10 +14,12 @@ var (
 	files embed.FS
 )
 
-func Routes(r chi.Router) {
+func PublicRoutes(r chi.Router) {
 	r.Get("/dist", http.RedirectHandler("/dist/", http.StatusMovedPermanently).ServeHTTP)
 	r.Get("/dist/*", http.FileServer(http.FS(files)).ServeHTTP)
+}
 
+func PrivateRoutes(r chi.Router) {
 	r.Group(func(pr chi.Router) {
 		pr.Use(placeholderMiddleware)
 

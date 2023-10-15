@@ -60,7 +60,8 @@ func main() {
 	}
 
 	hypermedia.Routes(router)
-	fileserver.Routes(router)
+	fileserver.PublicRoutes(router)
+	fileserver.PrivateRoutes(router)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", *port), router)
 	if err != nil {
