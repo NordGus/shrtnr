@@ -133,6 +133,10 @@ func (c CreatedAt) Time() time.Time {
 	return time.Time(c)
 }
 
+func (c CreatedAt) Unix() int64 {
+	return time.Time(c).Unix()
+}
+
 type DeletedAt time.Time
 
 // newDeletedAt validates the given deletedAt and translates it to the domain specific DeletedAt
@@ -152,4 +156,8 @@ func newDeletedAt(response newURLResponse) newURLResponse {
 
 func (d DeletedAt) Time() time.Time {
 	return time.Time(d)
+}
+
+func (d DeletedAt) Unix() int64 {
+	return time.Time(d).Unix()
 }

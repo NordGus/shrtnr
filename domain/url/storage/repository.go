@@ -2,6 +2,7 @@ package storage
 
 import (
 	"errors"
+	"log"
 	"time"
 
 	"github.com/NordGus/shrtnr/domain/url/entities"
@@ -27,6 +28,11 @@ func newRepository(db *sqlx.DB) *Repository {
 	}
 }
 
+func (repo *Repository) GetByID(id entities.ID) (entities.URL, error) {
+	// TODO: Implement
+	return entities.URL{}, errors.New("storage: not implemented")
+}
+
 func (repo *Repository) GetByUUID(uuid entities.UUID) (entities.URL, error) {
 	var (
 		rcrd   record
@@ -34,7 +40,7 @@ func (repo *Repository) GetByUUID(uuid entities.UUID) (entities.URL, error) {
 		term   = uuid.String()
 	)
 
-	err := repo.db.Get(&rcrd, "SELECT * FROM urls WHERE uuid = '?';", term)
+	err := repo.db.Get(&rcrd, "SELECT * FROM urls WHERE uuid = ?;", term)
 	if err != nil {
 		return entity, err
 	}
@@ -53,8 +59,28 @@ func (repo *Repository) GetByTarget(target entities.Target) (entities.URL, error
 }
 
 func (repo *Repository) CreateURL(entity entities.URL) (entities.URL, error) {
-	// TODO: Implement
-	return entities.URL{}, errors.New("storage: not implemented")
+	tx, err := repo.db.Begin()
+	if err != nil {
+		return entities.URL{}, err
+	}
+
+	_, err = tx.Exec(
+		"INSERT INTO urls (id, uuid, target, created_at, deleted_at) VALUES (?, ?, ?, ?, ?)", entity.ID.String(),
+		entity.UUID.String(), entity.Target.String(), entity.CreatedAt.Unix(), entity.DeletedAt.Unix())
+	if err != nil {
+		if err := tx.Rollback(); err != nil {
+			log.Fatalln(err)
+		}
+
+		return entities.URL{}, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return entities.URL{}, err
+	}
+
+	return entity, nil
 }
 
 func (repo *Repository) DeleteURL(id entities.ID) (entities.URL, error) {
@@ -65,11 +91,6 @@ func (repo *Repository) DeleteURL(id entities.ID) (entities.URL, error) {
 func (repo *Repository) GetURLsThatMatchTargets(matchTargets ...string) ([]entities.URL, error) {
 	// TODO: Implement
 	return []entities.URL{}, errors.New("storage: not implemented")
-}
-
-func (repo *Repository) GetByID(id entities.ID) (entities.URL, error) {
-	// TODO: Implement
-	return entities.URL{}, errors.New("storage: not implemented")
 }
 
 func (repo *Repository) GetAllInPage(page uint, perPage uint) ([]entities.URL, error) {
