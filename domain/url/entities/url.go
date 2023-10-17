@@ -86,6 +86,10 @@ func newUUID(response newURLResponse) newURLResponse {
 		response.err = InvalidUUIDErr
 	}
 
+	if response.err == nil {
+		response.record.UUID = UUID(response.uuid)
+	}
+
 	return response
 }
 
