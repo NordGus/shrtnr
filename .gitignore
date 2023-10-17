@@ -158,3 +158,6 @@ fileserver/private/*
 .idea
 !fileserver/dist/keep.txt
 !fileserver/private/keep.txt
+
+data/*
+!data/.keep
