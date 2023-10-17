@@ -15,16 +15,19 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var (
 	environment *string
 	port        *int
+	dbPath      *string
 )
 
 func init() {
 	environment = flag.String("env", "development", "defines services environment")
 	port = flag.Int("port", 4269, "port where the app will listened")
+	dbPath = flag.String("db-file-path", "./data/shrtnr.db", "path to SQLite DB file")
 
 	flag.Parse()
 }
@@ -36,8 +39,20 @@ func main() {
 		router = chi.NewRouter()
 	)
 
+	db, err := sqlx.Open("sqlite3", *dbPath)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer func(db *sqlx.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}(db)
+
 	// URL domain storage initialization. Must be started first.
-	err := storage.Start(db)
+	err = storage.Start(db)
 	if err != nil {
 		log.Fatalln(err)
 	}

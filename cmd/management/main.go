@@ -15,11 +15,13 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var (
 	environment          *string
 	port                 *int
+	dbPath               *string
 	urlLimit             *uint
 	searchTermLimits     *int
 	maxSearchConcurrency *uint
@@ -28,6 +30,7 @@ var (
 func init() {
 	environment = flag.String("env", "development", "defines application environment")
 	port = flag.Int("port", 4269, "port where the app will listened")
+	dbPath = flag.String("db-file-path", "./data/shrtnr.db", "path to SQLite DB file")
 	urlLimit = flag.Uint("capacity", 2500, "limit of URLs that the service can contain")
 	searchTermLimits = flag.Int("search-term-limit", 10, "the limit of terms that the search cache returns when called")
 	maxSearchConcurrency = flag.Uint("search-concurrency", 30, "limits the amount of concurrent processes when checking trie cache for searching functionality")
@@ -36,10 +39,24 @@ func init() {
 }
 
 func main() {
-	var db *sqlx.DB
-	ctx := context.Background()
+	var (
+		db  *sqlx.DB
+		ctx = context.Background()
+	)
 
-	err := domain.Start(ctx, *environment, db, *urlLimit, *maxSearchConcurrency, *searchTermLimits)
+	db, err := sqlx.Open("sqlite3", *dbPath)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer func(db *sqlx.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}(db)
+
+	err = domain.Start(ctx, *environment, db, *urlLimit, *maxSearchConcurrency, *searchTermLimits)
 	if err != nil {
 		log.Fatalln(err)
 	}

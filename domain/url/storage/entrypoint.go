@@ -9,7 +9,7 @@ var (
 )
 
 func Start(db *sqlx.DB) error {
-	repository = newStorage(db)
+	repository = newRepository(db)
 
 	return nil
 }
