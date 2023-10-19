@@ -1,0 +1,18 @@
+{{ define "form" }}
+    <form class="flex justify-center w-full gap-1" id="new-url-form">
+        <input type="hidden" is="url-id-input" name="id" value="{{ .ID }}" />
+        <input type="hidden" is="url-uuid-input" name="uuid" value="{{ .UUID }}" />
+
+        <label for="target" class="flex-1">
+            <input
+                    type="text"
+                    name="target"
+                    value="{{ .Target }}"
+                    placeholder="Add URL to System"
+                    class="text-neutral-900 bg-neutral-300 min-w-[300px] w-full text-lg p-2 rounded dark:bg-stone-600 dark:text-neutral-100"
+            />
+        </label>
+
+        <button type="submit" class="rounded px-[1rem] font-medium text-2xl bg-green-500">+</button>
+    </form>
+{{ end }}

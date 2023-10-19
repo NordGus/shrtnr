@@ -3,6 +3,7 @@ package http
 import (
 	"embed"
 	"errors"
+	"github.com/NordGus/shrtnr/http/url"
 	"html/template"
 
 	hlprs "github.com/NordGus/shrtnr/http/helpers"
@@ -35,12 +36,12 @@ func Start(env string) error {
 		return errors.Join(InitializationErr, err)
 	}
 
-	views, err = views.New("app").Funcs(hlprs.Base).ParseFS(templates, "templates/app.gohtml")
-	if err != nil {
-		return errors.Join(InitializationErr, err)
-	}
-
 	manifest = mnfst.NewManifest(env)
+
+	err = url.Start(environment, templates)
+	if err != nil {
+		return err
+	}
 
 	return err
 }

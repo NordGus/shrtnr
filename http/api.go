@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"github.com/NordGus/shrtnr/http/url"
 	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
@@ -12,7 +13,8 @@ func Routes(r chi.Router) {
 
 	r.Get("/manifest.json", manifestHandler)
 	r.Get("/", baseHandler)
-	r.Get("/app", appHandler)
+	r.Get("/url", url.AppletHandler)
+	r.Get("/url/new", url.NewURLHandler)
 }
 
 func manifestHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,14 +33,6 @@ func manifestHandler(w http.ResponseWriter, r *http.Request) {
 
 func baseHandler(w http.ResponseWriter, _ *http.Request) {
 	err := views.ExecuteTemplate(w, "layout", nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func appHandler(w http.ResponseWriter, _ *http.Request) {
-	err := views.ExecuteTemplate(w, "app", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

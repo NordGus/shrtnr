@@ -1,0 +1,13 @@
+{{ define "applet" }}
+    <div id="app" class="flex-1 p-3 m-auto grid grid-cols-1 grid-rows-layout w-full max-w-[420px] max-h-screen lg:max-h-[95vh] lg:rounded-md lg:drop-shadow-lg">
+        <div id="search">
+            <p>Placeholder</p>
+        </div>
+        <div>
+            <p>list of registered urls</p>
+        </div>
+        <div id="new" class="flex flex-row justify-center">
+            <p hx-get="/url/new" hx-trigger="load" hx-target="#new" hx-swap="innerHTML">Loading</p>
+        </div>
+    </div>
+{{ end }}

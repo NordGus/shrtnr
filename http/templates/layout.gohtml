@@ -10,7 +10,7 @@
             {{ end }}
 
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Vite + TS</title>
+            <title>Shrtnr</title>
 
             {{ if eq environment "production" }}
             <link rel="stylesheet" href="/dist/application.css">
@@ -18,12 +18,12 @@
 
             <link rel="manifest" href="/manifest.json">
         </head>
-        <body class="m-0 flex place-items-center min-w-[320px] min-h-[100vh] bg-neutral-200 dark:bg-stone-800 text-neutral-900 dark:text-neutral-100">
+        <body class="m-0 flex flex-col h-screen bg-neutral-200 dark:bg-stone-800 text-neutral-900 dark:text-neutral-100">
             <div
                     id="app"
                     class="my-0 mx-auto p-[2rem] text-center max-w-[1280px]"
             >
-                <p hx-get="/app" hx-trigger="load" hx-target="#app">Loading</p>
+                <p hx-get="/url" hx-trigger="load" hx-target="#app" hx-swap="outerHTML">Loading</p>
             </div>
 
             {{ if eq environment "production" }}
