@@ -21,6 +21,16 @@ func Start(env string, templates fs.FS) error {
 		return err
 	}
 
+	views, err = views.New("urls").Funcs(helpers.Base).ParseFS(templates, "templates/url/urls.gohtml")
+	if err != nil {
+		return err
+	}
+
+	views, err = views.New("url").Funcs(helpers.Base).ParseFS(templates, "templates/url/url.gohtml")
+	if err != nil {
+		return err
+	}
+
 	views, err = views.New("form").Funcs(helpers.Base).ParseFS(templates, "templates/url/form.gohtml")
 	if err != nil {
 		return err

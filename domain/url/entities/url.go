@@ -38,7 +38,7 @@ func (s newURLResponse) Success() bool {
 
 // NewURL translate external data into the domain specific URL struct or returns an error
 func NewURL(id string, uuid string, target string, createdAt time.Time, deletedAt time.Time) (URL, error) {
-	var sig = newURLResponse{id: id, uuid: uuid, target: target, createdAt: createdAt, deletedAt: deletedAt}
+	var sig = newURLResponse{id: id, uuid: uuid, target: target, createdAt: createdAt, deletedAt: deletedAt, record: URL{}, err: nil}
 
 	resp := railway.OrThen(sig, newID)
 	resp = railway.OrThen(resp, newUUID)
@@ -46,7 +46,7 @@ func NewURL(id string, uuid string, target string, createdAt time.Time, deletedA
 	resp = railway.OrThen(resp, newCreatedAt)
 	resp = railway.OrThen(resp, newDeletedAt)
 
-	return sig.record, sig.err
+	return resp.record, resp.err
 }
 
 // ID represents the URL entity's storage uuid.UUID

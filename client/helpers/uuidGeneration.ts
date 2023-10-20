@@ -8,6 +8,13 @@ export function generateUUID(size: number): string {
 
   window.crypto.getRandomValues(arr)
 
+  for (let i = sets.length - 1; i > 0; i--) {
+    const j: number = Math.floor(Math.random() * (i + 1))
+    const tmp = sets[i]
+    sets[i] = sets[j]
+    sets[j] = tmp
+  }
+
   return Array.from(arr, (num) => { return sets[num % sets.length] }).join("")
 }
 

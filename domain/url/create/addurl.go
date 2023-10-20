@@ -26,7 +26,7 @@ func (s addURLResponse) Success() bool {
 }
 
 func newAddURLResponse(entity entities.URL) addURLResponse {
-	return addURLResponse{new: entity}
+	return addURLResponse{new: entity, oldRecord: entities.URL{}, record: entities.URL{}, err: nil}
 }
 
 func validateUUIDUniqueness(response addURLResponse) addURLResponse {

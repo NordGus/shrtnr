@@ -3,8 +3,8 @@
         <div id="search">
             <p>Placeholder</p>
         </div>
-        <div>
-            <p>list of registered urls</p>
+        <div id="urls">
+            <p class="hidden" hx-get="/urls?page=1" hx-trigger="load" hx-target="#urls" hx-swap="beforeend">Loading</p>
         </div>
         <div id="new" class="flex flex-row justify-center">
             <p hx-get="/url/new" hx-trigger="load" hx-target="#new" hx-swap="innerHTML">Loading</p>

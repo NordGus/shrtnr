@@ -1,5 +1,5 @@
 {{ define "form" }}
-    <form class="flex justify-center w-full gap-1" id="new-url-form">
+    <form hx-put="/url/create" class="flex justify-center w-full gap-1" id="new-url-form">
         <input type="hidden" is="url-id-input" name="id" value="{{ .ID }}" />
         <input type="hidden" is="url-uuid-input" name="uuid" value="{{ .UUID }}" />
 

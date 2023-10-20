@@ -16,6 +16,25 @@ type Response[T any] interface {
 	SetDeletedAt(deletedAt time.Time) T
 }
 
+func PaginateURLs[T Response[T]](page uint, resp []T) ([]T, int, error) {
+	records, err := find.PaginateURLs(page, uint(len(resp)))
+	if err != nil {
+		return resp, len(records), err
+	}
+
+	for i := 0; i < len(records); i++ {
+		record := records[i]
+
+		resp[i] = resp[i].SetID(record.ID.String()).
+			SetUUID(record.UUID.String()).
+			SetTarget(record.Target.String()).
+			SetCreatedAt(record.CreatedAt.Time()).
+			SetDeletedAt(record.DeletedAt.Time())
+	}
+
+	return resp, len(records), nil
+}
+
 func FindURLByUUID[T Response[T]](uuid string, resp T) (T, error) {
 	id, err := entities.NewUUID(uuid)
 	if err != nil {

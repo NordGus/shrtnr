@@ -94,6 +94,25 @@ func (repo *Repository) GetURLsThatMatchTargets(matchTargets ...string) ([]entit
 }
 
 func (repo *Repository) GetAllInPage(page uint, perPage uint) ([]entities.URL, error) {
-	// TODO: Implement
-	return []entities.URL{}, errors.New("storage: not implemented")
+	var (
+		err   error
+		rcrds = make([]record, 0, perPage)
+		ents  = make([]entities.URL, 0, perPage)
+	)
+
+	err = repo.db.Select(&rcrds, "SELECT * FROM urls ORDER BY created_at LIMIT ? OFFSET ?", perPage, (page-1)*perPage)
+	if err != nil {
+		return ents, err
+	}
+
+	for _, rcrd := range rcrds {
+		u, err := entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Unix(rcrd.DeletedAt, 0))
+		if err != nil {
+			return ents, err
+		}
+
+		ents = append(ents, u)
+	}
+
+	return ents, nil
 }

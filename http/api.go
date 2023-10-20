@@ -14,7 +14,9 @@ func Routes(r chi.Router) {
 	r.Get("/manifest.json", manifestHandler)
 	r.Get("/", baseHandler)
 	r.Get("/url", url.AppletHandler)
+	r.Get("/urls", url.GetURLsHandler)
 	r.Get("/url/new", url.NewURLHandler)
+	r.Put("/url/create", url.CreateURLHandler)
 }
 
 func manifestHandler(w http.ResponseWriter, r *http.Request) {
