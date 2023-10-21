@@ -87,7 +87,7 @@ func GetURLsHandler(w http.ResponseWriter, r *http.Request) {
 
 	copy(data.URLs, rcrds)
 
-	err = views.ExecuteTemplate(w, "urls", data)
+	err = views.ExecuteTemplate(w, "page", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -127,7 +127,7 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = views.ExecuteTemplate(w, "url", rcrd)
+	err = views.ExecuteTemplate(w, "created", rcrd)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

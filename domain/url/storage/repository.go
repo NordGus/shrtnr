@@ -100,7 +100,7 @@ func (repo *Repository) GetAllInPage(page uint, perPage uint) ([]entities.URL, e
 		ents  = make([]entities.URL, 0, perPage)
 	)
 
-	err = repo.db.Select(&rcrds, "SELECT * FROM urls ORDER BY created_at LIMIT ? OFFSET ?", perPage, (page-1)*perPage)
+	err = repo.db.Select(&rcrds, "SELECT * FROM urls ORDER BY created_at DESC LIMIT ? OFFSET ?", perPage, (page-1)*perPage)
 	if err != nil {
 		return ents, err
 	}

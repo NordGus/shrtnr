@@ -1,0 +1,11 @@
+{{ define "page" }}
+    <div id="urls" hx-swap-oob="beforeend">
+        {{ range .URLs }}
+            {{ template "url" . }}
+        {{ end }}
+
+        {{ $length := len .URLs }} {{ if eq $length .PerPage }}
+            <p hx-get="/urls?page={{ .NextPage }}" hx-trigger="load" hx-target="#urls" hx-swap="none">Loading</p>
+        {{ end }}
+    </div>
+{{ end }}

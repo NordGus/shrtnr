@@ -1,5 +1,8 @@
 {{ define "url" }}
-    <div id="url--{{ .ID }}">
+    <div
+            id="url--{{ .ID }}"
+            class="bg-neutral-100 dark:bg-stone-700 p-3 mb-3 rounded drop-shadow-lg"
+    >
         <p>ID: {{ .ID }}</p>
         <p>UUID: {{ .UUID }}</p>
         <p>Target: {{ .Target }}</p>
