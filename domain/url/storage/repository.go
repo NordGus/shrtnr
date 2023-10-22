@@ -54,8 +54,23 @@ func (repo *Repository) GetByUUID(uuid entities.UUID) (entities.URL, error) {
 }
 
 func (repo *Repository) GetByTarget(target entities.Target) (entities.URL, error) {
-	// TODO: Implement
-	return entities.URL{}, errors.New("storage: not implemented")
+	var (
+		rcrd   record
+		term   = target.String()
+		entity entities.URL
+	)
+
+	err := repo.db.Get(&rcrd, "SELECT * FROM urls WHERE target = ?", term)
+	if err != nil {
+		return entity, err
+	}
+
+	entity, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Unix(rcrd.DeletedAt, 0))
+	if err != nil {
+		return entity, err
+	}
+
+	return entity, nil
 }
 
 func (repo *Repository) CreateURL(entity entities.URL) (entities.URL, error) {
