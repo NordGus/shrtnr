@@ -5,7 +5,7 @@
         {{ end }}
 
         {{ $length := len .URLs }} {{ if eq $length .PerPage }}
-            <p hx-get="/urls?page={{ .NextPage }}" hx-trigger="load" hx-target="#urls" hx-swap="none">Loading</p>
+            <p class="hidden" hx-get="/urls?page={{ .NextPage }}" hx-trigger="load" hx-target="#urls" hx-swap="none">Loading</p>
         {{ end }}
     </div>
 {{ end }}
