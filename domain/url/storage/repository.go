@@ -1,8 +1,8 @@
 package storage
 
 import (
+	"database/sql"
 	"errors"
-	"log"
 	"time"
 
 	"github.com/NordGus/shrtnr/domain/url/entities"
@@ -11,11 +11,11 @@ import (
 )
 
 type record struct {
-	ID        string `db:"id"`
-	UUID      string `db:"uuid"`
-	Target    string `db:"target"`
-	CreatedAt int64  `db:"created_at"`
-	DeletedAt int64  `db:"deleted_at"`
+	ID        string        `db:"id"`
+	UUID      string        `db:"uuid"`
+	Target    string        `db:"target"`
+	CreatedAt int64         `db:"created_at"`
+	DeletedAt sql.NullInt64 `db:"deleted_at"`
 }
 
 type Repository struct {
@@ -45,9 +45,14 @@ func (repo *Repository) GetByUUID(uuid entities.UUID) (entities.URL, error) {
 		return entity, err
 	}
 
-	entity, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Unix(rcrd.DeletedAt, 0))
+	if rcrd.DeletedAt.Valid {
+		entity, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Unix(rcrd.DeletedAt.Int64, 0))
+	} else {
+		entity, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Time{})
+	}
+
 	if err != nil {
-		return entity, err
+		return entities.URL{}, err
 	}
 
 	return entity, nil
@@ -65,32 +70,44 @@ func (repo *Repository) GetByTarget(target entities.Target) (entities.URL, error
 		return entity, err
 	}
 
-	entity, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Unix(rcrd.DeletedAt, 0))
+	if rcrd.DeletedAt.Valid {
+		entity, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Unix(rcrd.DeletedAt.Int64, 0))
+	} else {
+		entity, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Time{})
+	}
+
 	if err != nil {
-		return entity, err
+		return entities.URL{}, err
 	}
 
 	return entity, nil
 }
 
 func (repo *Repository) CreateURL(entity entities.URL) (entities.URL, error) {
-	tx, err := repo.db.Begin()
+	var (
+		id        = entity.ID.String()
+		uuid      = entity.UUID.String()
+		target    = entity.Target.String()
+		createdAt = entity.CreatedAt.Unix()
+		deletedAt sql.NullInt64
+	)
+
+	if !entity.DeletedAt.Time().Equal(time.Time{}) {
+		deletedAt.Int64 = entity.DeletedAt.Unix()
+		deletedAt.Valid = true
+	}
+
+	_, err := repo.db.Exec("INSERT INTO urls (id, uuid, target, created_at, deleted_at) VALUES (?, ?, ?, ?, ?)", id, uuid, target, createdAt, deletedAt)
 	if err != nil {
 		return entities.URL{}, err
 	}
 
-	_, err = tx.Exec(
-		"INSERT INTO urls (id, uuid, target, created_at, deleted_at) VALUES (?, ?, ?, ?, ?)", entity.ID.String(),
-		entity.UUID.String(), entity.Target.String(), entity.CreatedAt.Unix(), entity.DeletedAt.Unix())
-	if err != nil {
-		if err := tx.Rollback(); err != nil {
-			log.Fatalln(err)
-		}
-
-		return entities.URL{}, err
+	if deletedAt.Valid {
+		entity, err = entities.NewURL(id, uuid, target, time.Unix(createdAt, 0), time.Unix(deletedAt.Int64, 0))
+	} else {
+		entity, err = entities.NewURL(id, uuid, target, time.Unix(createdAt, 0), time.Time{})
 	}
 
-	err = tx.Commit()
 	if err != nil {
 		return entities.URL{}, err
 	}
@@ -121,7 +138,14 @@ func (repo *Repository) GetAllInPage(page uint, perPage uint) ([]entities.URL, e
 	}
 
 	for _, rcrd := range rcrds {
-		u, err := entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Unix(rcrd.DeletedAt, 0))
+		var u entities.URL
+
+		if rcrd.DeletedAt.Valid {
+			u, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Unix(rcrd.DeletedAt.Int64, 0))
+		} else {
+			u, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0), time.Time{})
+		}
+
 		if err != nil {
 			return ents, err
 		}
