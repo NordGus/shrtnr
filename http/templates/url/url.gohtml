@@ -3,8 +3,10 @@
             id="url--{{ .ID }}"
             class="bg-neutral-100 dark:bg-stone-700 p-3 mb-3 rounded drop-shadow-lg"
     >
-        <p class="text-2xl mb-3">Original: <a class="no-underline text-indigo-600 dark:text-indigo-400 hover:underline" href="{{ .Target }}">{{ .Target }}</a></p>
-        <p class="text-2xl mb-4">Short: <a class="no-underline text-indigo-600 dark:text-indigo-400 hover:underline" href="{{ .UUID }}">{{ .UUID }}</a></p>
-        <p class="text-md text-neutral-400 dark:text-neutral-400">Added At: {{ .CreatedAt }}</p>
+        <p class="text-md mb-1">From: </p>
+        <a class="block text-xl mb-3 no-underline text-indigo-600 dark:text-indigo-400 hover:underline" href="{{ .Target }}">{{ .Target }}</a>
+        <p class="text-md mb-1">To:</p>
+        <a class="block text-xl mb-4 no-underline text-indigo-600 dark:text-indigo-400 hover:underline" href="{{ toRedirectionURL .UUID }}" target="_blank">{{ toRedirectionURL .UUID }}</a>
+        <p class="text-md text-neutral-400 dark:text-neutral-400">Added At: {{ formatDate .CreatedAt }}</p>
     </div>
 {{ end }}

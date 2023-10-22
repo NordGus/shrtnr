@@ -22,11 +22,11 @@ var (
 	manifest mnfst.Manifest
 )
 
-func Start(env string) error {
+func Start(env string, redirectHost string) error {
 	var err error
 
 	// sub-packages initialization
-	hlprs.Start(env)
+	hlprs.Start(env, redirectHost)
 
 	environment = env
 

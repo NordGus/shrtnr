@@ -25,6 +25,7 @@ var (
 	urlLimit             *uint
 	searchTermLimits     *int
 	maxSearchConcurrency *uint
+	redirectHost         *string
 )
 
 func init() {
@@ -34,6 +35,7 @@ func init() {
 	urlLimit = flag.Uint("capacity", 2500, "limit of URLs that the service can contain")
 	searchTermLimits = flag.Int("search-term-limit", 10, "the limit of terms that the search cache returns when called")
 	maxSearchConcurrency = flag.Uint("search-concurrency", 30, "limits the amount of concurrent processes when checking trie cache for searching functionality")
+	redirectHost = flag.String("redirect-service-url", "http://localhost:4269/r", "url to the redirection service")
 
 	flag.Parse()
 }
@@ -61,7 +63,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	err = hypermedia.Start(*environment)
+	err = hypermedia.Start(*environment, *redirectHost)
 	if err != nil {
 		log.Fatalln(err)
 	}
