@@ -19,7 +19,6 @@ type urlRecord struct {
 	UUID      string
 	Target    string
 	CreatedAt time.Time
-	DeletedAt time.Time
 }
 
 func (r urlRecord) SetID(id string) urlRecord {
@@ -39,11 +38,6 @@ func (r urlRecord) SetTarget(target string) urlRecord {
 
 func (r urlRecord) SetCreatedAt(createdAt time.Time) urlRecord {
 	r.CreatedAt = createdAt
-	return r
-}
-
-func (r urlRecord) SetDeletedAt(deletedAt time.Time) urlRecord {
-	r.DeletedAt = deletedAt
 	return r
 }
 

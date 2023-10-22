@@ -17,7 +17,6 @@ type URL struct {
 	UUID      UUID
 	Target    Target
 	CreatedAt CreatedAt
-	DeletedAt DeletedAt
 }
 
 // newURLResponse represents the inputs and outputs of the control flow of the NewURL function
@@ -26,7 +25,6 @@ type newURLResponse struct {
 	uuid      string
 	target    string
 	createdAt time.Time
-	deletedAt time.Time
 	record    URL
 	err       error
 }
@@ -37,14 +35,13 @@ func (s newURLResponse) Success() bool {
 }
 
 // NewURL translate external data into the domain specific URL struct or returns an error
-func NewURL(id string, uuid string, target string, createdAt time.Time, deletedAt time.Time) (URL, error) {
-	var sig = newURLResponse{id: id, uuid: uuid, target: target, createdAt: createdAt, deletedAt: deletedAt, record: URL{}, err: nil}
+func NewURL(id string, uuid string, target string, createdAt time.Time) (URL, error) {
+	var sig = newURLResponse{id: id, uuid: uuid, target: target, createdAt: createdAt, record: URL{}, err: nil}
 
 	resp := railway.OrThen(sig, newID)
 	resp = railway.OrThen(resp, newUUID)
 	resp = railway.OrThen(resp, newTarget)
 	resp = railway.OrThen(resp, newCreatedAt)
-	resp = railway.OrThen(resp, newDeletedAt)
 
 	return resp.record, resp.err
 }
@@ -138,26 +135,3 @@ func (c CreatedAt) Unix() int64 {
 }
 
 type DeletedAt time.Time
-
-// newDeletedAt validates the given deletedAt and translates it to the domain specific DeletedAt
-func newDeletedAt(response newURLResponse) newURLResponse {
-	var comp time.Time
-
-	if response.deletedAt.Before(response.createdAt) && !response.deletedAt.Equal(comp) {
-		response.err = errors.Join(response.err, errors.New("url: can't be deleted before being created"))
-	}
-
-	if response.err == nil {
-		response.record.DeletedAt = DeletedAt(response.deletedAt)
-	}
-
-	return response
-}
-
-func (d DeletedAt) Time() time.Time {
-	return time.Time(d)
-}
-
-func (d DeletedAt) Unix() int64 {
-	return time.Time(d).Unix()
-}

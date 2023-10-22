@@ -7,7 +7,6 @@ type Target struct {
 	uuid       string
 	redirectTo string
 	createdAt  time.Time
-	deletedAt  time.Time
 }
 
 func (t Target) SetID(id string) Target {
@@ -30,12 +29,6 @@ func (t Target) SetTarget(target string) Target {
 
 func (t Target) SetCreatedAt(createdAt time.Time) Target {
 	t.createdAt = createdAt
-
-	return t
-}
-
-func (t Target) SetDeletedAt(deletedAt time.Time) Target {
-	t.deletedAt = deletedAt
 
 	return t
 }

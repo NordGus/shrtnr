@@ -13,7 +13,6 @@ type Response[T any] interface {
 	SetUUID(uuid string) T
 	SetTarget(target string) T
 	SetCreatedAt(createdAt time.Time) T
-	SetDeletedAt(deletedAt time.Time) T
 }
 
 func PaginateURLs[T Response[T]](page uint, resp []T) ([]T, int, error) {
@@ -28,8 +27,7 @@ func PaginateURLs[T Response[T]](page uint, resp []T) ([]T, int, error) {
 		resp[i] = resp[i].SetID(record.ID.String()).
 			SetUUID(record.UUID.String()).
 			SetTarget(record.Target.String()).
-			SetCreatedAt(record.CreatedAt.Time()).
-			SetDeletedAt(record.DeletedAt.Time())
+			SetCreatedAt(record.CreatedAt.Time())
 	}
 
 	return resp, len(records), nil
@@ -49,14 +47,13 @@ func FindURLByUUID[T Response[T]](uuid string, resp T) (T, error) {
 	resp = resp.SetID(record.ID.String()).
 		SetUUID(record.UUID.String()).
 		SetTarget(record.Target.String()).
-		SetCreatedAt(record.CreatedAt.Time()).
-		SetDeletedAt(record.DeletedAt.Time())
+		SetCreatedAt(record.CreatedAt.Time())
 
 	return resp, nil
 }
 
 func CreateURL[T Response[T]](id string, uuid string, target string, resp T) (T, error) {
-	record, err := entities.NewURL(id, uuid, target, time.Now(), time.Time{})
+	record, err := entities.NewURL(id, uuid, target, time.Now())
 	if err != nil {
 		return resp, err
 	}
@@ -69,8 +66,7 @@ func CreateURL[T Response[T]](id string, uuid string, target string, resp T) (T,
 	resp = resp.SetID(record.ID.String()).
 		SetUUID(record.UUID.String()).
 		SetTarget(record.Target.String()).
-		SetCreatedAt(record.CreatedAt.Time()).
-		SetDeletedAt(record.DeletedAt.Time())
+		SetCreatedAt(record.CreatedAt.Time())
 
 	return resp, nil
 }
