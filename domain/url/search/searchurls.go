@@ -2,7 +2,9 @@ package search
 
 import (
 	"errors"
+	"fmt"
 	"github.com/NordGus/shrtnr/domain/url/entities"
+	"strings"
 )
 
 type searchURLsResponse struct {
@@ -17,16 +19,43 @@ func (s searchURLsResponse) Success() bool {
 }
 
 func buildSearchURLsResponse(term string) searchURLsResponse {
-	return searchURLsResponse{term: term}
+	return searchURLsResponse{term: term, matchers: make([]string, 0, longsLimit*4)}
 }
 
-func getMatchersFromCache(response searchURLsResponse) searchURLsResponse {
-	matchers, err := cache.FindEntries(response.term, longsLimit)
+func getMatchersFromClearTargetCache(response searchURLsResponse) searchURLsResponse {
+	term := strings.TrimPrefix("https://", response.term)
+	term = strings.TrimPrefix("http://", term)
+
+	matchers, err := clearTargetCache.FindEntries(term, longsLimit)
 	if err != nil {
 		response.err = errors.Join(response.err, err)
 	}
 
-	response.matchers = matchers
+	response.matchers = append(response.matchers, matchers...)
+
+	return response
+}
+
+func getMatchersFromFullTargetCache(response searchURLsResponse) searchURLsResponse {
+	matchers, err := fullTargetCache.FindEntries(response.term, longsLimit)
+	if err != nil {
+		response.err = errors.Join(response.err, err)
+	}
+
+	response.matchers = append(response.matchers, matchers...)
+
+	return response
+}
+
+func getMatchersFromShortCache(response searchURLsResponse) searchURLsResponse {
+	term := strings.TrimPrefix(fmt.Sprintf("%s/", redirectURL), response.term)
+
+	matchers, err := shortCache.FindEntries(term, longsLimit)
+	if err != nil {
+		response.err = errors.Join(response.err, err)
+	}
+
+	response.matchers = append(response.matchers, matchers...)
 
 	return response
 }

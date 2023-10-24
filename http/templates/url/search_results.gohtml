@@ -1,0 +1,17 @@
+{{ define "search_results" }}
+    <div id="urls" hx-swap-oob="innerHTML">
+        <button
+                class="bg-neutral-100 dark:bg-stone-700 p-3 mb-3 rounded drop-shadow-lg w-full cursor-pointer"
+                hx-get="/urls?page=1"
+                hx-target="#urls"
+                hx-trigger="click"
+                hx-swap="none"
+        >
+            Clear Search
+        </button>
+
+        {{ range .URLs }}
+            {{ template "url" . }}
+        {{ end }}
+    </div>
+{{ end }}

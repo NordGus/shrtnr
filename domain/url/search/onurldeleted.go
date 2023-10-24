@@ -1,6 +1,7 @@
 package search
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/NordGus/shrtnr/domain/url/entities"
@@ -10,8 +11,14 @@ func onUrlDeletedSubscriber(record entities.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 
-	entry := strings.TrimPrefix("https://", record.Target.String())
-	entry = strings.TrimPrefix("http://", entry)
+	clearTargetEntry := strings.TrimPrefix("https://", record.Target.String())
+	clearTargetEntry = strings.TrimPrefix("http://", clearTargetEntry)
 
-	return cache.RemoveEntry(entry)
+	err := errors.Join(
+		clearTargetCache.RemoveEntry(clearTargetEntry),
+		fullTargetCache.RemoveEntry(record.Target.String()),
+		shortCache.RemoveEntry(record.UUID.String()),
+	)
+
+	return err
 }

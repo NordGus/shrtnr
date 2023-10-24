@@ -18,7 +18,7 @@ var (
 )
 
 // Start initializes all services in the domain
-func Start(ctx context.Context, env string, db *sqlx.DB, maxUrl uint, maxConcurrency uint, searchLimit int) error {
+func Start(ctx context.Context, env string, db *sqlx.DB, maxUrl uint, maxConcurrency uint, searchLimit int, redirectHost string) error {
 	messagebus.Start(ctx)
 
 	err := storage.Start(db)
@@ -27,7 +27,7 @@ func Start(ctx context.Context, env string, db *sqlx.DB, maxUrl uint, maxConcurr
 	}
 
 	create.Start(ctx, maxUrl)
-	search.Start(ctx, maxConcurrency, searchLimit)
+	search.Start(ctx, maxConcurrency, searchLimit, redirectHost, maxUrl)
 
 	err = find.Start(ctx)
 	if err != nil {

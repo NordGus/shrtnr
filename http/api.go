@@ -17,6 +17,7 @@ func Routes(r chi.Router) {
 	r.Get("/urls", url.GetURLsHandler)
 	r.Get("/url/new", url.NewURLHandler)
 	r.Put("/url/create", url.CreateURLHandler)
+	r.Post("/url/search", url.GetSearchResults)
 }
 
 func manifestHandler(w http.ResponseWriter, r *http.Request) {

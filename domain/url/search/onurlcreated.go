@@ -10,10 +10,12 @@ func onUrlCreatedSubscriber(record entities.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 
-	entry := strings.TrimPrefix("https://", record.Target.String())
-	entry = strings.TrimPrefix("http://", entry)
+	clearTargetEntry := strings.TrimPrefix("https://", record.Target.String())
+	clearTargetEntry = strings.TrimPrefix("http://", clearTargetEntry)
 
-	cache.AddEntry(entry)
+	clearTargetCache.AddEntry(clearTargetEntry)
+	fullTargetCache.AddEntry(record.Target.String())
+	shortCache.AddEntry(record.UUID.String())
 
 	return nil
 }

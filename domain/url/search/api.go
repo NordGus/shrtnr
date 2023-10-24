@@ -14,7 +14,9 @@ func SearchURLs(term string) ([]entities.URL, error) {
 		defer lock.RUnlock()
 
 		resp := buildSearchURLsResponse(term)
-		resp = railway.AndThen(resp, getMatchersFromCache)
+		resp = railway.AndThen(resp, getMatchersFromClearTargetCache)
+		resp = railway.AndThen(resp, getMatchersFromFullTargetCache)
+		resp = railway.AndThen(resp, getMatchersFromShortCache)
 		resp = railway.AndThen(resp, getRecordsFromRepository)
 
 		return resp.records, resp.err

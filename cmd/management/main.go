@@ -58,7 +58,7 @@ func main() {
 		}
 	}(db)
 
-	err = domain.Start(ctx, *environment, db, *urlLimit, *maxSearchConcurrency, *searchTermLimits)
+	err = domain.Start(ctx, *environment, db, *urlLimit, *maxSearchConcurrency, *searchTermLimits, *redirectHost)
 	if err != nil {
 		log.Fatalln(err)
 	}

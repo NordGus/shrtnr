@@ -26,7 +26,17 @@ func Start(env string, templates fs.FS) error {
 		return err
 	}
 
+	views, err = views.New("search_form").Funcs(helpers.Base).ParseFS(templates, "templates/url/search_form.gohtml")
+	if err != nil {
+		return err
+	}
+
 	views, err = views.New("page").Funcs(helpers.Base).ParseFS(templates, "templates/url/page.gohtml")
+	if err != nil {
+		return err
+	}
+
+	views, err = views.New("search_results").Funcs(helpers.Base).ParseFS(templates, "templates/url/search_results.gohtml")
 	if err != nil {
 		return err
 	}

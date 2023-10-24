@@ -5,5 +5,6 @@ import (
 )
 
 type Repository interface {
+	GetAllRecords(limit uint) ([]entities.URL, error)
 	GetURLsThatMatchTargets(matchTargets ...string) ([]entities.URL, error)
 }

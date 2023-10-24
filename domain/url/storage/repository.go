@@ -26,6 +26,35 @@ func newRepository(db *sqlx.DB) *Repository {
 	}
 }
 
+// GetAllRecords returns requested records in the database ordered from newest to oldest.
+//
+// When limit is 0 (zero) it returns all records in the database.
+func (repo *Repository) GetAllRecords(limit uint) ([]entities.URL, error) {
+	var (
+		err   error
+		rcrds = make([]record, 0)
+		ents  = make([]entities.URL, 0)
+	)
+
+	err = repo.db.Select(&rcrds, "SELECT * FROM urls ORDER BY created_at DESC LIMIT ?", limit)
+	if err != nil {
+		return ents, err
+	}
+
+	ents = make([]entities.URL, 0, len(rcrds))
+
+	for _, rcrd := range rcrds {
+		u, err := entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0))
+		if err != nil {
+			return ents, err
+		}
+
+		ents = append(ents, u)
+	}
+
+	return ents, nil
+}
+
 func (repo *Repository) GetByID(id entities.ID) (entities.URL, error) {
 	// TODO: Implement
 	return entities.URL{}, errors.New("storage: not implemented")

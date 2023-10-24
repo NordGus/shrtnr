@@ -8,10 +8,14 @@ import (
 	"time"
 )
 
-type NewURLViewModel struct {
+type NewURLForm struct {
 	ID     string
 	UUID   string
 	Target string
+}
+
+type SearchURLForm struct {
+	Term string
 }
 
 type urlRecord struct {
@@ -70,13 +74,15 @@ func GetURLsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		URLs     []urlRecord
-		PerPage  uint
-		NextPage uint
+		URLs       []urlRecord
+		PerPage    uint
+		NextPage   uint
+		SearchForm SearchURLForm
 	}{
 		make([]urlRecord, total),
 		10,
 		uint(page) + 1,
+		SearchURLForm{},
 	}
 
 	copy(data.URLs, rcrds)
@@ -84,11 +90,12 @@ func GetURLsHandler(w http.ResponseWriter, r *http.Request) {
 	err = views.ExecuteTemplate(w, "page", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
 func NewURLHandler(w http.ResponseWriter, _ *http.Request) {
-	var vm NewURLViewModel
+	var vm NewURLForm
 
 	err := views.ExecuteTemplate(w, "form", vm)
 	if err != nil {
@@ -102,7 +109,7 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 		uuid   = r.FormValue("uuid")
 		target = r.FormValue("target")
 
-		vm   NewURLViewModel
+		vm   NewURLForm
 		rcrd urlRecord
 		err  error
 	)
@@ -131,6 +138,33 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 	err = views.ExecuteTemplate(w, "form", vm)
 	if err != nil {
 		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func GetSearchResults(w http.ResponseWriter, r *http.Request) {
+	var (
+		rcrds      = make([]urlRecord, 10)
+		page  uint = 1
+		err   error
+	)
+
+	rcrds, total, err := url.PaginateURLs(page, rcrds)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		URLs []urlRecord
+	}{
+		make([]urlRecord, total),
+	}
+
+	copy(data.URLs, rcrds)
+
+	err = views.ExecuteTemplate(w, "search_results", data)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

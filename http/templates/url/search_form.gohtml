@@ -1,0 +1,16 @@
+{{ define "search_form" }}
+    <form id="search-url-form" class="flex justify-center w-full gap-1">
+        <label for="term" class="flex-1">
+            <input
+                    type="text"
+                    name="term"
+                    value="{{ .Term }}"
+                    placeholder="Search URL in System"
+                    class="text-neutral-900 bg-neutral-100 min-w-[300px] w-full text-lg p-2 rounded dark:bg-stone-600 dark:text-neutral-100"
+                    hx-post="/url/search"
+                    hx-swap="none"
+                    hx-trigger="keyup changed delay:500ms"
+            />
+        </label>
+    </form>
+{{ end }}
