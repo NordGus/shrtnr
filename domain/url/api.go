@@ -4,6 +4,7 @@ import (
 	"github.com/NordGus/shrtnr/domain/url/create"
 	"github.com/NordGus/shrtnr/domain/url/entities"
 	"github.com/NordGus/shrtnr/domain/url/find"
+	"github.com/NordGus/shrtnr/domain/url/search"
 	"time"
 )
 
@@ -67,6 +68,25 @@ func CreateURL[T Response[T]](id string, uuid string, target string, resp T) (T,
 		SetUUID(record.UUID.String()).
 		SetTarget(record.Target.String()).
 		SetCreatedAt(record.CreatedAt.Time())
+
+	return resp, nil
+}
+
+func SearchURLsBy[T Response[T]](term string, resp []T) ([]T, error) {
+	records, err := search.ByTerm(term)
+	if err != nil {
+		return resp, err
+	}
+
+	resp = make([]T, len(records))
+
+	for i, record := range records {
+		resp[i] = resp[i].
+			SetID(record.ID.String()).
+			SetUUID(record.UUID.String()).
+			SetTarget(record.Target.String()).
+			SetCreatedAt(record.CreatedAt.Time())
+	}
 
 	return resp, nil
 }

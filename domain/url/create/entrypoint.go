@@ -24,8 +24,6 @@ func Start(otherCtx context.Context, maxUrl uint) {
 	repository = storage.GetRepository()
 
 	fillCache(maxUrl)
-
-	log.Println("urls in create queue", cache.Size())
 }
 
 func fillCache(recordsLimit uint) {

@@ -5,7 +5,7 @@ import (
 	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
-func SearchURLs(term string) ([]entities.URL, error) {
+func ByTerm(term string) ([]entities.URL, error) {
 	select {
 	case <-ctx.Done():
 		return []entities.URL{}, ctx.Err()

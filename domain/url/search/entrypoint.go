@@ -39,10 +39,6 @@ func Start(parentCtx context.Context, maxConcurrency uint, searchLimit int, redi
 
 	created.Subscribe(onUrlCreatedSubscriber)
 	deleted.Subscribe(onUrlDeletedSubscriber)
-
-	log.Println("urls in clearTargetCache", clearTargetCache.Size())
-	log.Println("urls in fullTargetCache", fullTargetCache.Size())
-	log.Println("urls in shortCache", shortCache.Size())
 }
 
 func fillCaches(recordsLimit uint) {
@@ -52,8 +48,9 @@ func fillCaches(recordsLimit uint) {
 	}
 
 	for _, rcrd := range rcrds {
-		clearTargetEntry := strings.TrimPrefix("https://", rcrd.Target.String())
-		clearTargetEntry = strings.TrimPrefix("http://", clearTargetEntry)
+		clearTargetEntry := strings.TrimPrefix(rcrd.Target.String(), "https://")
+		clearTargetEntry = strings.TrimPrefix(clearTargetEntry, "http://")
+		clearTargetEntry = strings.TrimPrefix(clearTargetEntry, "www.")
 
 		clearTargetCache.AddEntry(clearTargetEntry)
 		fullTargetCache.AddEntry(rcrd.Target.String())

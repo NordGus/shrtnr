@@ -3,8 +3,11 @@ package search
 import (
 	"errors"
 	"fmt"
+	"github.com/NordGus/shrtnr/domain/shared/trie"
 	"github.com/NordGus/shrtnr/domain/url/entities"
+	"log"
 	"strings"
+	"sync"
 )
 
 type searchURLsResponse struct {
@@ -19,26 +22,35 @@ func (s searchURLsResponse) Success() bool {
 }
 
 func buildSearchURLsResponse(term string) searchURLsResponse {
-	return searchURLsResponse{term: term, matchers: make([]string, 0, longsLimit*4)}
+	return searchURLsResponse{
+		term:     term,
+		matchers: make([]string, 0, longsLimit*4),
+		records:  make([]entities.URL, 0, longsLimit),
+	}
 }
 
 func getMatchersFromClearTargetCache(response searchURLsResponse) searchURLsResponse {
-	term := strings.TrimPrefix("https://", response.term)
-	term = strings.TrimPrefix("http://", term)
+	term := strings.ToLower(response.term)
+	term = strings.TrimPrefix(term, "https://")
+	term = strings.TrimPrefix(term, "http://")
 
 	matchers, err := clearTargetCache.FindEntries(term, longsLimit)
-	if err != nil {
+	if err != nil && !errors.Is(err, trie.EntryNotPresentErr) {
 		response.err = errors.Join(response.err, err)
 	}
 
-	response.matchers = append(response.matchers, matchers...)
+	for _, matcher := range matchers {
+		response.matchers = append(response.matchers, "%"+matcher)
+	}
 
 	return response
 }
 
 func getMatchersFromFullTargetCache(response searchURLsResponse) searchURLsResponse {
-	matchers, err := fullTargetCache.FindEntries(response.term, longsLimit)
-	if err != nil {
+	term := strings.ToLower(response.term)
+
+	matchers, err := fullTargetCache.FindEntries(term, longsLimit)
+	if err != nil && !errors.Is(err, trie.EntryNotPresentErr) {
 		response.err = errors.Join(response.err, err)
 	}
 
@@ -48,10 +60,10 @@ func getMatchersFromFullTargetCache(response searchURLsResponse) searchURLsRespo
 }
 
 func getMatchersFromShortCache(response searchURLsResponse) searchURLsResponse {
-	term := strings.TrimPrefix(fmt.Sprintf("%s/", redirectURL), response.term)
+	term := strings.TrimPrefix(response.term, fmt.Sprintf("%s/", redirectURL))
 
 	matchers, err := shortCache.FindEntries(term, longsLimit)
-	if err != nil {
+	if err != nil && !errors.Is(err, trie.EntryNotPresentErr) {
 		response.err = errors.Join(response.err, err)
 	}
 
@@ -61,12 +73,67 @@ func getMatchersFromShortCache(response searchURLsResponse) searchURLsResponse {
 }
 
 func getRecordsFromRepository(response searchURLsResponse) searchURLsResponse {
-	records, err := repository.GetURLsThatMatchTargets(response.matchers...)
-	if err != nil {
-		response.err = errors.Join(response.err, err)
-	}
+	var (
+		count int
 
-	response.records = records
+		resultsCh = make(chan []entities.URL, 3)
+		wg        = new(sync.WaitGroup)
+		added     = make(map[entities.ID]bool)
+	)
+
+	wg.Add(3)
+
+	go func(wg *sync.WaitGroup, resultsCh chan<- []entities.URL, matchers []string) {
+		defer wg.Done()
+
+		records, err := repository.GetURLsLikeTargets(uint(longsLimit), matchers...)
+		if err != nil {
+			log.Println(err)
+		}
+
+		resultsCh <- records
+	}(wg, resultsCh, response.matchers)
+
+	go func(wg *sync.WaitGroup, resultsCh chan<- []entities.URL, matchers []string) {
+		defer wg.Done()
+
+		records, err := repository.GetURLsByTargets(uint(longsLimit), matchers...)
+		if err != nil {
+			log.Println(err)
+		}
+
+		resultsCh <- records
+	}(wg, resultsCh, response.matchers)
+
+	go func(wg *sync.WaitGroup, resultsCh chan<- []entities.URL, matchers []string) {
+		defer wg.Done()
+
+		records, err := repository.GetURLsByUUIDs(uint(longsLimit), matchers...)
+		if err != nil {
+			log.Println(err)
+		}
+
+		resultsCh <- records
+	}(wg, resultsCh, response.matchers)
+
+	wg.Wait()
+	close(resultsCh)
+
+	for results := range resultsCh {
+		for _, result := range results {
+			if count == longsLimit {
+				break
+			}
+
+			if _, ok := added[result.ID]; ok {
+				continue
+			}
+
+			added[result.ID] = true
+			response.records = append(response.records, result)
+			count++
+		}
+	}
 
 	return response
 }

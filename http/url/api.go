@@ -144,13 +144,19 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetSearchResults(w http.ResponseWriter, r *http.Request) {
 	var (
-		rcrds      = make([]urlRecord, 10)
-		page  uint = 1
+		rcrds = make([]urlRecord, 0)
+		term  = r.FormValue("term")
 		err   error
 	)
 
-	rcrds, total, err := url.PaginateURLs(page, rcrds)
+	if term == "" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	rcrds, err = url.SearchURLsBy(term, rcrds)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -158,13 +164,12 @@ func GetSearchResults(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		URLs []urlRecord
 	}{
-		make([]urlRecord, total),
+		rcrds,
 	}
-
-	copy(data.URLs, rcrds)
 
 	err = views.ExecuteTemplate(w, "search_results", data)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
