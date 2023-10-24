@@ -5,6 +5,7 @@ import (
 )
 
 type Repository interface {
+	GetAllRecords(limit uint) ([]entities.URL, error)
 	GetByUUID(uuid entities.UUID) (entities.URL, error)
 	GetByTarget(target entities.Target) (entities.URL, error)
 	CreateURL(entity entities.URL) (entities.URL, error)

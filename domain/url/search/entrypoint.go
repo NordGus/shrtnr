@@ -39,6 +39,10 @@ func Start(parentCtx context.Context, maxConcurrency uint, searchLimit int, redi
 
 	created.Subscribe(onUrlCreatedSubscriber)
 	deleted.Subscribe(onUrlDeletedSubscriber)
+
+	log.Println("urls in clearTargetCache", clearTargetCache.Size())
+	log.Println("urls in fullTargetCache", fullTargetCache.Size())
+	log.Println("urls in shortCache", shortCache.Size())
 }
 
 func fillCaches(recordsLimit uint) {

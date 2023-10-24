@@ -59,3 +59,7 @@ func (q *Queue[T]) Peek() (T, error) {
 func (q *Queue[T]) IsFull() bool {
 	return q.count == q.size
 }
+
+func (q *Queue[T]) Size() uint {
+	return q.count
+}

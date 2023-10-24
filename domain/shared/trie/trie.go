@@ -194,3 +194,7 @@ func (t *Trie) recursivelyFindEntries(ctx context.Context, wg *sync.WaitGroup, o
 		}
 	}
 }
+
+func (t *Trie) Size() uint {
+	return t.count
+}
