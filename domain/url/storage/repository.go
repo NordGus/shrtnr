@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"errors"
-	"fmt"
 	"strings"
 	"time"
 
@@ -52,19 +50,14 @@ func (repo *Repository) GetAllRecords(limit uint) ([]entities.URL, error) {
 	return ents, nil
 }
 
-func (repo *Repository) GetByID(id entities.ID) (entities.URL, error) {
-	// TODO: Implement
-	return entities.URL{}, errors.New("storage: not implemented")
-}
-
 func (repo *Repository) GetByUUID(uuid entities.UUID) (entities.URL, error) {
 	var (
-		rcrd   record
+		rcrd = record{UUID: uuid.String()}
+
 		entity entities.URL
-		term   = uuid.String()
 	)
 
-	err := repo.db.Get(&rcrd, "SELECT * FROM urls WHERE uuid = ?;", term)
+	err := repo.db.Get(&rcrd, "SELECT * FROM urls WHERE uuid = ?;", rcrd.UUID)
 	if err != nil {
 		return entity, err
 	}
@@ -79,12 +72,12 @@ func (repo *Repository) GetByUUID(uuid entities.UUID) (entities.URL, error) {
 
 func (repo *Repository) GetByTarget(target entities.Target) (entities.URL, error) {
 	var (
-		rcrd   record
-		term   = target.String()
+		rcrd = record{Target: target.String()}
+
 		entity entities.URL
 	)
 
-	err := repo.db.Get(&rcrd, "SELECT * FROM urls WHERE target = ?", term)
+	err := repo.db.Get(&rcrd, "SELECT * FROM urls WHERE target = ?", rcrd.Target)
 	if err != nil {
 		return entity, err
 	}
@@ -98,14 +91,14 @@ func (repo *Repository) GetByTarget(target entities.Target) (entities.URL, error
 }
 
 func (repo *Repository) CreateURL(entity entities.URL) (entities.URL, error) {
-	rcrd := record{
+	var rcrd = record{
 		ID:        entity.ID.String(),
 		UUID:      entity.UUID.String(),
 		Target:    entity.Target.String(),
 		CreatedAt: entity.CreatedAt.Unix(),
 	}
 
-	_, err := repo.db.Exec("INSERT INTO urls (id, uuid, target, created_at) VALUES (:id, :uuid, :target, :created_at)", rcrd)
+	_, err := repo.db.NamedExec("INSERT INTO urls (id, uuid, target, created_at) VALUES (:id, :uuid, :target, :created_at)", rcrd)
 	if err != nil {
 		return entities.URL{}, err
 	}
@@ -119,8 +112,24 @@ func (repo *Repository) CreateURL(entity entities.URL) (entities.URL, error) {
 }
 
 func (repo *Repository) DeleteURL(id entities.ID) (entities.URL, error) {
-	// TODO: Implement
-	return entities.URL{}, errors.New("storage: not implemented")
+	var rcrd = record{ID: id.String()}
+
+	err := repo.db.Get(&rcrd, "SELECT * FROM urls WHERE id = ?", rcrd.ID)
+	if err != nil {
+		return entities.URL{}, err
+	}
+
+	_, err = repo.db.NamedExec("DELETE FROM urls WHERE id = :id", rcrd)
+	if err != nil {
+		return entities.URL{}, err
+	}
+
+	entity, err := entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0))
+	if err != nil {
+		return entities.URL{}, err
+	}
+
+	return entity, nil
 }
 
 func (repo *Repository) GetURLsLikeTargets(limit uint, targets ...string) ([]entities.URL, error) {
@@ -133,22 +142,24 @@ func (repo *Repository) GetURLsLikeTargets(limit uint, targets ...string) ([]ent
 		queryBuilder strings.Builder
 
 		rcrds  = make([]record, 0, limit)
-		params = make([]interface{}, len(targets))
+		params = make([]interface{}, len(targets), len(targets)+1)
 	)
 
 	queryBuilder.WriteString("SELECT * FROM urls WHERE ")
 
 	for i, target := range targets {
 		queryBuilder.WriteString("target LIKE ? ")
+		params[i] = target
 
-		if i < len(targets)-2 {
-			queryBuilder.WriteString("OR ")
+		if i >= len(targets)-2 {
+			continue
 		}
 
-		params[i] = target
+		queryBuilder.WriteString("OR ")
 	}
 
-	queryBuilder.WriteString(fmt.Sprintf("ORDER BY created_at DESC LIMIT %v", limit))
+	queryBuilder.WriteString("ORDER BY created_at DESC LIMIT ?")
+	params = append(params, limit)
 
 	err := repo.db.Select(&rcrds, queryBuilder.String(), params...)
 	if err != nil {
@@ -175,7 +186,8 @@ func (repo *Repository) GetURLsByTargets(limit uint, targets ...string) ([]entit
 	}
 
 	var (
-		rcrds   = make([]record, 0, limit)
+		rcrds = make([]record, 0, limit)
+
 		results []entities.URL
 	)
 
@@ -239,12 +251,14 @@ func (repo *Repository) GetURLsByUUIDs(limit uint, uuids ...string) ([]entities.
 
 func (repo *Repository) GetAllInPage(page uint, perPage uint) ([]entities.URL, error) {
 	var (
-		err   error
 		rcrds = make([]record, 0, perPage)
 		ents  = make([]entities.URL, 0, perPage)
+
+		limit  = perPage
+		offset = (page - 1) * perPage
 	)
 
-	err = repo.db.Select(&rcrds, "SELECT * FROM urls ORDER BY created_at DESC LIMIT ? OFFSET ?", perPage, (page-1)*perPage)
+	err := repo.db.Select(&rcrds, "SELECT * FROM urls ORDER BY created_at DESC LIMIT ? OFFSET ?", limit, offset)
 	if err != nil {
 		return ents, err
 	}

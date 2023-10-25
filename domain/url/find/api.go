@@ -17,18 +17,6 @@ func PaginateURLs(page uint, perPage uint) ([]entities.URL, error) {
 	}
 }
 
-func GetURL(id entities.ID) (entities.URL, error) {
-	select {
-	case <-ctx.Done():
-		return entities.URL{}, ctx.Err()
-	default:
-		response := buildGetURLResponse(id)
-		response = railway.AndThen(response, getURL)
-
-		return response.record, response.err
-	}
-}
-
 func GetByUUID(uuid entities.UUID) (entities.URL, error) {
 	select {
 	case <-ctx.Done():
