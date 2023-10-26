@@ -131,7 +131,7 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 		vm.UUID = uuid
 		vm.Target = target
 
-		err = views.ExecuteTemplate(w, "error_toast", err.Error())
+		err := views.ExecuteTemplate(w, "error_toast", err.Error())
 		if err != nil {
 			log.Println(err)
 
@@ -140,7 +140,7 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err == nil {
-		err = views.ExecuteTemplate(w, "created", rcrd)
+		err := views.ExecuteTemplate(w, "created", rcrd)
 		if err != nil {
 			log.Println(err)
 
@@ -158,7 +158,7 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err == nil && oldrcrd.UUID != "" {
-		err = views.ExecuteTemplate(w, "deleted", oldrcrd)
+		err := views.ExecuteTemplate(w, "deleted", oldrcrd)
 		if err != nil {
 			log.Println(err)
 
@@ -166,7 +166,7 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = views.ExecuteTemplate(w, "success_toast", fmt.Sprintf("%s removed from system because of overflow", oldrcrd.Target))
+		err = views.ExecuteTemplate(w, "warning_toast", fmt.Sprintf("%s removed from system to make space for %s", oldrcrd.Target, rcrd.Target))
 		if err != nil {
 			log.Println(err)
 

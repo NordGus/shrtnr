@@ -1,0 +1,12 @@
+{{ define "warning_toast" }}
+    <div id="toasts" hx-swap-oob="beforeend">
+        <div class="drop-shadow-lg rounded text-neutral-900">
+            <div class="bg-yellow-500 p-2 rounded-t">
+                <p class="text-xl font-medium">{{ . }}</p>
+            </div>
+            <parent-destroyer class="bg-yellow-600 hover:bg-yellow-700 p-2 rounded-b flex justify-center cursor-pointer">
+                <span>Clear</span>
+            </parent-destroyer>
+        </div>
+    </div>
+{{ end }}

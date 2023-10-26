@@ -66,5 +66,10 @@ func Start(env string, templates fs.FS) error {
 		return err
 	}
 
+	views, err = views.New("warning_toast").Funcs(helpers.Base).ParseFS(templates, "templates/shared/warning_toast.gohtml")
+	if err != nil {
+		return err
+	}
+
 	return err
 }

@@ -8,7 +8,9 @@ import (
 )
 
 var (
-	InvalidUUIDErr = errors.New("entities: URL uuid invalid")
+	InvalidUUIDErr        = errors.New("entities: URL uuid invalid")
+	TargetBlankErr        = errors.New("entities: URL target can't be blank")
+	CreatedInTheFutureErr = errors.New("entities: URL can't be created in the future")
 )
 
 // URL is the domain representation of an url entity in the application
@@ -106,6 +108,10 @@ type Target string
 
 // newTarget validates the given target and translates it to the domain specific Target
 func newTarget(response newURLResponse) newURLResponse {
+	if response.target == "" {
+		response.err = errors.Join(response.err, TargetBlankErr)
+	}
+
 	// TODO: check if the link is reachable
 
 	if response.err == nil {
@@ -124,7 +130,7 @@ type CreatedAt time.Time
 // newCreatedAt validates the given createdAt and translates it to the domain specific CreatedAt
 func newCreatedAt(response newURLResponse) newURLResponse {
 	if response.createdAt.After(time.Now()) {
-		response.err = errors.Join(response.err, errors.New("url: can't be created in the future"))
+		response.err = errors.Join(response.err, CreatedInTheFutureErr)
 	}
 
 	if response.err == nil {
