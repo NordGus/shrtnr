@@ -48,12 +48,16 @@ func fillCaches(recordsLimit uint) {
 	}
 
 	for _, rcrd := range rcrds {
-		clearTargetEntry := strings.TrimPrefix(rcrd.Target.String(), "https://")
-		clearTargetEntry = strings.TrimPrefix(clearTargetEntry, "http://")
-		clearTargetEntry = strings.TrimPrefix(clearTargetEntry, "www.")
-
-		clearTargetCache.AddEntry(clearTargetEntry)
+		clearTargetCache.AddEntry(clearTargetEntry(rcrd.Target.String()))
 		fullTargetCache.AddEntry(rcrd.Target.String())
 		shortCache.AddEntry(rcrd.UUID.String())
 	}
+}
+
+func clearTargetEntry(target string) string {
+	clearEntry := strings.TrimPrefix(target, "https://")
+	clearEntry = strings.TrimPrefix(clearEntry, "http://")
+	clearEntry = strings.TrimPrefix(clearEntry, "www.")
+
+	return clearEntry
 }

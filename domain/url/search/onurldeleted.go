@@ -2,21 +2,15 @@ package search
 
 import (
 	"errors"
-	"log"
-	"strings"
-
 	"github.com/NordGus/shrtnr/domain/url/entities"
+	"log"
 )
 
 func onUrlDeletedSubscriber(record entities.URL) error {
 	lock.Lock()
 	defer lock.Unlock()
 
-	clearTargetEntry := strings.TrimPrefix(record.Target.String(), "https://")
-	clearTargetEntry = strings.TrimPrefix(clearTargetEntry, "http://")
-	clearTargetEntry = strings.TrimPrefix(clearTargetEntry, "www.")
-
-	err1 := clearTargetCache.RemoveEntry(clearTargetEntry)
+	err1 := clearTargetCache.RemoveEntry(clearTargetEntry(record.Target.String()))
 	if err1 != nil {
 		log.Println("search: failed to remove entry from clearTargetCache", err1)
 	}

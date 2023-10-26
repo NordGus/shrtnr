@@ -171,11 +171,9 @@ func (repo *Repository) GetURLsLikeTargets(limit uint, targets ...string) ([]ent
 		queryBuilder.WriteString("target LIKE ? ")
 		params[i] = target
 
-		if i >= len(targets)-2 {
-			continue
+		if i < len(targets)-1 {
+			queryBuilder.WriteString("OR ")
 		}
-
-		queryBuilder.WriteString("OR ")
 	}
 
 	queryBuilder.WriteString("ORDER BY created_at DESC LIMIT ?")
