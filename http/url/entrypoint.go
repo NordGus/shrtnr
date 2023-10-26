@@ -51,5 +51,10 @@ func Start(env string, templates fs.FS) error {
 		return err
 	}
 
+	views, err = views.New("error_snippet").Funcs(helpers.Base).ParseFS(templates, "templates/shared/error_snippet.gohtml")
+	if err != nil {
+		return err
+	}
+
 	return err
 }

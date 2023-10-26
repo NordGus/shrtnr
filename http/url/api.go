@@ -62,14 +62,20 @@ func GetURLsHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Has("page") {
 		page, err = strconv.ParseUint(r.URL.Query().Get("page"), 10, 32)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 			return
 		}
 	}
 
 	rcrds, total, err := url.PaginateURLs(uint(page), rcrds)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		return
 	}
 
@@ -121,6 +127,11 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 		vm.UUID = uuid
 		vm.Target = target
 
+		err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
 		err = views.ExecuteTemplate(w, "form", vm)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -157,7 +168,12 @@ func GetSearchResults(w http.ResponseWriter, r *http.Request) {
 	rcrds, err = url.SearchURLsBy(term, rcrds)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+
+		err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
 		return
 	}
 
@@ -170,6 +186,10 @@ func GetSearchResults(w http.ResponseWriter, r *http.Request) {
 	err = views.ExecuteTemplate(w, "search_results", data)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+
+		err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 }
