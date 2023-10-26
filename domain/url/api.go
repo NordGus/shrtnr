@@ -4,6 +4,7 @@ import (
 	"github.com/NordGus/shrtnr/domain/url/create"
 	"github.com/NordGus/shrtnr/domain/url/entities"
 	"github.com/NordGus/shrtnr/domain/url/find"
+	"github.com/NordGus/shrtnr/domain/url/remove"
 	"github.com/NordGus/shrtnr/domain/url/search"
 	"time"
 )
@@ -53,13 +54,49 @@ func FindURLByUUID[T Response[T]](uuid string, resp T) (T, error) {
 	return resp, nil
 }
 
-func CreateURL[T Response[T]](id string, uuid string, target string, resp T) (T, error) {
-	record, err := entities.NewURL(id, uuid, target, time.Now())
+func CreateURL[T Response[T]](id string, uuid string, target string, resp T, oldResp T) (T, T, error) {
+	var (
+		err       error
+		record    entities.URL
+		oldRecord entities.URL
+	)
+
+	record, err = entities.NewURL(id, uuid, target, time.Now())
+	if err != nil {
+		return resp, oldResp, err
+	}
+
+	record, oldRecord, err = create.AddURL(record)
+	if err != nil {
+		return resp, oldResp, err
+	}
+
+	resp = resp.SetID(record.ID.String()).
+		SetUUID(record.UUID.String()).
+		SetTarget(record.Target.String()).
+		SetCreatedAt(record.CreatedAt.Time())
+
+	oldResp = oldResp.SetID(oldRecord.ID.String()).
+		SetUUID(oldRecord.UUID.String()).
+		SetTarget(oldRecord.Target.String()).
+		SetCreatedAt(oldRecord.CreatedAt.Time())
+
+	return resp, oldResp, err
+}
+
+func RemoveURL[T Response[T]](id string, resp T) (T, error) {
+	var (
+		err      error
+		recordID entities.ID
+		record   entities.URL
+	)
+
+	recordID, err = entities.NewID(id)
 	if err != nil {
 		return resp, err
 	}
 
-	record, err = create.AddURL(record)
+	record, err = remove.RemoveURL(recordID)
 	if err != nil {
 		return resp, err
 	}
@@ -69,7 +106,7 @@ func CreateURL[T Response[T]](id string, uuid string, target string, resp T) (T,
 		SetTarget(record.Target.String()).
 		SetCreatedAt(record.CreatedAt.Time())
 
-	return resp, nil
+	return resp, err
 }
 
 func SearchURLsBy[T Response[T]](term string, resp []T) ([]T, error) {

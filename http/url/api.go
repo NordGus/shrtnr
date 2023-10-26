@@ -1,7 +1,9 @@
 package url
 
 import (
+	"fmt"
 	"github.com/NordGus/shrtnr/domain/url"
+	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
 	"strconv"
@@ -62,7 +64,7 @@ func GetURLsHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Query().Has("page") {
 		page, err = strconv.ParseUint(r.URL.Query().Get("page"), 10, 32)
 		if err != nil {
-			err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+			err = views.ExecuteTemplate(w, "error_toast", err.Error())
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
@@ -72,7 +74,7 @@ func GetURLsHandler(w http.ResponseWriter, r *http.Request) {
 
 	rcrds, total, err := url.PaginateURLs(uint(page), rcrds)
 	if err != nil {
-		err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+		err = views.ExecuteTemplate(w, "error_toast", err.Error())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -115,45 +117,109 @@ func CreateURLHandler(w http.ResponseWriter, r *http.Request) {
 		uuid   = r.FormValue("uuid")
 		target = r.FormValue("target")
 
-		vm   NewURLForm
-		rcrd urlRecord
-		err  error
+		vm      NewURLForm
+		rcrd    urlRecord
+		oldrcrd urlRecord
+		err     error
 	)
 
-	rcrd, err = url.CreateURL(id, uuid, target, rcrd)
+	rcrd, oldrcrd, err = url.CreateURL(id, uuid, target, rcrd, oldrcrd)
 	if err != nil {
 		log.Println(err)
+
 		vm.ID = id
 		vm.UUID = uuid
 		vm.Target = target
 
-		err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+		err = views.ExecuteTemplate(w, "error_toast", err.Error())
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+			log.Println(err)
 
-		err = views.ExecuteTemplate(w, "form", vm)
-		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		return
 	}
 
-	err = views.ExecuteTemplate(w, "created", rcrd)
-	if err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	if err == nil {
+		err = views.ExecuteTemplate(w, "created", rcrd)
+		if err != nil {
+			log.Println(err)
+
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		err = views.ExecuteTemplate(w, "success_toast", fmt.Sprintf("%s added to system", rcrd.Target))
+		if err != nil {
+			log.Println(err)
+
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	if err == nil && oldrcrd.UUID != "" {
+		err = views.ExecuteTemplate(w, "deleted", oldrcrd)
+		if err != nil {
+			log.Println(err)
+
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		err = views.ExecuteTemplate(w, "success_toast", fmt.Sprintf("%s removed from system because of overflow", oldrcrd.Target))
+		if err != nil {
+			log.Println(err)
+
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	err = views.ExecuteTemplate(w, "form", vm)
 	if err != nil {
 		log.Println(err)
+
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
-func GetSearchResults(w http.ResponseWriter, r *http.Request) {
+func DeleteURLHandler(w http.ResponseWriter, r *http.Request) {
+	var (
+		id = chi.URLParam(r, "id")
+
+		rcrd urlRecord
+	)
+
+	rcrd, err := url.RemoveURL(id, rcrd)
+	if err != nil {
+		err = views.ExecuteTemplate(w, "error_toast", err.Error())
+		if err != nil {
+			log.Println(err)
+
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		return
+	}
+
+	err = views.ExecuteTemplate(w, "deleted", rcrd)
+	if err != nil {
+		log.Println(err)
+
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = views.ExecuteTemplate(w, "success_toast", fmt.Sprintf("%s removed from system", rcrd.Target))
+	if err != nil {
+		log.Println(err)
+
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func GetSearchResultsHandler(w http.ResponseWriter, r *http.Request) {
 	var (
 		rcrds = make([]urlRecord, 0)
 		term  = r.FormValue("term")
@@ -169,7 +235,7 @@ func GetSearchResults(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 
-		err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+		err = views.ExecuteTemplate(w, "error_toast", err.Error())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -187,7 +253,7 @@ func GetSearchResults(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 
-		err = views.ExecuteTemplate(w, "error_snippet", err.Error())
+		err = views.ExecuteTemplate(w, "error_toast", err.Error())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

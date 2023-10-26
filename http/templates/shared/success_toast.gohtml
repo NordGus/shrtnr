@@ -1,0 +1,12 @@
+{{ define "success_toast" }}
+    <div id="toasts" hx-swap-oob="beforeend">
+        <div class="drop-shadow-lg rounded text-neutral-100">
+            <div class="bg-green-500 p-2 rounded-t">
+                <p class="text-xl font-medium">{{ . }}</p>
+            </div>
+            <parent-destroyer class="bg-green-600 p-2 rounded-b flex justify-center cursor-pointer">
+                <span>Clear</span>
+            </parent-destroyer>
+        </div>
+    </div>
+{{ end }}

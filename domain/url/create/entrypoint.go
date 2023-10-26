@@ -2,6 +2,7 @@ package create
 
 import (
 	"context"
+	"github.com/NordGus/shrtnr/domain/url/messagebus/deleted"
 	"log"
 	"sync"
 
@@ -24,6 +25,8 @@ func Start(otherCtx context.Context, maxUrl uint) {
 	repository = storage.GetRepository()
 
 	fillCache(maxUrl)
+
+	deleted.Subscribe(onUrlDeletedSubscriber)
 }
 
 func fillCache(recordsLimit uint) {

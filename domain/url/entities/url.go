@@ -49,6 +49,14 @@ func NewURL(id string, uuid string, target string, createdAt time.Time) (URL, er
 // ID represents the URL entity's storage uuid.UUID
 type ID uuid.UUID
 
+// NewID validates the given id and translates it to the domain specific ID
+func NewID(id string) (ID, error) {
+	resp := newURLResponse{id: id}
+	resp = railway.AndThen(resp, newID)
+
+	return resp.record.ID, resp.err
+}
+
 // newID validates the given id and translates it to the domain specific ID
 func newID(response newURLResponse) newURLResponse {
 	validUUID, err := uuid.Parse(response.id)

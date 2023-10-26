@@ -46,12 +46,22 @@ func Start(env string, templates fs.FS) error {
 		return err
 	}
 
+	views, err = views.New("deleted").Funcs(helpers.Base).ParseFS(templates, "templates/url/deleted.gohtml")
+	if err != nil {
+		return err
+	}
+
 	views, err = views.New("form").Funcs(helpers.Base).ParseFS(templates, "templates/url/form.gohtml")
 	if err != nil {
 		return err
 	}
 
-	views, err = views.New("error_snippet").Funcs(helpers.Base).ParseFS(templates, "templates/shared/error_snippet.gohtml")
+	views, err = views.New("error_toast").Funcs(helpers.Base).ParseFS(templates, "templates/shared/error_toast.gohtml")
+	if err != nil {
+		return err
+	}
+
+	views, err = views.New("success_toast").Funcs(helpers.Base).ParseFS(templates, "templates/shared/success_toast.gohtml")
 	if err != nil {
 		return err
 	}

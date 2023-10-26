@@ -5,10 +5,10 @@ import (
 	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
-func AddURL(entity entities.URL) (entities.URL, error) {
+func AddURL(entity entities.URL) (entities.URL, entities.URL, error) {
 	select {
 	case <-ctx.Done():
-		return entities.URL{}, ctx.Err()
+		return entities.URL{}, entities.URL{}, ctx.Err()
 	default:
 		lock.Lock()
 		defer lock.Unlock()
@@ -21,6 +21,6 @@ func AddURL(entity entities.URL) (entities.URL, error) {
 		response = railway.AndThen(response, persistNewURl)
 		response = railway.AndThen(response, addUrlToQueue)
 
-		return response.record, response.err
+		return response.record, response.oldRecord, response.err
 	}
 }

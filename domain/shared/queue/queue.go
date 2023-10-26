@@ -3,9 +3,12 @@ package queue
 import "errors"
 
 var (
-	IsFullErr  = errors.New("queue: is full")
-	IsEmptyErr = errors.New("queue: is empty")
+	IsFullErr       = errors.New("queue: is full")
+	IsEmptyErr      = errors.New("queue: is empty")
+	ItemNotFoundErr = errors.New("queue: item not found")
 )
+
+type CompareFunc[T any] func(i T, j T) bool
 
 type Queue[T any] struct {
 	items []T
@@ -30,6 +33,26 @@ func (q *Queue[T]) Push(item T) error {
 	q.count++
 
 	return nil
+}
+
+// FindAndRemoveBy searches an item in the Queue and removes it. If it doesn't find it returns ItemNotFoundErr.
+func (q *Queue[T]) FindAndRemoveBy(item T, is CompareFunc[T]) error {
+	for i := 0; i < len(q.items); i++ {
+		if !is(item, q.items[i]) {
+			continue
+		}
+
+		items := make([]T, 0, q.size)
+		items = append(items, q.items[:i]...)
+		items = append(items, q.items[i+1:]...)
+
+		q.items = items
+		q.count--
+
+		return nil
+	}
+
+	return ItemNotFoundErr
 }
 
 func (q *Queue[T]) Pop() (T, error) {

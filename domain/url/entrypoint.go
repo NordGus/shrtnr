@@ -3,6 +3,7 @@ package url
 import (
 	"context"
 	"errors"
+	"github.com/NordGus/shrtnr/domain/url/remove"
 
 	"github.com/NordGus/shrtnr/domain/url/create"
 	"github.com/NordGus/shrtnr/domain/url/find"
@@ -27,6 +28,7 @@ func Start(ctx context.Context, env string, db *sqlx.DB, maxUrl uint, maxConcurr
 	}
 
 	create.Start(ctx, maxUrl)
+	remove.Start(ctx)
 	search.Start(ctx, maxConcurrency, searchLimit, redirectHost, maxUrl)
 
 	err = find.Start(ctx)

@@ -50,6 +50,26 @@ func (repo *Repository) GetAllRecords(limit uint) ([]entities.URL, error) {
 	return ents, nil
 }
 
+func (repo *Repository) GetByID(id entities.ID) (entities.URL, error) {
+	var (
+		rcrd = record{ID: id.String()}
+
+		entity entities.URL
+	)
+
+	err := repo.db.Get(&rcrd, "SELECT * FROM urls WHERE id = ?;", rcrd.ID)
+	if err != nil {
+		return entity, err
+	}
+
+	entity, err = entities.NewURL(rcrd.ID, rcrd.UUID, rcrd.Target, time.Unix(rcrd.CreatedAt, 0))
+	if err != nil {
+		return entities.URL{}, err
+	}
+
+	return entity, nil
+}
+
 func (repo *Repository) GetByUUID(uuid entities.UUID) (entities.URL, error) {
 	var (
 		rcrd = record{UUID: uuid.String()}
