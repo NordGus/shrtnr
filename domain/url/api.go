@@ -96,7 +96,7 @@ func RemoveURL[T Response[T]](id string, resp T) (T, error) {
 		return resp, err
 	}
 
-	record, err = remove.RemoveURL(recordID)
+	record, err = remove.DeleteURL(recordID)
 	if err != nil {
 		return resp, err
 	}

@@ -5,8 +5,8 @@ import (
 	"github.com/NordGus/shrtnr/domain/url/entities"
 )
 
-// RemoveURL can panic if deletion propagation fails. Because it means the system is corrupted and can't be trusted
-func RemoveURL(id entities.ID) (entities.URL, error) {
+// DeleteURL can panic if deletion propagation fails. Because it means the system is corrupted and can't be trusted
+func DeleteURL(id entities.ID) (entities.URL, error) {
 	select {
 	case <-ctx.Done():
 		return entities.URL{}, ctx.Err()
