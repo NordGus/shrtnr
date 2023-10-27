@@ -4,13 +4,15 @@ import (
 	"errors"
 	"github.com/NordGus/shrtnr/domain/shared/railway"
 	"github.com/google/uuid"
+	neturl "net/url"
 	"time"
 )
 
 var (
-	InvalidUUIDErr        = errors.New("entities: URL uuid invalid")
-	TargetBlankErr        = errors.New("entities: URL target can't be blank")
-	CreatedInTheFutureErr = errors.New("entities: URL can't be created in the future")
+	InvalidUUIDErr         = errors.New("entities: URL uuid invalid")
+	TargetBlankErr         = errors.New("entities: URL target can't be blank")
+	TargetInvalidFormatErr = errors.New("entities: URL target is not a valid url")
+	CreatedInTheFutureErr  = errors.New("entities: URL can't be created in the future")
 )
 
 // URL is the domain representation of an url entity in the application
@@ -112,7 +114,10 @@ func newTarget(response newURLResponse) newURLResponse {
 		response.err = errors.Join(response.err, TargetBlankErr)
 	}
 
-	// TODO: check if the link is reachable
+	_, err := neturl.ParseRequestURI(response.target) // validates that the target is at least a valid URI
+	if err != nil {
+		response.err = errors.Join(response.err, err, TargetInvalidFormatErr)
+	}
 
 	if response.err == nil {
 		response.record.Target = Target(response.target)
