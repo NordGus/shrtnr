@@ -152,6 +152,32 @@ go run cmd/redirector/main.go
 
 Flags:
 
+- `--env` defines the environment where the application is running. Default value: `development`
+
+  You can change it like this:
+
+    ```shell
+    go run cmd/redirector/main.go --env=environment
+    ```
+
+  *Important:* If you set it to `production`, you need to bundle the client code before so the build can embed the bundle files in the executable.
+
+- `--port` defines the port where the web server will listen for requests. Default value: `4269`
+
+  You can change it like this:
+
+    ```shell
+    go run cmd/redirector/main.go --port=420
+    ```
+
+- `--db-file-path` defines the SQLite database's data file location and name. Default value: `./data/shrtnr.db`
+
+  You can change it like this:
+
+    ```shell
+    go run cmd/redirector/main.go --db-file-path=/path/to/your/database/file
+    ```
+
 ## Usage
 
 > ### Disclaimer
