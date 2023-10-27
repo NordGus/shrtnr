@@ -50,40 +50,49 @@ go run cmd/redirector/main.go
 
 ### Migrator
 
-Service that manages the database setup and migrations. You can use it by running:
+Manages the database setup and migrations. You can start it by running:
 
 ```shell
 go run cmd/migrator/main.go
 ```
 
-It supports the flag `--db-file-path` to define the location of the SQLite database data file, and it's name. By default, it uses `./data/shrtnr.db`.
+Flags:
 
-You can set a custom path by passing the flag like this:
+- `--db-file-path` defines the location of the SQLite database data file and its name. Default value: `./data/shrtnr.db`
 
-```shell
-go run cmd/migrator/main.go --db-file-path=/path/to/your/database/file
-```
+    You can set a custom path by passing the flag like this:
 
-*Important:* You need to run this service if you haven't run any `Shrtnr` services before
+    ```shell
+    go run cmd/migrator/main.go --db-file-path=/path/to/your/database/file
+    ```
+
+*Important:* You need to run this service if you haven't run any `Shrtnr` services before.
 
 ### Management
 
-Services that serves the management Web UI to manage all URLs in the system. To start it by running:
+Serves the Web UI to manage all URLs in the system. You can start it by running:
 
 ```shell
 go run cmd/management/main.go
 ```
 
-
+Flags:
 
 ### Redirector
 
+Serves the Web Service to handle redirects of URLs stored in the system. You can start it by running:
 
+```shell
+go run cmd/redirector/main.go
+```
+
+Flags:
 
 ## Usage
 
 ### Disclaimer
-I do not recommend to open any of the services to the internet. I didn't implement User Auth on purpose. I designed this system as an exercise to develop something simple with the ROM Stack and *maybe* use it as part of my Home Lab network.
+
+> I do not recommend to open any of the services to the internet. I didn't implement User Auth on purpose. I designed this system as an exercise to develop something simple with the ROM Stack and *maybe* use it as part of my Home Lab network. - [@NordGus](https://github.com/NordGus)
 
 
 
