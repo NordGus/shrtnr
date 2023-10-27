@@ -50,9 +50,9 @@ go run cmd/redirector/main.go
 
 `Shrtnr` is compose of 3 different services.
 
-- Migrator: to manage database creation and modification.
-- Management: The web UI to manage the URLs that are registered in the system.
-- Redirector: The redirection service that takes the requests and redirects them to the proper target.
+- **Migrator**: to manage database creation and modification.
+- **Management**: The web UI to manage the URLs that are registered in the system.
+- **Redirector**: The redirection service that takes the requests and redirects them to the proper target.
 
 ### Migrator
 
