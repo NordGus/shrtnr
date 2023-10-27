@@ -34,8 +34,8 @@ func init() {
 	dbPath = flag.String("db-file-path", "./data/shrtnr.db", "path to SQLite DB file")
 	urlLimit = flag.Uint("capacity", 2500, "limit of URLs that the service can contain")
 	searchTermLimits = flag.Int("search-term-limit", 10, "the limit of terms that the search cache returns when called")
-	maxSearchConcurrency = flag.Uint("search-concurrency", 30, "limits the amount of concurrent processes when checking trie cache for searching functionality")
-	redirectHost = flag.String("redirect-service-url", "http://localhost:4269/r", "url to the redirection service")
+	maxSearchConcurrency = flag.Uint("search-concurrency", 30, "limits the amount of concurrent processes when checking each trie cache for search terms")
+	redirectHost = flag.String("redirect-service-url", "http://localhost:4269", "redirector service's url")
 
 	flag.Parse()
 }

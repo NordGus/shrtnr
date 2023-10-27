@@ -22,6 +22,12 @@ Now download the go dependencies (You can skip this step if you are running the 
 go mod download
 ```
 
+Start `vite` dev server:
+
+```shell
+yarn dev
+```
+
 Create and prepare the database by running the [Migrator](#migrator) service (check [docs](#migrator) for additional configuration):
 
 ```shell
@@ -77,6 +83,64 @@ go run cmd/management/main.go
 ```
 
 Flags:
+
+- `--env` defines the environment where the application is running. Default value: `development`
+
+    You can change it like this:
+
+    ```shell
+    go run cmd/migrator/main.go --env=environment
+    ```
+    
+    *Important:* If you set it to `production`, you need to bundle the client code before so the build can embed the bundle files in the executable.
+
+- `--port` defines the port where the Web UI server will listen for requests. Default value: `3000`
+
+  You can change it like this:
+
+    ```shell
+    go run cmd/migrator/main.go --port=420
+    ```
+
+- `--db-file-path` defines the SQLite database's data file location and name. Default value: `./data/shrtnr.db`
+
+  You can change it like this:
+
+    ```shell
+    go run cmd/migrator/main.go --db-file-path=/path/to/your/database/file
+    ```
+
+- `--capacity` defines the limit of URLs the service can store. Default value: `2500`
+
+  You can change it like this:
+
+    ```shell
+    go run cmd/migrator/main.go --capacity=69
+    ```
+
+- `--search-term-limit` defines the limit of term results the search cache returns when called. Default value: `10`
+
+  You can change it like this:
+
+    ```shell
+    go run cmd/migrator/main.go --search-term-limit=42
+    ```
+
+- `--search-concurrency` defines the limit of concurrent processes when checking each trie cache for search terms. Default value: `30`
+
+  You can change it like this:
+  
+    ```shell
+    go run cmd/migrator/main.go --search-concurrency=1977
+    ```
+
+- `--redirect-service-url` defines the redirector service's URL. Default value: `http://localhost:4269`
+
+    You can change it like this:
+
+    ```shell
+    go run cmd/migrator/main.go --redirect-service-url=https://your.domain
+    ```
 
 ### Redirector
 

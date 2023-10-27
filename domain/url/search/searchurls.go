@@ -60,7 +60,7 @@ func getMatchersFromFullTargetCache(response searchURLsResponse) searchURLsRespo
 }
 
 func getMatchersFromShortCache(response searchURLsResponse) searchURLsResponse {
-	term := strings.TrimPrefix(response.term, fmt.Sprintf("%s/", redirectURL))
+	term := strings.TrimPrefix(response.term, fmt.Sprintf("%s/r/", redirectURL))
 
 	matchers, err := shortCache.FindEntries(term, longsLimit)
 	if err != nil && !errors.Is(err, trie.EntryNotPresentErr) {
