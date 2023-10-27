@@ -8,10 +8,3 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/mattn/go-sqlite3 v1.14.17
 )
-
-require (
-	github.com/yuin/goldmark v1.4.13 // indirect
-	golang.org/x/mod v0.13.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/tools v0.14.0 // indirect
-)

@@ -30,7 +30,7 @@ var (
 
 func init() {
 	environment = flag.String("env", "development", "defines application environment")
-	port = flag.Int("port", 4269, "port where the app will listened")
+	port = flag.Int("port", 3000, "port where the app will listened")
 	dbPath = flag.String("db-file-path", "./data/shrtnr.db", "path to SQLite DB file")
 	urlLimit = flag.Uint("capacity", 2500, "limit of URLs that the service can contain")
 	searchTermLimits = flag.Int("search-term-limit", 10, "the limit of terms that the search cache returns when called")
