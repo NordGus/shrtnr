@@ -89,7 +89,7 @@ Flags:
     You can change it like this:
 
     ```shell
-    go run cmd/migrator/main.go --env=environment
+    go run cmd/management/main.go --env=environment
     ```
     
     *Important:* If you set it to `production`, you need to bundle the client code before so the build can embed the bundle files in the executable.
@@ -99,7 +99,7 @@ Flags:
   You can change it like this:
 
     ```shell
-    go run cmd/migrator/main.go --port=420
+    go run cmd/management/main.go --port=420
     ```
 
 - `--db-file-path` defines the SQLite database's data file location and name. Default value: `./data/shrtnr.db`
@@ -107,7 +107,7 @@ Flags:
   You can change it like this:
 
     ```shell
-    go run cmd/migrator/main.go --db-file-path=/path/to/your/database/file
+    go run cmd/management/main.go --db-file-path=/path/to/your/database/file
     ```
 
 - `--capacity` defines the limit of URLs the service can store. Default value: `2500`
@@ -115,7 +115,7 @@ Flags:
   You can change it like this:
 
     ```shell
-    go run cmd/migrator/main.go --capacity=69
+    go run cmd/management/main.go --capacity=69
     ```
 
 - `--search-term-limit` defines the limit of term results the search cache returns when called. Default value: `10`
@@ -123,7 +123,7 @@ Flags:
   You can change it like this:
 
     ```shell
-    go run cmd/migrator/main.go --search-term-limit=42
+    go run cmd/management/main.go --search-term-limit=42
     ```
 
 - `--search-concurrency` defines the limit of concurrent processes when checking each trie cache for search terms. Default value: `30`
@@ -131,7 +131,7 @@ Flags:
   You can change it like this:
   
     ```shell
-    go run cmd/migrator/main.go --search-concurrency=1977
+    go run cmd/management/main.go --search-concurrency=1977
     ```
 
 - `--redirect-service-url` defines the redirector service's URL. Default value: `http://localhost:4269`
@@ -139,7 +139,7 @@ Flags:
     You can change it like this:
 
     ```shell
-    go run cmd/migrator/main.go --redirect-service-url=https://your.domain
+    go run cmd/management/main.go --redirect-service-url=https://your.domain
     ```
 
 ### Redirector
