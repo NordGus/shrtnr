@@ -5,9 +5,9 @@
     >
         <div class="bg-neutral-100 dark:bg-stone-700 rounded-t p-3"> <!-- Body -->
             <p class="text-md mb-1">From: </p>
-            <a class="block text-xl mb-3 no-underline text-indigo-600 dark:text-indigo-400 hover:underline" href="{{ .Target }}">{{ .Target }}</a>
+            <a class="block mb-3 text-xl no-underline text-indigo-600 dark:text-indigo-400 hover:underline" href="{{ toRedirectionURL .UUID }}" target="_blank">{{ toRedirectionURL .UUID }}</a>
             <p class="text-md mb-1">To:</p>
-            <a class="block text-xl no-underline text-indigo-600 dark:text-indigo-400 hover:underline" href="{{ toRedirectionURL .UUID }}" target="_blank">{{ toRedirectionURL .UUID }}</a>
+            <a class="block text-xl no-underline text-indigo-600 dark:text-indigo-400 hover:underline" href="{{ .Target }}">{{ .Target }}</a>
         </div>
         <details class="bg-neutral-300 dark:bg-stone-600 rounded-b p-3"> <!-- details -->
             <summary class="cursor-pointer">Details and Actions</summary>
