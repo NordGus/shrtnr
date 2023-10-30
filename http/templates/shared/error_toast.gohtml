@@ -1,12 +1,15 @@
 {{ define "error_toast" }}
     <div id="toasts" hx-swap-oob="beforeend">
-        <div class="drop-shadow-lg rounded text-neutral-100">
+        <notification-toast class="drop-shadow-lg rounded text-neutral-100">
             <div class="bg-red-500 p-2 rounded-t">
                 <p class="text-xl font-medium">{{ . }}</p>
             </div>
+            <notification-timer-visualizer class="flex m-0 p-0 bg-red-500 w-full">
+                <div class="w-0 h-1 bg-red-700 transition-all duration-[2800ms] ease-linear text-transparent"></div>
+            </notification-timer-visualizer>
             <parent-destroyer class="bg-red-600 hover:bg-red-700 p-2 rounded-b flex justify-center cursor-pointer">
                 <span>Clear</span>
             </parent-destroyer>
-        </div>
+        </notification-toast>
     </div>
 {{ end }}
