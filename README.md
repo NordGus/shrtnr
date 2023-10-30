@@ -187,7 +187,7 @@ Flags:
 
 The following screenshots shows the UI you will normally see when there's URLs in the system.
 
-![PlainLayout](./docs/images/layout/Plain.png)
+<img src="./docs/images/layout/Plain.png" alt="PlainLayout" width="412" />
 
 1. Search Input.
 2. URL Information Card.
@@ -200,14 +200,14 @@ The following screenshots shows the UI you will normally see when there's URLs i
 
 Expanded URL Information Card's `Details and Actions`:
 
-![ExpandedURLDetailsAndActionsLayout](./docs/images/layout/ExpandedURLDetailsAndActions.png)
+<img src="./docs/images/layout/ExpandedURLDetailsAndActions.png" alt="ExpandedURLDetailsAndActionsLayout" width="412"/>
 
 1. Timestamp for when the URL was added to the system.
 2. Delete URL Action Button.
 
 Notification Toasts:
 
-![ToastsLayout](./docs/images/layout/Toasts.png)
+<img src="./docs/images/layout/Toasts.png" alt="ToastsLayout" width="412"/>
 
 1. Notification Message.
 2. Clear Button.
