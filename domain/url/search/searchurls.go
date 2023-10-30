@@ -33,8 +33,7 @@ func getMatchersFromClearTargetCache(response searchURLsResponse) searchURLsResp
 	lock.RLock()
 	defer lock.RUnlock()
 
-	term := strings.ToLower(response.term)
-	term = strings.TrimPrefix(term, "https://")
+	term := strings.TrimPrefix(response.term, "https://")
 	term = strings.TrimPrefix(term, "http://")
 
 	matchers, err := clearTargetCache.FindEntries(term, longsLimit)
@@ -53,9 +52,7 @@ func getMatchersFromFullTargetCache(response searchURLsResponse) searchURLsRespo
 	lock.RLock()
 	defer lock.RUnlock()
 
-	term := strings.ToLower(response.term)
-
-	matchers, err := fullTargetCache.FindEntries(term, longsLimit)
+	matchers, err := fullTargetCache.FindEntries(response.term, longsLimit)
 	if err != nil && !errors.Is(err, trie.EntryNotPresentErr) {
 		response.err = errors.Join(response.err, err)
 	}
