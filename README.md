@@ -139,7 +139,7 @@ Flags:
     You can change it like this:
 
     ```shell
-    go run cmd/management/main.go --redirect-service-url=https://your.domain
+    go run cmd/management/main.go --redirect-service-url=https://do.main
     ```
 
 ### Redirector
@@ -183,7 +183,40 @@ Flags:
 > ### Disclaimer
 > I do not recommend to open any of the services to the internet. I didn't implement User Auth on purpose. I designed this system as an exercise to develop something simple with the ROM Stack and *maybe* use it as part of my Home Lab network. - [@NordGus](https://github.com/NordGus)
 
+### The UI
 
+The following screenshots shows the UI you will normally see when there's URLs in the system.
+
+![PlainLayout](./docs/images/layout/Plain.png)
+
+1. Search Input.
+2. URL Information Card.
+   1. Redirector Link.
+   2. Target Link.
+   3. `Details and Actions` dropdown trigger.
+3. New URL Form.
+   1. Target Link.
+   2. Submit Button.
+
+Expanded URL Information Card's `Details and Actions`:
+
+![ExpandedURLDetailsAndActionsLayout](./docs/images/layout/ExpandedURLDetailsAndActions.png)
+
+1. Timestamp for when the URL was added to the system.
+2. Delete URL Action Button.
+
+Notification Toasts:
+
+![ToastsLayout](./docs/images/layout/Toasts.png)
+
+1. Notification Message.
+2. Clear Button.
+
+What do each colors mean:
+
+- **Red**: An error happened while executing the requested action.
+- **Yellow**: An expected non-intuitive side effect. happened while executing the requested action.
+- **Green**: The requested action succeed.
 
 ---
 Built with the ROM Stack
