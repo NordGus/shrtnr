@@ -1,15 +1,15 @@
 {{ define "success_toast" }}
-    <notification-toast id="toasts" hx-swap-oob="beforeend">
+    <toast-notification id="toasts" hx-swap-oob="beforeend">
         <div class="drop-shadow-lg rounded text-neutral-100">
             <div class="bg-green-500 p-2 rounded-t">
                 <p class="text-xl font-medium">{{ . }}</p>
             </div>
-            <notification-timer-visualizer class="flex m-0 p-0 bg-green-500 w-full">
+            <toast-timer class="flex m-0 p-0 bg-green-500 w-full">
                 <div class="w-0 h-1 bg-green-700 transition-all duration-[2800ms] ease-linear text-transparent"></div>
-            </notification-timer-visualizer>
-            <parent-destroyer class="bg-green-600 hover:bg-green-700 p-2 rounded-b flex justify-center cursor-pointer">
+            </toast-timer>
+            <toast-clear class="bg-green-600 hover:bg-green-700 p-2 rounded-b flex justify-center cursor-pointer">
                 <span>Clear</span>
-            </parent-destroyer>
+            </toast-clear>
         </div>
-    </notification-toast>
+    </toast-notification>
 {{ end }}

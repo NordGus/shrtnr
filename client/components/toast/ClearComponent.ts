@@ -1,4 +1,4 @@
-export default class ParentDestroyerComponent extends HTMLElement {
+export default class ClearComponent extends HTMLElement {
   connectedCallback(): void {
     this.addEventListener("click", this.destroyParent);
   }
@@ -12,4 +12,4 @@ export default class ParentDestroyerComponent extends HTMLElement {
   }
 }
 
-customElements.define("parent-destroyer", ParentDestroyerComponent);
+customElements.define("toast-clear", ClearComponent);

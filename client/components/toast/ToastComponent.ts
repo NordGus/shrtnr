@@ -1,4 +1,4 @@
-export default class NotificationToastComponent extends HTMLElement {
+export default class ToastComponent extends HTMLElement {
   private timerID!: number
 
   connectedCallback(): void {
@@ -11,4 +11,4 @@ export default class NotificationToastComponent extends HTMLElement {
   }
 }
 
-customElements.define("notification-toast", NotificationToastComponent);
+customElements.define("toast-notification", ToastComponent);
