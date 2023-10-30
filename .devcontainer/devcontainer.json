@@ -1,5 +1,5 @@
 {
-  "name": "ROM Stack",
+  "name": "Shrtnr",
   "build": {
     "args": {
       "GO_VERSION": "1.21.1",
