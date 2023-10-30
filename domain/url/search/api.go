@@ -10,9 +10,6 @@ func ByTerm(term string) ([]entities.URL, error) {
 	case <-ctx.Done():
 		return []entities.URL{}, ctx.Err()
 	default:
-		lock.RLock()
-		defer lock.RUnlock()
-
 		resp := buildSearchURLsResponse(term)
 		resp = railway.AndThen(resp, getMatchersFromClearTargetCache)
 		resp = railway.AndThen(resp, getMatchersFromFullTargetCache)

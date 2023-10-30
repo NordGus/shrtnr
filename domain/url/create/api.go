@@ -10,9 +10,6 @@ func AddURL(entity entities.URL) (entities.URL, entities.URL, error) {
 	case <-ctx.Done():
 		return entities.URL{}, entities.URL{}, ctx.Err()
 	default:
-		lock.Lock()
-		defer lock.Unlock()
-
 		response := newAddURLResponse(entity)
 		response = railway.OrThen(response, validateUUIDUniqueness)
 		response = railway.OrThen(response, validateTargetUniqueness)

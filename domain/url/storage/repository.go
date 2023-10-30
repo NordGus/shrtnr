@@ -33,7 +33,7 @@ func (repo *Repository) GetAllRecords(limit uint) ([]entities.URL, error) {
 		ents  = make([]entities.URL, 0, limit)
 	)
 
-	err := repo.db.Select(&rcrds, "SELECT * FROM urls ORDER BY created_at DESC LIMIT ?", limit)
+	err := repo.db.Select(&rcrds, "SELECT * FROM urls ORDER BY created_at LIMIT ?", limit)
 	if err != nil {
 		return ents, err
 	}

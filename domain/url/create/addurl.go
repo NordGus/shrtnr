@@ -48,6 +48,9 @@ func validateTargetUniqueness(response addURLResponse) addURLResponse {
 }
 
 func canBeAdded(response addURLResponse) addURLResponse {
+	lock.RLock()
+	defer lock.RUnlock()
+
 	if cache.IsFull() {
 		response.oldRecord, _ = cache.Peek()
 		response.err = queue.IsFullErr
@@ -99,6 +102,9 @@ func persistNewURl(response addURLResponse) addURLResponse {
 }
 
 func addUrlToQueue(response addURLResponse) addURLResponse {
+	lock.Lock()
+	defer lock.Unlock()
+
 	if cache.IsFull() {
 		_, response.err = cache.Pop() // ignores the popped record because the addURLResponse already contains it from the deletion parte
 	}

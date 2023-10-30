@@ -16,7 +16,7 @@ var (
 	cache      queue.Queue[entities.URL]
 	repository Repository
 
-	lock sync.Mutex
+	lock sync.RWMutex
 )
 
 func Start(otherCtx context.Context, maxUrl uint) {
