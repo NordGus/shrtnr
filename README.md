@@ -218,5 +218,39 @@ What do each colors mean:
 - **Yellow**: An expected non-intuitive side effect. happened while executing the requested action.
 - **Green**: The requested action succeed.
 
+Search:
+
+<img src="./docs/images/layout/Search.png" alt="SearchLayout" width="412" />
+
+1. Search Input.
+2. Clear Search Button.
+3. Results URL Information Cards.
+
+### How to Search
+
+Simply focus the Search Input and start writing.
+
+You can search using the full Target URL, or the Shortcut URL, or the URL without the schema.
+
+After a 500ms delay the HTMX client will send a `POST` request to the server asking for the matching entries.
+
+To return to the normal list view, simply press the `Clear Search Button`. 
+
+**Drawbacks:** 
+
+- Because I implement the search using simple Tries
+  - The search is case-sensitive.
+  - It doesn't respond to partial full Target URL (You need to pass the full Target). 
+  - It doesn't support partial matching.
+- To return to the normal list view you need to press the `Clear Search Button`.
+
+Despise these drawbacks is serviceable and quick because is performed in memory and without serialization from another source into a Go struct.
+
+### How to add a URL to the System
+
+Focus the Target Link input at the bottom of the screen, paste or write the URL you want to add to the system and 
+
+### How to Delete a URL from the System
+
 ---
 Built with the ROM Stack
