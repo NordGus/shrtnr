@@ -1,6 +1,6 @@
 {{ define "success_toast" }}
-    <toast-notification id="toasts" hx-swap-oob="beforeend">
-        <div class="drop-shadow-lg rounded text-neutral-100">
+    <div id="toasts" hx-swap-oob="beforeend">
+        <toast-notification class="drop-shadow-lg rounded text-neutral-100">
             <div class="bg-green-500 p-2 rounded-t">
                 <p class="text-xl font-medium">{{ . }}</p>
             </div>
@@ -10,6 +10,6 @@
             <toast-clear class="bg-green-600 hover:bg-green-700 p-2 rounded-b flex justify-center cursor-pointer">
                 <span>Clear</span>
             </toast-clear>
-        </div>
-    </toast-notification>
+        </toast-notification>
+    </div>
 {{ end }}
