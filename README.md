@@ -248,7 +248,25 @@ Despise these drawbacks is serviceable and quick because is performed in memory 
 
 ### How to add a URL to the System
 
-Focus the Target Link input at the bottom of the screen, paste or write the URL you want to add to the system and 
+Focus the Target Link input at the bottom of the screen, paste or write the URL you want to add to the system and press `+`.
+
+The HTMX client sends a `PUT` request to the server for entry creation.
+
+> **Important:** The client generates an `ID`, using `uuid v4`, and a system `UUID`, a random 8 character string that contains numbers from 0-9, letters from a-z and A-Z, for the entry. 
+
+The server validates that the `ID` complies with the `uuid v4` spec, the `UUID` is correct and is unique, and the Target Link is actually a valid URI and is also unique to the system. If the entry fails any of these validations, it would stop and send an error and stop further actions and sends an Error notification toast.
+
+> If the server raises an error indicating that neither the `ID` or the `UUID` is not unique you need to refresh the page to reset this values. I haven't implemented the errors and system  to identify this and force the server to render the form template in the required way for the client code to refresh this values.
+
+Then the server will check if it can be added to the database without opening space for it. 
+
+If the server needs to open space for it, it would delete the oldest entry in the system and sends an event to the system indicating that the entry was deleted, so it can be removed from all relevant caches.
+
+Then the system persists the new entry, sends a message to the system that the entry has been persisted, so it can be added to the relevant caches.
+
+Then is added to the Queue cache that controls the removal order from the system.
+
+Finally, it sends a Success notification toast indicating success. If the system needed to remove an older entry to make space for the new entry, it will additionally send a Warning notification toast, indicating that it deleted an older entry to open space for the new entry. 
 
 ### How to Delete a URL from the System
 
