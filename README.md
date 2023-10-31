@@ -182,7 +182,7 @@ Flags:
 
 For further Documentation:
 
-- [Management Service](/docs/management/README.md)
+- [Management Service](/docs/management)
 
 ---
 > ### Disclaimer
