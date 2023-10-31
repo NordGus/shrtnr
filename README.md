@@ -198,27 +198,27 @@ The following screenshots shows the UI you will normally see when there's URLs i
    1. Target Link.
    2. Submit Button.
 
-Expanded URL Information Card's `Details and Actions`:
+**Expanded URL Information Card's `Details and Actions`:**
 
 <img src="./docs/images/layout/ExpandedURLDetailsAndActions.png" alt="ExpandedURLDetailsAndActionsLayout" width="412" />
 
 1. Timestamp for when the URL was added to the system.
 2. Delete URL Action Button.
 
-Notification Toasts:
+**Notification Toasts:**
 
 <img src="./docs/images/layout/Toasts.png" alt="ToastsLayout" width="412" />
 
 1. Notification Message.
 2. Clear Button.
 
-What do each colors mean:
+Each color communicates what type of notification the system is communicating to you:
 
-- **Red**: An error happened while executing the requested action.
-- **Yellow**: An expected non-intuitive side effect. happened while executing the requested action.
-- **Green**: The requested action succeed.
+- **Red:** An error happened while executing the requested action.
+- **Yellow:** An expected non-intuitive side effect happened while executing the requested action.
+- **Green:** The requested action succeeded.
 
-Search:
+**Search:**
 
 <img src="./docs/images/layout/Search.png" alt="SearchLayout" width="412" />
 
@@ -251,6 +251,12 @@ Despise these drawbacks is serviceable and quick because is performed in memory 
 Focus the Target Link input at the bottom of the screen, paste or write the URL you want to add to the system and 
 
 ### How to Delete a URL from the System
+
+### How to interact with Toasts
+
+You can dismiss Toasts by pressing the `Clear Button` under each Toast. 
+
+Toast disappear automatically from the screen after 3 seconds if you don't clear them yourself by pressing the `Clear Button`.
 
 ---
 Built with the ROM Stack
