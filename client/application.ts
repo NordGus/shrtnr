@@ -1,5 +1,7 @@
 import "htmx.org";
 import "./style.css";
+import "@Components/search/ClearComponent.ts"
+import "@Components/search/inputs/SearchInput.ts"
 import "@Components/toast/TimerComponent.ts";
 import "@Components/toast/ToastComponent.ts";
 import "@Components/toast/ClearComponent.ts";

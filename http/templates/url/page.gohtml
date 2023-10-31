@@ -1,5 +1,5 @@
 {{ define "page" }}
-    <div id="urls" hx-swap-oob="{{ if eq .NextPage 2 }}innerHTML{{ else }}beforeend{{ end }}">
+    <div id="urls" class="overflow-auto" hx-swap-oob="{{ if eq .NextPage 2 }}innerHTML{{ else }}beforeend{{ end }}">
         {{ range .URLs }}
             {{ template "url" . }}
         {{ end }}

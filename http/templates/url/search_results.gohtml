@@ -1,6 +1,7 @@
 {{ define "search_results" }}
     <div id="urls" hx-swap-oob="innerHTML">
         <button
+                is="search-clear"
                 class="bg-neutral-100 dark:bg-stone-700 p-3 mb-3 rounded drop-shadow-lg w-full cursor-pointer"
                 hx-get="/urls?page=1"
                 hx-target="#urls"

@@ -8,6 +8,8 @@ export default class CardComponent extends HTMLElement {
 
     if (!target.href.includes(searchInput.value)) { this.remove(); return; }
 
+    if (!this.parentElement!.querySelector<HTMLButtonElement>("button")) return;
+
     const index = Array.prototype.indexOf.call(this.parentElement!.children, this);
 
     if (index !== 0) return;

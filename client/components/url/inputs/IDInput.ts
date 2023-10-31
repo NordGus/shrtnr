@@ -1,6 +1,6 @@
 import { v4 } from "uuid"
 
-class IDInput extends HTMLInputElement {
+export default class IDInput extends HTMLInputElement {
   connectedCallback(): void {
     if (this.value || this.value !== "") return
 

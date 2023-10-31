@@ -1,6 +1,6 @@
 import { generateUUID } from "@/helpers/uuidGeneration.ts";
 
-class UUIDInput extends HTMLInputElement {
+export default class UUIDInput extends HTMLInputElement {
   connectedCallback(): void {
     if (this.value || this.value !== "") return
 
