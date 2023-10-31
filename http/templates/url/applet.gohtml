@@ -3,7 +3,7 @@
         <div id="toasts" class="absolute flex flex-col gap-1 w-full p-3 z-50 bottom-[3.5rem]">
         </div>
         <div id="search" class="pb-3">
-            <p>Loading</p>
+            {{ template "search_form" .SearchForm }}
         </div>
         <div id="urls" class="overflow-auto">
             <p hx-get="/urls?page=1" hx-trigger="load" hx-target="#urls" hx-swap="none">Loading</p>

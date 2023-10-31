@@ -8,10 +8,4 @@
             <p class="hidden" hx-get="/urls?page={{ .NextPage }}" hx-trigger="load" hx-target="#urls" hx-swap="none">Loading</p>
         {{ end }}
     </div>
-
-    {{ if eq .NextPage 2 }}
-        <div id="search" hx-swap-oob="innerHTML">
-            {{ template "search_form" .SearchForm }}
-        </div>
-    {{ end }}
 {{ end }}

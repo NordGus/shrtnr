@@ -48,7 +48,11 @@ func (r urlRecord) SetCreatedAt(createdAt time.Time) urlRecord {
 }
 
 func AppletHandler(w http.ResponseWriter, _ *http.Request) {
-	err := views.ExecuteTemplate(w, "applet", nil)
+	data := struct {
+		SearchForm SearchURLForm
+	}{}
+
+	err := views.ExecuteTemplate(w, "applet", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
