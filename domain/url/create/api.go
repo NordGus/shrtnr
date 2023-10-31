@@ -11,10 +11,10 @@ func AddURL(entity entities.URL) (entities.URL, entities.URL, error) {
 		return entities.URL{}, entities.URL{}, ctx.Err()
 	default:
 		response := newAddURLResponse(entity)
-		response = railway.OrThen(response, validateUUIDUniqueness)
-		response = railway.OrThen(response, validateTargetUniqueness)
+		response = railway.Then(response, validateUUIDUniqueness)
+		response = railway.Then(response, validateTargetUniqueness)
 		response = railway.AndThen(response, canBeAdded)
-		response = railway.OnFailure(response, deleteOldestUrl)
+		response = railway.IfFailed(response, deleteOldestUrl)
 		response = railway.AndThen(response, persistNewURl)
 		response = railway.AndThen(response, addUrlToQueue)
 

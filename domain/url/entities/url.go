@@ -42,10 +42,10 @@ func (s newURLResponse) Success() bool {
 func NewURL(id string, uuid string, target string, createdAt time.Time) (URL, error) {
 	var sig = newURLResponse{id: id, uuid: uuid, target: target, createdAt: createdAt, record: URL{}, err: nil}
 
-	resp := railway.OrThen(sig, newID)
-	resp = railway.OrThen(resp, newUUID)
-	resp = railway.OrThen(resp, newTarget)
-	resp = railway.OrThen(resp, newCreatedAt)
+	resp := railway.Then(sig, newID)
+	resp = railway.Then(resp, newUUID)
+	resp = railway.Then(resp, newTarget)
+	resp = railway.Then(resp, newCreatedAt)
 
 	return resp.record, resp.err
 }

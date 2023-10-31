@@ -16,13 +16,13 @@ func AndThen[T Response](r T, next func(in T) T) T {
 	return r
 }
 
-// OrThen executes next regardless if the previous Response was successful or not
-func OrThen[T Response](r T, next func(in T) T) T {
+// Then executes next regardless if the previous Response was successful or not
+func Then[T Response](r T, next func(in T) T) T {
 	return next(r)
 }
 
-// OnFailure executes next if the previous Response wasn't successful
-func OnFailure[T Response](r T, next func(in T) T) T {
+// IfFailed executes next if the previous Response wasn't successful
+func IfFailed[T Response](r T, next func(in T) T) T {
 	if r.Success() {
 		return r
 	}
