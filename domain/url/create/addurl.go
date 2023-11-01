@@ -53,7 +53,7 @@ func canBeAdded(response addURLResponse) addURLResponse {
 
 	if cache.IsFull() {
 		response.oldRecord, _ = cache.Peek()
-		response.err = queue.IsFullErr
+		response.err = errors.Join(response.err, queue.IsFullErr)
 	}
 
 	return response
@@ -89,8 +89,8 @@ func persistNewURl(response addURLResponse) addURLResponse {
 		return response
 	}
 
-	response.err = created.Raise(record)
-	if response.err != nil {
+	err = created.Raise(record)
+	if err != nil {
 		response.err = errors.Join(response.err, err)
 
 		return response
@@ -106,10 +106,11 @@ func addUrlToQueue(response addURLResponse) addURLResponse {
 	defer lock.Unlock()
 
 	if cache.IsFull() {
-		_, response.err = cache.Pop() // ignores the popped record because the addURLResponse already contains it from the deletion parte
+		_, err := cache.Pop() // ignores the popped record because the addURLResponse already contains it from the deletion part
+		response.err = errors.Join(response.err, err)
 	}
 
-	response.err = cache.Push(response.record)
+	response.err = errors.Join(response.err, cache.Push(response.record))
 
 	return response
 }
