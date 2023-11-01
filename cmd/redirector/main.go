@@ -71,8 +71,8 @@ func main() {
 
 	router.Use(middleware.RequestID, middleware.Logger)
 
-	redirect.Routes(router)
 	fileserver.PublicRoutes(router)
+	redirect.Routes(router)
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", *port), router)
 	if err != nil {

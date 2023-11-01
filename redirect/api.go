@@ -10,7 +10,7 @@ import (
 )
 
 func Routes(r chi.Router) {
-	r.Get("/r/{uuid}", redirectHandler)
+	r.Get("/{uuid}", redirectHandler)
 }
 
 func redirectHandler(w http.ResponseWriter, r *http.Request) {
