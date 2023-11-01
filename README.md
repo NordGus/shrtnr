@@ -183,6 +183,7 @@ Flags:
 For further Documentation:
 
 - [Management Service](/docs/management)
+- [Redirector Service](/docs/redirector)
 
 ---
 > ### Disclaimer
