@@ -1,8 +1,12 @@
-### Management System
+# Management Service
 
-### The UI
+A way for the administrator to interact with the system via an easy-to-use web interface.
 
-The following screenshots shows the UI you will normally see when there's URLs in the system.
+---
+
+## The UI
+
+### Main UI
 
 <img src="../images/layout/Plain.png" alt="PlainLayout" width="412" />
 
@@ -15,14 +19,14 @@ The following screenshots shows the UI you will normally see when there's URLs i
     1. Target Link.
     2. Submit Button.
 
-**Expanded URL Information Card's `Details and Actions`:**
+### Expanded URL Information Card's `Details and Actions`
 
 <img src="../images/layout/ExpandedURLDetailsAndActions.png" alt="ExpandedURLDetailsAndActionsLayout" width="412" />
 
 1. Timestamp for when the URL was added to the system.
 2. Delete URL Action Button.
 
-**Notification Toasts:**
+### Notification Toasts
 
 <img src="../images/layout/Toasts.png" alt="ToastsLayout" width="412" />
 
@@ -35,13 +39,17 @@ Each color communicates what type of notification the system is communicating to
 - **Yellow:** An expected non-intuitive side effect happened while executing the requested action.
 - **Green:** The requested action succeeded.
 
-**Search:**
+### Search
 
 <img src="../images/layout/Search.png" alt="SearchLayout" width="412" />
 
 1. Search Input.
 2. Clear Search Button.
 3. Results URL Information Cards.
+
+---
+
+## Manual
 
 ### How to Search
 
