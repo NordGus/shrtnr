@@ -75,17 +75,29 @@ The server validates that the `ID` complies with the `uuid v4` spec, the `UUID` 
 
 > If the server raises an error indicating that neither the `ID` or the `UUID` is not unique you need to refresh the page to reset this values. I haven't implemented the errors and system  to identify this and force the server to render the form template in the required way for the client code to refresh this values.
 
-Then the server will check if it can be added to the database without opening space for it.
+Then the server will check if it can be added to the system without opening space for it.
 
-If the server needs to open space for it, it would delete the oldest entry in the system and sends an event to the system indicating that the entry was deleted, so it can be removed from all relevant caches.
+If the server needs to open space for it, it would delete the oldest entry in the system and raises an event to the system indicating that the entry was deleted, so it can be removed from all relevant caches.
 
-Then the system persists the new entry, sends a message to the system that the entry has been persisted, so it can be added to the relevant caches.
+Then the system persists the new entry, raises an event to the system that the entry has been persisted, so it can be added to the relevant caches.
 
 Then is added to the Queue cache that controls the removal order from the system.
 
 Finally, it sends a Success notification toast indicating success. If the system needed to remove an older entry to make space for the new entry, it will additionally send a Warning notification toast, indicating that it deleted an older entry to open space for the new entry.
 
 ### How to Delete a URL from the System
+
+Expand the `Details and Actions` section of the URL card you want to delete and press the `Delete` button.
+
+The HTMX client sends a `DELETE` request to the server to delete the entry you want to delete.
+
+The server validates that the `ID` is a valid `uuid v4`. If it isn't the server stops any further actions and returns an Error notification toast indicating such error.
+
+Then it validates that the requested entry is present in the system. If it isn't the server stops any further actions and returns an Error notification toast indicating such error.
+
+After that it deletes the entry from the system and raises an event to the system to indicate that the entry was deleted, so it can be removed from all relevant caches.
+
+Finally, it sends a Success notification toast indicating success.
 
 ### How to interact with Toasts
 
