@@ -5,12 +5,13 @@ export default class CardComponent extends HTMLElement {
     if (searchInput.value === "") return;
 
     const target = this.querySelector<HTMLAnchorElement>(".entry-to")!;
+    const from = this.querySelector<HTMLAnchorElement>(".entry-from")!;
 
-    if (!target.href.includes(searchInput.value)) { this.remove(); return; }
+    if (!target.href.includes(searchInput.value) && !from.href.includes(searchInput.value)) { this.remove(); return; }
 
     if (!this.parentElement!.querySelector<HTMLButtonElement>("button")) return;
 
-    const index = Array.prototype.indexOf.call(this.parentElement!.children, this);
+    const index = Array.from(this.parentElement!.children).indexOf(this);
 
     if (index !== 0) return;
 
