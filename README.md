@@ -226,11 +226,9 @@ I tried to apply what I understand for Domain-Driven Design with a touch of Hexa
 - My understanding of HTMX and WebComponents is clearly in complete. This was clear to me when implementing the Notification toast.
   - The way I implemented the "timer line" to indicate the user how long until the Toast will clear automatically, is super hacky and inconsistent.
 
-### Was it fun?
-
-Mistakes were made, but I enjoyed the process. I feel proud on how this App turned out.
-
 ### What's next?
+
+Mistakes were made, but I enjoyed the process. I feel proud on how this App turned out. Now I think I have to do the following
 
 - Update the ROM Stack to the new standard created by working with this App.
 
