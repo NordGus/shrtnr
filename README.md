@@ -194,7 +194,7 @@ I tried to apply what I understand for Domain-Driven Design with a touch of Hexa
 - It helped me to separate business logic from the implementation of my adapters. Where I was able to simply connect the domain logic into the HTTP endpoints.
 
 
-- The implementation of a Event-Driven SoftWare Architecture gave me a way to synchronize the caches in the different subsystems.
+- The implementation of an Event-Driven SoftWare Architecture gave me a way to synchronize the caches in the different subsystems.
 
 
 - HTMX let me build a reactive Web UI the way I wanted without using an JSON API and another frontend library like React. 
@@ -232,7 +232,13 @@ Mistakes were made, but I enjoyed the process. I feel proud on how this App turn
 
 ### What's next?
 
+- Update the ROM Stack to the new standard created by working with this App.
 
+
+- Read a lot and learn about Domain-Driven Design, Hexagonal Architecture and Software Architecture in General.
+
+
+- Plan the next application to continue growing the ROM Stack.
 
 ---
 > ### Disclaimer
