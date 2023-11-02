@@ -236,6 +236,8 @@ Mistakes were made, but I enjoyed the process. I feel proud on how this App turn
 - Read a lot and learn about Domain-Driven Design, Hexagonal Architecture and Software Architecture in General.
 
 
+- Learn how to document logic behavior with flow charts and add them to my docs 
+
 - Plan the next application to continue growing the ROM Stack.
 
 ---
