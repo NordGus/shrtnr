@@ -2,8 +2,6 @@
 
 A way for the administrator to interact with the system via an easy-to-use web interface.
 
----
-
 ## The UI
 
 ### Main UI
@@ -46,8 +44,6 @@ Each color communicates what type of notification the system is communicating to
 1. Search Input.
 2. Clear Search Button.
 3. Results URL Information Cards.
-
----
 
 ## Manual
 
@@ -116,5 +112,5 @@ Toast disappear automatically from the screen after 3 seconds if you don't clear
 ---
 > ### Disclaimer
 > I do not recommend to open any of the services to the internet. I didn't implement User Auth on purpose. I designed this system as an exercise to develop something simple with the ROM Stack and *maybe* use it as part of my Home Lab network. - [@NordGus](https://github.com/NordGus)
----
-Built with the ROM Stack
+
+*Built with the ROM Stack*
