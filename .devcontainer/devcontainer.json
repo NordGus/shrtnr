@@ -32,7 +32,17 @@
   "forwardPorts": [4269],
   "portsAttributes": {
     "4269": {
-      "label": "Go API Server entrypoint",
+      "label": "Redirector Server",
+      "onAutoForward": "notify",
+      "requireLocalPort": true
+    },
+    "3000": {
+      "label": "Management Server",
+      "onAutoForward": "notify",
+      "requireLocalPort": true
+    },
+    "5173": {
+      "label": "Vite Server",
       "onAutoForward": "notify",
       "requireLocalPort": true
     }
