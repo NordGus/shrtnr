@@ -185,6 +185,55 @@ For further Documentation:
 - [Management Service](/docs/management)
 - [Redirector Service](/docs/redirector)
 
+## Post-morten 
+
+I tried to apply what I understand for Domain-Driven Design with a touch of Hexagonal Architecture and Event-Driven Architecture. While also using HTMX as my frontend library and model to handle Web UI reactivity and rendering complementing it with WebComponents for the stuff I couldn't handle with my knowledge of HTMX. 
+
+### Where it went well
+
+- It helped me to separate business logic from the implementation of my adapters. Where I was able to simply connect the domain logic into the HTTP endpoints.
+
+
+- The implementation of a Event-Driven SoftWare Architecture gave me a way to synchronize the caches in the different subsystems.
+
+
+- HTMX let me build a reactive Web UI the way I wanted without using an JSON API and another frontend library like React. 
+  - My client-side code is simpler.
+  - I was easier to wrap my head around compare to Turbo.
+
+
+- Using WebComponents for the final stretch of interactivity was awesome.
+  - I never taught that this web platform native technology could help me create some behaviors that in the past I considered I would need a frontend library like React. 
+
+
+- Tailwind CSS helped me a lot when it came to write build my UI and make it presentable.
+    - For a CSS dummy like myself it was cool to easily write cool CSS styles and behaviors so beautiful.
+
+### Where I failed or stalled
+
+- What I understand as Hexagonal Architecture clearly is flawed and I need to investigate more in the field.
+  - The way I implemented the `repository` is not universal but at the same time the way the application accepts the structures I can implement an `port` for different types of SQL databases.
+
+
+- I implemented incorrectly the idea of Domain-Driven Design. 
+  - I clearly mixed core logic with a `module` centric design that made it impossible for me to write any type of test suite to prevent me to shot myself in the foot or take 2-3 hours debugging stuff I broke or simply write super buggy code.
+
+
+- The `module` centric design I used on the application is clearly how to implement the `Singleton Pattern` in Go.
+  - Yeah, basically I build an entire system with `Singletons` pretty bad idea.
+  - There's some parts of the system that probably can use this pattern.
+
+- My understanding of HTMX and WebComponents is clearly in complete. This was clear to me when implementing the Notification toast.
+  - The way I implemented the "timer line" to indicate the user how long until the Toast will clear automatically, is super hacky and inconsistent.
+
+### Was it fun?
+
+Mistakes were made, but I enjoyed the process. I feel proud on how this App turned out.
+
+### What's next?
+
+
+
 ---
 > ### Disclaimer
 > I do not recommend to open any of the services to the internet. I didn't implement User Auth on purpose. I designed this system as an exercise to develop something simple with the ROM Stack and *maybe* use it as part of my Home Lab network. - [@NordGus](https://github.com/NordGus)
