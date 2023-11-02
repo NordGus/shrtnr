@@ -188,5 +188,5 @@ For further Documentation:
 ---
 > ### Disclaimer
 > I do not recommend to open any of the services to the internet. I didn't implement User Auth on purpose. I designed this system as an exercise to develop something simple with the ROM Stack and *maybe* use it as part of my Home Lab network. - [@NordGus](https://github.com/NordGus)
----
-Built with the ROM Stack
+
+*Built with the ROM Stack*
