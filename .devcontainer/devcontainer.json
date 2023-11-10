@@ -29,7 +29,7 @@
   "securityOpt": ["seccomp=unconfined"],
   "containerUser": "vscode",
   "mounts": [{ "source": "${env:HOME}/.ssh", "target": "/home/vscode/.ssh:ro", "type": "bind" }],
-  "forwardPorts": [4269],
+  "forwardPorts": [4269, 3000, 5173],
   "portsAttributes": {
     "4269": {
       "label": "Redirector Server",
